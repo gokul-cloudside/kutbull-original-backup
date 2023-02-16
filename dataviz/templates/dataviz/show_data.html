@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>KutBill</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+</head>
+
+<body>
+
+<h1>Consumption Data</h1>
+<table>
+
+{% for result in result_set %}
+    <tr>
+    {% for key, value in result.items %}
+        <td>{{key}} - {{value}}</td>
+    {% endfor %}
+    </tr>
+
+{% endfor %}
+</table>
+
+</body>
+</html>

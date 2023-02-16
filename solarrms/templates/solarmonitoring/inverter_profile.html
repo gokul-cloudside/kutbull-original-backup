@@ -1,0 +1,440 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+{% load bootstrap3 %}
+
+{% block extrahead %}
+    <link href="/static/dataglen/css/spinkit.css" rel="stylesheet">
+    <!-- D3 and NVD3 -->
+    <link href="/static/dataglen/css/metricsgraphics.css" rel="stylesheet">
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+    <link href="/static/dataglen/css/jquery.datetimepicker.css" rel="stylesheet">
+
+    <style>
+        .nav-tabs > li, .nav-pills > li {
+            float:none;
+            display:inline-block;
+            *display:inline; /* ie7 fix */
+             zoom:1; /* hasLayout ie7 trigger */
+        }
+
+        .nav-tabs, .nav-pills {
+            text-align:center;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body_block %}
+
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#">Inverter Profile Page</a></li>
+      <li><a href={% url 'solar:inverter-data-download' plant_slug inverter.sourceKey %}>Download Historical Data</a></li>
+      <!-- <li><a href={% url 'solar:inverter-data-comparison' plant_slug inverter.sourceKey %}>Compare Inverter Values</a></li> -->
+    </ul>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-3 ">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-content">
+                                <h2> {{ inverter.displayName }}, <a href="{% url 'solar:plant' plant_slug %}"> {{ inverter.plant.name }} </a> </h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-content" id="inverter_status">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 ">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content" id="day_chart">
+                        <div class="row inverter-energy-generation">
+                            <div class="form-group" style="float: right;">
+                                <input type="text" class="form-control datetimepicker_start" id="start" placeholder="Choose Date" onchange="inverter_data()" style="height: 29px;" required="required">
+                            </div>
+                        </div>
+                    <div>
+                        <div id="inverter_chart" style="height: 190px;">
+                            <svg>
+
+                            </svg>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content" id="week_chart">
+                        <div class="chart-title text-center">Daily Generation in <strong>MWh</strong></div>
+                        <svg></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="ibox-content" id="active_power">
+                    <div style="height:190px" >
+                        <svg>
+
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="ibox-content" id="dc_power">
+                    <div style="height:190px">
+                        <svg>
+
+                        </svg>
+                        <!--Chart will come here-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="ibox-content" id="ac_frequency">
+                    <div style="height:190px">
+                        <svg>
+
+                        </svg>
+                        <!--Chart will come here-->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="ibox-content" id="inside_temperature">
+                    <div style="height:190px">
+                        <svg>
+
+                        </svg>
+                        <!--Chart will come here-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/dataglen/js/d3.js"></script>
+    <script src="/static/dataglen/js/jquery.datetimepicker.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/dataglen/js/saveSvgAsPng.js"></script>
+    <script src="/static/dataglen/js/metricsgraphics.js"></script>
+
+    <script type="text/javascript">
+        var active_power_chart = null;
+        var dc_power_chart = null;
+        var ac_frequency_chart = null;
+        var inside_temperature_chart = null;
+        var inverter_name = null;
+        var week_chart = null;
+        var day_chart = null;
+
+        $(document).ready(function(){
+            setTimeout(function(){
+               load_inverter_data();
+               limit_inverter_future_date();
+               set_status({{ status }});
+             }, 500); // milliseconds
+        });
+
+        function csrfSafeMethod(method) {
+            return (/^(HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        function load_inverter_data(){
+            var csrftoken = $.cookie('csrftoken');
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+            $.ajax({
+                type: "GET",
+                url: "/solar/plant/".concat('{{ plant_slug }}').concat('/inverter/').concat('{{ inverter.sourceKey }}'),
+                success: function(data){
+
+                    var today = new Date();
+
+                    var yyyy = today.getFullYear().toString();
+                    var mm = (today.getMonth()+1).toString();
+                    var dd  = today.getDate().toString();
+                    var today = yyyy + "/" + (mm[1]?mm:"0"+mm[0]) + "/" + (dd[1]?dd:"0"+dd[0]);
+
+                    st = $('#start').val();
+
+                    if(st == today || st == '') {
+                        live_charts(data);
+                        inverter_data();   
+                    }
+                    set_status(data['status']);
+                },
+                error: function(data){
+                    data = null;
+                }
+            });
+
+            setTimeout(function(){
+               load_inverter_data ();
+             }, 20000);    
+            
+        }
+    </script>
+
+    <script>
+      $(function() {
+        $(".datetimepicker_start").datetimepicker({
+            timepicker: false,
+            format: 'Y/m/d',
+            scrollMonth:false,
+            scrollTime:false,
+            scrollInput:false
+        });
+        $(".datetimepicker_start").on('change', function(ev) {
+            $(this).datetimepicker('hide');
+        });
+      });
+      function limit_inverter_future_date() {
+        var dat = new Date($('#start').val());
+        var d = dat;
+
+        $(function(){
+          $('#start').datetimepicker({
+            onShow:function( ct ){
+                this.setOptions({
+                maxDate: new Date()
+              })
+            },
+          });
+        });
+      }
+    </script>
+
+    <script>
+
+        var inverter_energy = 0;
+
+        function inverter_data() {
+
+            var today = new Date();
+
+            var yyyy = today.getFullYear().toString();
+            var mm = (today.getMonth()+1).toString();
+            var dd  = today.getDate().toString();
+            var today = yyyy + "/" + (mm[1]?mm:"0"+mm[0]) + "/" + (dd[1]?dd:"0"+dd[0]);
+
+            st = $('#start').val();
+
+            if(st == '') {
+                st = today;
+                var en = today.split('/');
+                var day = parseInt(en[2]) + 1;
+                var e = [en[0], en[1], day].join('/');
+            } else {
+                var dat = new Date($('#start').val());
+                var et = new Date(dat.setHours(dat.getHours()+24));
+                var da = et;
+                var month = '' + (da.getMonth() + 1);
+                var day = '' + (da.getDate());
+                var year = da.getFullYear();
+
+                if (month.length < 2) {
+                    month = '0' + month;  
+                } 
+                if (day.length < 2) {
+                    day = '0' + day;  
+                } 
+
+                var e = [year, month, day].join('/');
+            }
+
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: "/api/solar/plants/".concat('{{ plant_slug }}').concat('/inverters/').concat('{{ inverter.sourceKey }}').concat('/energy/'),
+                data: {startTime: (st), endTime: (e), aggregator: "FIVE_MINUTES"},
+                success: function(data) {
+                    
+                    if(data == '') {
+                        $("#inverter_chart").empty();
+                        $("#inverter_chart").append("<div class='alert alert-warning' id='alert'></div>");
+                        $("#alert").empty();
+                        $("#alert").append("No data for the date.");
+
+                        var en = st.split('/');
+                        st = [en[2], en[1], en[0]].join('/');
+
+                        $(".inverter-energy-generation h5").empty();  
+                        $(".inverter-energy-generation").append("<h5 style='float: left;'>"+ st +"'s generation: "+ inverter_energy +"kWh</h2>");
+                        $("#inverter_chart").append("<svg></svg>");
+                        return;
+                    } else {
+                        $("#inverter_chart").empty();
+                        $("#inverter_chart").append("<svg></svg>");
+                    }
+
+                    packagedData = [];
+                    arrayData = [];
+
+                    inverter_energy = 0;
+
+                    for(var n= data.length-1; n >=0 ; n--) {
+                        inverter_energy = inverter_energy + parseFloat(data[n].energy);
+                        arrayData.push([new Date(data[n].timestamp), parseFloat(data[n].energy)]);
+                    }
+                    packagedData = [{
+                        "key": "Inverter's Generation",
+                        "values": arrayData
+                    }];
+
+                    inverter_energy = inverter_energy.toFixed(1);
+
+                    live_chart_inverter_energy(packagedData);
+                },
+                error: function(data) {
+                    console.log("error_streams_data");
+                    data = null;
+                }
+            });
+        }
+
+        function update_chart(chart, color_a, y_axis, svg, data) {
+
+            st = $('#start').val();
+
+            if(st == '') {
+                st = "Today";
+            } else {
+                var en = st.split('/');
+                st = [en[2], en[1], en[0]].join('/');
+            }
+            
+            if(".inverter-energy-generation" != '') {
+                $(".inverter-energy-generation h5").empty();  
+                $(".inverter-energy-generation").append("<h5 style='float: left;'>"+ st +"'s generation: "+ inverter_energy +"kWh</h2>");
+            }
+
+            if (chart == null) {
+                nv.addGraph(function () {
+                    chart = nv.models.stackedAreaChart()
+                            .x(function (d) {
+                                return d[0]
+                            })
+                            .y(function (d) {
+                                return d[1]
+                            })
+                            .useInteractiveGuideline(false)
+                            .showControls(false)
+                            .showLegend(false)
+                            .margin({top: 5, right: 31, bottom: 20, left: 60})
+                            .color([color_a]);
+
+                    //Format x-axis labels with custom function.
+                    chart.xAxis
+                            .tickFormat(function (d) {
+                                return d3.time.format('%H:%M %d/%m')(new Date(d))
+                            });
+
+                    chart.yAxis
+                            .axisLabel(y_axis)
+                            .tickFormat(d3.format(",.2f"));
+
+                    d3.select(svg)
+                             .datum(data)
+                             .call(chart);
+
+                    nv.utils.windowResize(chart.update);
+                });
+            } else {
+                d3.select(svg).empty();
+                d3.select(svg)
+                         .datum(data)
+                         .call(chart);
+                nv.utils.windowResize(chart.update);
+            }
+        }
+
+        function live_chart_inverter_energy(data) {
+
+            update_chart(day_chart, '#98df8a', 'Energy(kWh)', '#day_chart svg',
+                    data);
+        }
+
+        function live_charts(data){
+            /*update_chart(day_chart, '#98df8a', 'Energy(kWh)', '#day_chart svg',
+                    data['five_minute_generation']);*/
+
+            update_chart(active_power_chart, '#33adff', 'Active Power', '#active_power svg',
+                    data['live_chart_data']['ACTIVE_POWER']);
+
+            update_chart(dc_power_chart, '#4db8ff', 'DC Power', '#dc_power svg',
+                    data['live_chart_data']['DC_POWER']);
+
+            update_chart(ac_frequency_chart, '#66c2ff', 'AC Frequency', '#ac_frequency svg',
+                    data['live_chart_data']['AC_FREQUENCY']);
+
+            update_chart(inside_temperature_chart, '#80ccff', 'Inside Temperature', '#inside_temperature svg',
+                    data['live_chart_data']['INSIDE_TEMPERATURE']);
+
+            if (week_chart == null) {
+                nv.addGraph(function () {
+                    week_chart = nv.models.discreteBarChart()
+                            .x(function (d) { return d[0] })
+                            .y(function (d) { return d[1] })
+                            .showValues(true)
+                            .margin({top: 5, right: 0, bottom: 12, left: 60});
+
+                    week_chart.xAxis
+                            .axisLabel("Past week")
+                            .tickFormat(function (d) {
+                            return d3.time.format('%d/%m')(new Date(d))
+                            });
+
+                    week_chart.yAxis
+                            .axisLabel("Energy (kWh)")
+                            .tickFormat(d3.format("d"))
+                            .margin({top: 0, right: 0, bottom: 0, left: 0});
+
+                    d3.select('#week_chart svg')
+                              .datum(data['week_generation'])
+                              .call(week_chart);
+
+                    nv.utils.windowResize(week_chart.update);
+
+                    return week_chart;
+                });
+            } else {
+                d3.select('#week_chart svg').empty();
+                d3.select('#week_chart svg')
+                          .datum(data['week_generation'])
+                          .call(week_chart);
+            }
+        }
+
+    function set_status(status) { 
+        if (status == 1) { 
+            $('#inverter_status').empty().html('<div id="inverter_status"> <h2 class="font-bold" style="color:green">' + '{{ inverter.displayName }}' + ' is connected! </h2> </div>'); 
+        } else if (status == 2) { 
+            $('#inverter_status').empty().html('<div id="inverter_status"> <h2 class="font-bold" style="color:red">' + '{{ inverter.displayName }}' + ' is not connected! </h2> </div> '); 
+        } else if (status == 3) { 
+            $('#inverter_status').empty().html('<div id="inverter_status"> <h2 class="font-bold" style="color:blue">' + '{{ inverter.displayName }}' + ' not monitored! </h2> </div> '); 
+        } else if (status == 4) { 
+            $('#inverter_status').empty().html('<div id="inverter_status"> <h2 class="font-bold text-warning">' + '{{ inverter.displayName }}' + ' sending invalid data! </h2> </div> '); 
+        }
+     } 
+    </script>
+
+{% endblock %}

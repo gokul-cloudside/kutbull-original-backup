@@ -1,0 +1,279 @@
+<!doctype html><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=description content=""><meta name=viewport content="width=device-width,initial-scale=1"><title>Ask us about Solar Power Management | Dataglen</title><meta name=msapplication-tap-highlight content=no><meta name=mobile-web-app-capable content=yes><link rel=icon href=/static/website/images/favicon.ico><meta name=apple-mobile-web-app-capable content=yes><meta name=apple-mobile-web-app-status-bar-style content=black><meta name=apple-mobile-web-app-title content="Web Starter Kit"><meta name=msapplication-TileImage content=/static/website/images/touch/ms-touch-icon-144x144-precomposed.png><meta name=msapplication-TileColor content=#2F3BA2><meta name=theme-color content=#2F3BA2><meta name=keywords content="Solar PV Asset Management, Solar O&M, Predictive maintenance, Distributed Energy Resources, Corrective Maintenance, Asset Management, PV Management, PV Asset Management, PV Solar O&M, O&M and asset management, PV montoring, Photovoltaic Solar, Solar Portfolio, Performance tracking, Solar Portfolio Management, SCADA System, Solar Resource, SYSTEM, DATA, SUN, WORLD, SENSOR, INTERNET, home solar monitoring system, monitoring solar generation, solar activity monitoring, solar array monitoring system, solar battery monitoring system, solar cell monitoring, solar data monitoring system, solar energy monitoring software, solar inverter monitoring systems, solar log monitoring, solar micro inverter monitoring, solar monitoring cost, solar monitoring system price, solar monitoring system price"><link rel=stylesheet href=/static/website/styles/main.css><style>.navbar-dg {
+        background-color: #1abc9c;
+        border-color: #1abc9c;
+      }
+
+      .navbar-dg-logo {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .mar-no {
+        margin-bottom: 0px;
+      }
+
+      .dg-logo {
+        padding-top: 4px;
+        padding-bottom: 3px;
+      }
+
+      .dg-logo-position {
+        position: absolute;
+        left: 20px;
+        width: 86px;
+        top: 6px;
+      }
+
+      .ques_faq {
+        font-weight: 600;
+        font-size: 20px;
+      }
+
+      .dataglen_architecture {
+        margin: 0 auto;
+        display: block;
+      }</style><body class=no-overflow-x data-offset=0><div id=noty_alert></div><nav class="navbar navbar-default navbar-dg navbar-fixed-top mar-no"><div class="container padding-top-2"><div class=navbar-header><button type=button class="navbar-toggle collapsed" data-toggle=collapse data-target=#navbar aria-expanded=false aria-controls=navbar><span class=sr-only>Toggle navigation</span> <span class=icon-bar></span> <span class=icon-bar></span> <span class=icon-bar></span></button> <a class="navbar-brand navbar-dg-logo dg-logo" id=dataglen_logo_change href=/ ><img class="pull-left dg-logo-position" src=/static/website/images/dataglen_logo_transparent.png alt=DataGlen></a></div><div id=navbar class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="btn-white"><a href="/">Home</a></li>
+            <li class="btn-white"><a href="{% url 'website:customers' %}">Products</a></li>
+            <li class="btn-white"><a href="{% url 'website:team' %}">Team</a></li>
+            <!-- <li class="btn-white"><a href="{% url 'website:life_at_dataglen' %}">Life At DataGlen</a></li> -->
+            <li class="active"><a href="{% url 'website:faq' %}">FAQ</a></li>
+            <li>
+              <a href="#contact_us" class="smoothScroll padding-top-8" onclick="goToByScroll('contact_us');">
+                <button type="button" class="btn btn-md btn-hover-green btn-white">Contact Us</button>
+              </a>
+            </li>
+            <li>
+              <a id="demo_request" class="padding-top-8" data-toggle="modal" data-target="#solar_demo">
+                <button type="button" class="btn btn-md btn-hover-green">Request A Demo</button>
+              </a>
+            </li>
+            <li>
+              {% if user.is_authenticated %}
+                <a class="padding-top-8" href="{% url 'dashboards:post_successful_login' %}">
+                  <button type="button" class="btn btn-md btn-hover-green">Dashboard</button>
+                </a>
+              {% else %}
+                <a class="padding-top-8" href="{% url 'account_login' %}">
+                  <button type="button" class="btn btn-md btn-hover-green login-dashboard_button">Login Here</button>
+                </a>
+              {% endif %}
+            </li>
+          </ul>
+          </div></div></nav><section id=faq name=home></section><div id=ws><div class=container><div class="row mtb"><div class="col-md-6 col-md-offset-3 centered"><i class="ion-ios7-help-outline icn2"></i><h1 class=font-weight-700>Frequently Asked Questions</h1><hr class=aligncenter></div><div class="col-md-12 mt"><div class=mar-btm-10><div class=row><span class=btn-7 data-toggle=collapse data-target=#ques7><span class=icon-add_circle></span></span> <span class=ques_faq>How does DataGlen solution work? Please explain the IoT Solution architecture?</span></div><div class=row><div id=ques7 class=collapse><p>The following block diagram shows a typical solution architecture.<div><img src=../../static/website/images/dataGlen_solution_architecture.png alt="DataGlen Solution Architectures" class="img-rounded img-responsive dataglen_architecture"></div><p>Inverters, String Monitoring Units, Weather Monitoring Stations, Multi-Function Meters, Transformers are connected to DataLogger via Modbus protocols – TCP/Ethernet, RTU. The DataLogger (typically run on either x86 or ARM architecture) sends data to our cloud server where our proprietary algorithms and analytics processes are run and the results interfaced via web applications, phone apps, SMS/Email alerts.</div></div></div><div class=mar-btm-10><div class=row><span class=btn-8 data-toggle=collapse data-target=#ques8><span class=icon-add_circle></span></span> <span class=ques_faq>Which IoT hardware is compatible with DataGlen solution?</span></div><div class=row><div id=ques8 class=collapse><p>Some of the DataLoggers we worked with in the past include Soekris (built on x86, AMD Geode), Advantec (built on x86, Intel<sup>®</sup> Atom<sup>TM</sup>), WebdynSun. However, we are compatible with most dataloggers commercially available.</div></div></div><div class=mar-btm-10><div class=row><span class=btn-1 data-toggle=collapse data-target=#ques1><span class=icon-add_circle></span></span> <span class=ques_faq>Do you provide data loggers as well?</span></div><div class=row><div id=ques1 class=collapse><p>Yes, but we are not restricted to ours. We also have partnerships with third party DataLogger/ Gateway suppliers compatible with our platform.</div></div></div><div class=mar-btm-10><div class=row><span class=btn-2 data-toggle=collapse data-target=#ques2><span class=icon-add_circle></span></span> <span class=ques_faq>Can we integrate with existing data loggers?</span></div><div class=row><div id=ques2 class=collapse><p>Yes, if your hardware can send inverter/energy meter/ sensor data to our servers periodically via ftp. We had integrated with multiple data-loggers such as Webdyn, Atoll, Radio Studio besides others. Please send the datasheet of the data-loggers to us, we can advise on how to integrate with our platform.</div></div></div><div class=mar-btm-10><div class=row><span class=btn-3 data-toggle=collapse data-target=#ques3><span class=icon-add_circle></span></span> <span class=ques_faq>Is your system available for rooftop projects?</span></div><div class=row><div id=ques3 class=collapse><p>Yes, we have deployed our systems for utility scale as well as rooftop plants. We are monitoring rooftop plants of capacity ranging from 10kWp to 1MWp at more than 100 sites across India.</div></div></div><div class=mar-btm-10><div class=row><span class=btn-4 data-toggle=collapse data-target=#ques4><span class=icon-add_circle></span></span> <span class=ques_faq>I have sites at multiple location. Can you integrate them all in a single dashboard?</span></div><div class=row><div id=ques4 class=collapse><p>Yes, we do. Infact we can integrate your sites located across the world so long as they are connected to the web.</div></div></div><div class=mar-btm-10><div class=row><span class=btn-5 data-toggle=collapse data-target=#ques5><span class=icon-add_circle></span></span> <span class=ques_faq>I have sites with multiple inverter brands. Can you integrate them all in a single dashboard?</span></div><div class=row><div id=ques5 class=collapse><p>Yes. Our platform is vendor independent and can connect to all kinds of inverters, energy meters, sensors, monitoring and automation equipment contingent on the communication protocols enabled on the hardware. We are already monitoring all the top 10 inverter brands.</div></div></div><div class=mar-btm-10><div class=row><span class=btn-6 data-toggle=collapse data-target=#ques6><span class=icon-add_circle></span></span> <span class=ques_faq>What kind of monitoring systems can your platform provide?</span></div><div class=row><div id=ques6 class=collapse><p>Our cloud based platform is robust and built powerful to support multiple applications real-time to monitor solar activity. Our solar PV monitoring comprises — inverter monitoring, array monitoring, energy monitoring, AJB monitoring. Several other applications related to Energy Storage are in pipeline including battery monitoring, solar cell monitoring etc</div></div></div><div class=row><h3 class=ques_faq>Help Desk</h3></div><div class=row><p>For any more queries, please fill up the form below in the Contact Us section and we will get back to you at the earliest.</div></div></div></div></div><section id=contact_us name=home><div id=f><section id=buy name=buy></section><div class=container><div class="row centered mb" style="margin-bottom: 0px"><h1 class=font-weight-700>Contact Us</h1><hr class=aligncenter><div class=row><div class=col-md-7><div class=col-md-4><h5>Know Us</h5><hr class=aligncenter><ul class=footer_links><li><a href="{% url 'website:customers' %}">Products</a><li><a href="{% url 'website:team' %}">Team</a><li><a href="{% url 'website:faq' %}">FAQ</a></ul></div><div class=col-md-8><div><h5>Address</h5><hr class=aligncenter><p class=p-color>862, GMR Heights, Karnataka Bank Main Road, Sahakarnagar, Bangalore - 560092<br>Landline: 080-48526626, Mobile: +91 9008627193, +91 9632244690</div><div class="col-md-8 col-md-offset-2 centered"><p class="text28 p-color"><a href=https://twitter.com/dataglen><i class=icon-twitter></i></a> <a href=https://www.linkedin.com/company/dataglen><i class=icon-linkedin2></i></a> <a href=https://www.facebook.com/dataglen/ ><i class=icon-facebook></i></a></div></div></div><div hidden class=col-md-5 id=contact_us_notify><div class="alert alert-success">Thank you for your query, we will get in touch shortly!</div></div><div class=col-md-5 id=contact_us_div><div id=contact_us_required></div><form name=contact_us_generic novalidate><div class=row><div class=col-md-6><div class="form-group float-label-control"><label for=name>Full Name</label><input class=form-control id=name placeholder="Full Name" required></div></div><div class=col-md-6><div class="form-group float-label-control"><label for=email>Email</label><input type=email class=form-control id=email placeholder="Email Address" required></div></div></div><div class=row><div class=col-md-6><div class="form-group float-label-control"><label for=company_name>Company Name</label><input class=form-control id=company_name placeholder="Company Name (optional)"></div></div><div class=col-md-6><div class="form-group float-label-control"><label for=phone_number>Phone Number</label><input class=form-control id=phone_number placeholder="Phone number (required)" maxlength=10></div></div></div><div class=row><div class=col-md-12><div class="form-group float-label-control label-bottom"><label for=message>Message</label><textarea type=text class=form-control id=message placeholder="Your query" rows=2 required></textarea></div></div></div><a class="btn btn-lg btn-y btn-design" onclick=contact_us_home_page()>Contact Us!</a></form></div></div><p class=p-color>DataGlen Technologies Private Limited | Copyright 2017</div></div></div></section><div class="modal fade" tabindex=-1 role=dialog id=solar_demo><div class=modal-dialog role=document><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-label=Close><span aria-hidden=true>&times;</span></button><h4 class=modal-title>Please provide your details</h4></div><div class=modal-body><div id=request_demo_required></div><form name=request_demo_platform><div class=row><div class=col-md-6><div class=form-group><label for=client_name class=control-label style="color: #0E0000">Name</label><input class=form-control id=client_name placeholder="Full Name"></div></div><div class=col-md-6><div class=form-group><label for=client_email class=control-label style="color: #0E0000">Official Company Email</label><input type=email class=form-control id=client_email placeholder=john@example.com></div></div></div><div class=row><div class=col-md-6><div class=form-group><label for=client_phone_number class=control-label>Phone Number (Required)</label><input class=form-control id=client_phone_number placeholder=9876543210></div></div><div class=col-md-6><div class=form-group><label for=client_company_name class=control-label style="color: #0E0000">Company Name (Optional)</label><input class=form-control id=client_company_name placeholder="Company Name"></div></div></div><div class=row><div class=col-md-6><div class=form-group><label for=client_plant_type class=control-label style="color: #0E0000">Plant Type</label><select class=form-control id=client_plant_type><option value="" disabled selected>--Select Type--<option value=Utility>Utility<option value=Rooftop>Rooftop</select></div></div></div><div class=row><div class=col-md-6><div class=g-recaptcha data-callback=recaptcha_callback data-sitekey=6LeYcyYUAAAAADJw2gwIyuoi7YPPhZnTpHz9agQ1></div></div></div></form></div><div class=modal-footer><button type=button class="btn btn-default" data-dismiss=modal>Close</button> <button type=button onclick=demo_request() class="btn btn-primary" id=submit_request_demo disabled>Submit</button></div></div></div></div><script src=https://www.google.com/recaptcha/api.js></script><script src=/static/website/scripts/main.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/jquery-noty/2.4.0/packaged/jquery.noty.packaged.min.js></script><script src=/static/solarrms/js/demo/noty.js></script><script src=/static/solarrms/js/demo/csrf_validation.js></script><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-64869594-1', 'auto');
+          ga('send', 'pageview');</script><script>$("#ques1").on("hide.bs.collapse", function(){
+  			    $(".btn-1").html('<span class="icon-add_circle"></span>');
+  			});
+
+  			$("#ques1").on("show.bs.collapse", function(){
+  				$(".btn-1").html('<span class="icon-remove_circle"></span> ');
+  			});
+
+  			$("#ques2").on("hide.bs.collapse", function(){
+  			    $(".btn-2").html('<span class="icon-add_circle"></span>');
+  			});
+
+  			$("#ques2").on("show.bs.collapse", function(){
+  				$(".btn-2").html('<span class="icon-remove_circle"></span> ');
+  			});
+
+  			$("#ques3").on("hide.bs.collapse", function(){
+  			    $(".btn-3").html('<span class="icon-add_circle"></span>');
+  			});
+
+  			$("#ques3").on("show.bs.collapse", function(){
+  				$(".btn-3").html('<span class="icon-remove_circle"></span> ');
+  			});
+
+  			$("#ques4").on("hide.bs.collapse", function(){
+  			    $(".btn-4").html('<span class="icon-add_circle"></span>');
+  			});
+
+  			$("#ques4").on("show.bs.collapse", function(){
+  				$(".btn-4").html('<span class="icon-remove_circle"></span> ');
+  			});
+
+  			$("#ques5").on("hide.bs.collapse", function(){
+  			    $(".btn-5").html('<span class="icon-add_circle"></span>');
+  			});
+
+  			$("#ques5").on("show.bs.collapse", function(){
+  				$(".btn-5").html('<span class="icon-remove_circle"></span> ');
+  			});
+
+  			$("#ques6").on("hide.bs.collapse", function(){
+  			    $(".btn-6").html('<span class="icon-add_circle"></span>');
+  			});
+
+  			$("#ques6").on("show.bs.collapse", function(){
+  				$(".btn-6").html('<span class="icon-remove_circle"></span> ');
+  			});
+
+        $("#ques7").on("hide.bs.collapse", function(){
+            $(".btn-7").html('<span class="icon-add_circle"></span>');
+        });
+
+        $("#ques7").on("show.bs.collapse", function(){
+          $(".btn-7").html('<span class="icon-remove_circle"></span> ');
+        });
+
+        $("#ques8").on("hide.bs.collapse", function(){
+            $(".btn-8").html('<span class="icon-add_circle"></span>');
+        });
+
+        $("#ques8").on("show.bs.collapse", function(){
+          $(".btn-8").html('<span class="icon-remove_circle"></span> ');
+        });
+
+        function contact_us_home_page() {
+
+          var name = $("#name").val();
+          var email = $("#email").val();
+          var company = $("#company_name").val();
+          var phone_number = $("#phone_number").val();
+          var message = $("#message").val();
+
+          $("#contact_us_required").empty();
+
+          if(name != "" && email != "" && message != "") {
+
+            $("#contact_us_required").empty();
+
+            var contact = {
+              "name": name,
+              "email": email,
+              "phone_number": phone_number,
+              "plan_name": message,
+              "company_name": company
+            };
+
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: "/api/contactUs/",
+                data: contact,
+                success: function(response) {
+
+                  $("#contact_us_div").hide();
+
+                  $("#contact_us_notify").show();
+
+                },
+                error: function(data) {
+                    console.log("error in data");
+                    data = null;
+                },
+            });
+
+          } else {
+
+            $("#contact_us_required").empty();
+            $("#contact_us_required").append("<div class='alert alert-warning' id='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Please fill your Full name, email and query to proceed.</div>");
+
+          }
+
+        }
+
+    		function recaptcha_callback() {
+    			$('#submit_request_demo').removeAttr('disabled');
+    		}
+
+        	$("#demo_request").click(function() {
+
+        		button = 4;
+
+        	})
+
+        	function demo_request() {
+
+            var name = $("#client_name").val();
+            var email = $("#client_email").val();
+            var company = $("#client_company_name").val();
+            var phone_number = $("#client_phone_number").val();
+            var plant_type = $("#client_plant_type").val();
+
+            $("#request_demo_required").empty();
+
+            if(name != "" && email != "" && plant_type != null) {
+
+              $("#request_demo_required").empty();
+
+              var request_demo = {
+                "name": name,
+                "email": email,
+                "phone_number": phone_number,
+                "plan_name": plant_type,
+                "company_name": company
+              };
+
+              $.ajax({
+                  type: "POST",
+                  async: false,
+                  url: "/api/contactUs/",
+                  data: request_demo,
+                  success: function(response) {
+
+                    if(button == 1) {
+                      $("#basic_button").hide();
+                      $("#thank_you_basic_plan").show();
+                    } else if(button == 2) {
+                      $("#gold_button").hide();
+                      $("#thank_you_gold_plan").show();
+                    } else if(button == 3) {
+                      $("#platinum_button").hide();
+                      $("#thank_you_platinum_plan").show();
+                    } else if(button == 4) {
+                      $("#demo_request").hide();
+
+                      $("#thank_you_request_demo").show();
+                    }
+
+                    $("#solar_demo").modal('toggle');
+
+                    noty_message("Your Demo information is sent. We will shortly contact you.", 'success', 5000)
+                      return;
+
+                  },
+                  error: function(data) {
+                      console.log("error in data");
+
+                      noty_message("Your Demo request was not send. Please fill all the required information.", 'information', 5000)
+                      return;
+
+                      data = null;
+                  },
+              });
+
+            } else {
+
+              $("#request_demo_required").empty();
+              $("#request_demo_required").append("<div class='alert alert-warning' id='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>Please fill your Full name, email and plant type to proceed.</div>");
+
+              noty_message("Your Demo request was not send. An error occurred.", 'error', 5000)
+                  return;
+
+            }
+          }
+
+          function initMap() {
+            var uluru = {lat: 13.060595, lng: 77.5873};
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 19,
+              center: uluru
+            });
+            var marker = new google.maps.Marker({
+              position: uluru,
+              map: map
+            });
+          }
+          function goToByScroll(id) {
+             $('html,body').animate({scrollTop: $("#"+id).offset().top},'slow');
+          }</script><script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMb8R1FP-MQo8azGk4WuREPwAyI3hqpNc&callback=initMap"></script>

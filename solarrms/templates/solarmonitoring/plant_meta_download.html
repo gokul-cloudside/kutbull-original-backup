@@ -1,0 +1,97 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+{% block extrahead %}
+
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+
+    <style>
+        
+    </style>
+
+{% endblock %}
+
+{% block body_block %}
+
+	<div id="page-content">
+
+      <div class="row">
+
+        <div class="col-lg-12">
+
+          <div id="compareinverter-panel-network" class="panel">
+            <div class="panel-heading">
+              <div class="col-md-6">
+                <h3 class="panel-title">Contextual Data Download</h3>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <div class="col-md-12">
+                <div class="mar-hor">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="parameters">Parameters</label>
+                      <select class="form-control" id="streams_dropdown">
+                        <option value="" disabled selected>--Choose Parameter--</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="start">Start Date</label>
+                      <input type="text" class="form-control datetimepicker_start_time" id="start_time" placeholder="Choose Start Date" required="required" style="background-color: white;">
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="start">End Date</label>
+                      <input type="text" class="form-control datetimepicker_end_time" id="end_time" placeholder="Choose End Date" required="required" onClick="limit_compare_end_date()" style="background-color: white;">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <iframe id="my_iframe_multiple" style="display:none;"></iframe>
+                    <button type="submit" onClick="parameter_data()" class="btn btn-success" id="button_data_download" style="margin-top: 22px;">Download</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-12">
+                <div class="chart_plot" id="row_plot">
+
+                </div>
+              </div>
+
+              <!-- <div class="col-md-12" id="download_chart_image" hidden>
+                <button type="submit" onClick="download_chart_as_png_inv()" class="btn btn-danger pull-right" id="button_chart_as_png_download_inverter" disabled style="padding: 0px 9px; margin-top: -4px;">DOWNLOAD CHART</button>
+              </div> -->
+
+              	<!-- <div class="ibox-content" style="height: 455px">
+	              	<div id="streams_comparison_data" style="height: 370px;">
+	                  	
+	              	</div>
+                </div> -->
+
+            </div>
+          
+          </div>
+
+        </div>
+      </div>
+    </div>
+    	
+{% endblock %}
+
+{% block js %}
+
+  <script src="/static/dataglen/js/d3.v3.min.js" charset="utf-8"></script>
+  <script src="/static/dataglen/js/nv.d3.min.js"></script>
+
+  <script>
+    var live_chart = null;
+    var plant_slug = '{{ plant.slug }}';
+    var source_key = '{{ plant_meta.sourceKey }}';
+
+  </script>
+
+  <script src="/static/solarrms/js/demo/visualisations-plant-meta_download.js"></script>
+
+{% endblock %}

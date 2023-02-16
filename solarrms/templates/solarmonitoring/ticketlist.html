@@ -1,0 +1,223 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<style>
+		.nvd3 g.nv-groups path.nv-line {
+		  stroke-width: 5px;
+		}
+
+		.width-70 {
+			width: 70px;
+		}
+
+		.tab-border {
+			background-color: #fff;
+		    box-shadow: 0 2px 0 rgba(0,0,0,.05);
+		    border-bottom-left-radius: 2px;
+		    border-bottom-right-radius: 2px;
+		}
+	</style>
+
+	<link href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet">
+
+	<!--Bootstrap Validator [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/bootstrap-validator/bootstrapValidator.min.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block body_block %}
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<!--End page title-->
+
+				<!--Page content-->
+				<!--===================================================-->
+				<div id="page-content">
+
+					<div class="row">
+					    <div class="col-lg-12">
+
+					    	<div class="tab-base">
+					            <!--Nav Tabs-->
+					            <ul class="nav nav-tabs">
+					                <li class="active">
+					                    <a data-toggle="tab" href="#history">Ticket List</a>
+					                </li>
+					                <!-- <li>
+					                    <a data-toggle="tab" href="#create_ticket">Create Ticket</a>
+					                </li> -->
+					            </ul>
+
+					        	<div class="tab-content pad-no mar-no">
+					        		
+				        			<div id="history" class="tab-pane fade active in">
+										<div class="panel-heading">
+											<h3 class="panel-title">Tickets History</h3>
+										</div>
+									
+										<!--Data Table-->
+										<!--===================================================-->
+										<div class="panel-body">
+		{#									<div class="pad-btm form-inline">#}
+		{#										<div class="row">#}
+		{#											<div class="col-sm-6 table-toolbar-left">#}
+		{#												<button id="demo-btn-addrow" class="btn btn-purple btn-labeled fa fa-plus">Add</button>#}
+		{#												<button class="btn btn-default"><i class="fa fa-print"></i></button>#}
+		{#												<div class="btn-group">#}
+		{#													<button class="btn btn-default"><i class="fa fa-exclamation-circle"></i></button>#}
+		{#													<button class="btn btn-default"><i class="fa fa-trash"></i></button>#}
+		{#												</div>#}
+		{#											</div>#}
+		{#											<div class="col-sm-6 table-toolbar-right">#}
+		{#												<div class="form-group">#}
+		{#													<input id="demo-input-search2" type="text" placeholder="Search" class="form-control" autocomplete="off">#}
+		{#												</div>#}
+		{#												<div class="btn-group">#}
+		{#													<button class="btn btn-default"><i class="fa fa fa-cloud-download"></i></button>#}
+		{#													<div class="btn-group">#}
+		{#														<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">#}
+		{#															<i class="fa fa-cog"></i>#}
+		{#															<span class="caret"></span>#}
+		{#														</button>#}
+		{#														<ul role="menu" class="dropdown-menu dropdown-menu-right">#}
+		{#															<li><a href="#">Action</a></li>#}
+		{#															<li><a href="#">Another action</a></li>#}
+		{#															<li><a href="#">Something else here</a></li>#}
+		{#															<li class="divider"></li>#}
+		{#															<li><a href="#">Separated link</a></li>#}
+		{#														</ul>#}
+		{#													</div>#}
+		{#												</div>#}
+		{#											</div>#}
+		{#										</div>#}
+		{#									</div>#}
+											<div class="table-responsive">
+												<table class="table table-striped" id="ticket_list_table">
+													
+												</table>
+											</div>
+										</div>
+										<!--===================================================-->
+										<!--End Data Table-->
+									
+									</div>
+									<div id="create_ticket" class="tab-pane fade">
+										<div class="panel-heading">
+											<h3 class="panel-title">Create Ticket</h3>
+										</div>
+
+										<!--form-->
+				                        <form class="form-horizontal" id="create_ticket" onsubmit="create_user_ticket()">
+				                            <div class="panel-body">
+				                                <div id="form_error_message_ticket"></div>
+				                                <div class="row">
+				                                	<div class="col-lg-10 col-md-10 col-sm-10">
+				                                        <div class="col-lg-6 col-md-6 col-sm-6">
+					                                    	<div class="form-group">
+					                                            <label class="col-lg-4 control-label">Ticket Title *</label>
+					                                            <div class="col-lg-8">
+					                                                <input type="text" class="form-control" id="ticket_title" name="ticket_title" placeholder="Ticket Title" required="required">
+					                                                <i>(Type a Title)</i>
+					                                            </div>
+					                                            <div class="row"></div>
+					                                        </div>
+					                                    </div>
+					                                    <div class="col-lg-6 col-md-6 col-sm-6">
+					                                    	<div class="form-group">
+					                                            <label class="col-lg-4 control-label">Issue *</label>
+					                                            <div class="col-lg-8">
+					                                                <input type="text" class="form-control" id="ticket_issue" name="ticket_issue" placeholder="Ticket Issue" required="required">
+					                                                <i>(Type an issue)</i>
+					                                            </div>
+					                                            <div class="row"></div>
+					                                        </div>
+					                                    </div>
+					                                    <div class="col-lg-6 col-md-6 col-sm-6">
+					                                        <div class="form-group">
+					                                            <label class="col-lg-4 control-label">Date Occurred *</label>
+					                                            <div class="col-lg-8">
+					                                                <input type="text" class="form-control" id="date_occurred" name="date_occurred" placeholder="Date Occurred" required="required">
+					                                                <i>(Type a date)</i>
+					                                            </div>
+					                                            <div class="row"></div>
+					                                        </div>
+					                                    </div>
+					                                    <div class="col-lg-6 col-md-6 col-sm-6">
+					                                        <div class="form-group">
+					                                            <label class="col-lg-4 control-label">Start Time *</label>
+					                                            <div class="col-lg-8">
+					                                                <input type="text" class="form-control" id="start_time" name="start_time" placeholder="Start Time" required="required">
+					                                                <i>(Type the time in 24 Hours format)</i>
+					                                            </div>
+					                                            <div class="row"></div>
+					                                        </div>
+					                                    </div>
+					                                    <div class="col-lg-6 col-md-6 col-sm-6">
+					                                        <div class="form-group">
+					                                            <label class="col-lg-4 control-label">End Time</label>
+					                                            <div class="col-lg-8">
+					                                                <input type="text" class="form-control" id="end_time" name="end_time" placeholder="End Time (Optional)" required="required">
+					                                                <i>(Type the time in 24 Hours format)</i>
+					                                            </div>
+					                                            <div class="row"></div>
+					                                        </div>
+					                                    </div>
+					                                    <div class="col-lg-12 col-md-12 col-sm-12">
+					                                        <div class="form-group">
+					                                            <label class="col-lg-2 control-label">Description *</label>
+					                                            <div class="col-lg-10">
+					                                                <textarea type="text" class="form-control" id="decription_issue" name="decription_issue" rows="4" placeholder="Describe the issue!" required="required"></textarea>
+					                                            </div>
+					                                            <div class="row"></div>
+					                                        </div>
+					                                    </div>
+					                            	</div>
+					                            	<div class="col-lg-1 col-md-1 col-sm-1"></div>
+				                                </div>
+				                            </div>
+
+				                            <div class="panel-body">
+				                                <div class="row">
+				                                    <button type="submit" class="finish btn btn-success pull-right" id="create_ticket-button">Create Ticket</button>
+				                                </div>
+				                            </div>
+
+				                        </form>
+									</div>
+								</div>
+							</div>
+					    </div>
+					</div>
+
+
+				</div>
+				<!--===================================================-->
+				<!--End page content-->
+
+{% endblock %}
+
+{% block js %}
+    <script src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+
+    <!--Bootstrap Wizard [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+
+    <script src="/static/solarrms/js/demo/csrf_validation.js"></script>
+
+    <!--Bootstrap Validator [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/bootstrap-validator/bootstrapValidator.min.js"></script>
+
+    <!--Form Wizard [ SAMPLE ]-->
+    <script src="/static/solarrms/js/demo/form-wizard.js"></script>
+
+    <script>
+    	var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+
+        var user_email = '{{ user.email }}'
+        console.log(user_email);
+        
+    </script>
+
+    <script src="/static/solarrms/js/demo/ticketlist.js"></script>
+{% endblock %}

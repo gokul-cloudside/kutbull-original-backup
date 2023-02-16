@@ -1,0 +1,58 @@
+{% extends 'dataglen/dataglenbase.html' %}
+
+{% block body_block %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2> Sources </h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{% url 'dataglen:dashboard' %}">Home</a>
+            </li>
+            <li>
+                <a>Data Sources</a>
+            </li>
+            <li class="active">
+                <strong>List sources</strong>
+            </li>
+        </ol>
+    </div>
+    </div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>List of Sources Added</h5>
+                    <span class="pull-right"><a href="{% url 'dataglen:source-create' %}">Add New Source</a></span>
+                </div>
+                <div class="ibox-content">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Key</th>
+                                <th>Activated</th>
+                                <th>Monitored</th>
+                            </tr>
+                        </thead>
+                        {% for source in sources %}
+                            <tbody>
+                                <td> <a href="{% url 'dataglen:source-detail' source.sourceKey %}">{{ source.name }}</a></td>
+                                <td> <a href="{% url 'dataglen:source-detail' source.sourceKey %}">{{ source.sourceKey }}</a></td>
+                                <td> {{ source.isActive }} </td>
+                                <td> {% if source.isMonitored %}
+                                        <div style="color: green"> {{ source.isMonitored }}</div>
+                                     {% else %}
+                                        <div style="color: red"> {{ source.isMonitored }}</div>
+                                     {% endif %}
+                                </td>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

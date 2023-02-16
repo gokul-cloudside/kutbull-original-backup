@@ -1,0 +1,20 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+{% load bootstrap3 %}
+{% block body_block %}
+	<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2> Plant Devices </h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{% url 'solar:index' %}">Home</a>
+            </li>
+            <li>
+                <a>Plant</a>
+            </li>
+            <li class="active">
+                <strong>Devices</strong>
+            </li>
+        </ol>
+    </div>
+    </div>
+{% endblock %}

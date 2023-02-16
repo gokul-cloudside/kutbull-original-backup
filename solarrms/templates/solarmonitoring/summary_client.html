@@ -1,0 +1,201 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+    
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+    
+    <style>
+        .nvd3 g.nv-groups path.nv-line {
+          stroke-width: 5px;
+        }
+
+        .width-70 {
+            width: 70px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body_block %}
+        
+        <div id="page-content">
+
+            <div class="row">
+
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+
+                    <div class="panel-body">
+
+                        <div class="col-md-9">
+                            <input type="text" class="form-control datetimepicker_start" id="start" placeholder="Pick a Date" required="required">
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" id="summary_client-update" data-toggle="panel-overlay" data-target="#summary_client-update" class="btn btn-success width-70">Update</button>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-lg-4"></div>
+
+            </div>
+
+            <div id="no_client_summary_data">
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div id="client-panel" class="panel">
+                        <div class="panel-body">
+                                        
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="ibox-content">
+                                        <div class="col-lg-12">
+                                            <p class="mar-no">
+                                                <span class="pull-right text-lg text-semibold" >
+                                                    <h3 class=""><span id="total_generation"> </span>
+                                                    </h3>
+                                                </span>
+                                                <p class="text-lg text-semibold">Total Generation</p>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="ibox-content">
+                                        <div class="col-lg-12">
+                                            <p class="mar-no">
+                                                <span class="pull-right text-lg text-semibold" >
+                                                    <h3 class=""><span id="todays_generation"> </span>
+                                                    </h3>
+                                                </span>
+                                                <p class="text-lg text-semibold">Today's Generation</p>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="ibox-content">
+                                        <div class="col-lg-12">
+                                            <p class="mar-no">
+                                                <span class="pull-right text-lg text-semibold" >
+                                                    <h3 class=""><span id="total_capacity"> </span>
+                                                    </h3>
+                                                </span>
+                                                <p class="text-lg text-semibold">Total Capacity</p>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="ibox-content">
+                                        <div class="col-lg-12">
+                                            <p class="mar-no">
+                                                <span class="pull-right text-lg text-semibold" >
+                                                    <h3 class=""><span id="co2_conversion"> </span>
+                                                    </h3>
+                                                </span>
+                                                <p class="text-lg text-semibold">CO2 Savings</p>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-lg-4">
+
+                                    <div class="row">
+                                       <div class="col-lg-12">
+                                            <h3>Performance Ratio</h3>
+                                            <div class="table-responsive text-semibold" style="overflow-x: hidden;overflow-y: auto;">
+                                                <table class="table table-striped" id="pr_table_div">
+
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-lg-4">
+
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <h3>CUF</h3>
+                                            <div class="table-responsive text-semibold" style="overflow-x: hidden;overflow-y: auto;">
+                                                <table class="table table-striped" id="cuf_table_div">
+                                                        
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <h3>Warnings & Alarms</h3>
+                                            <div class="table-responsive text-semibold" style="overflow-y: auto;">
+                                                <table class="table table-striped" id="warnings_and_alarms_table_div">
+                                                        
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <h3>Plants Details</h3>
+                                <div class="table-responsive text-semibold">
+                                    <table class="table table-bordered" id="details_table_div">
+                                        
+                                    </table>
+                                </div>
+
+                            </div>
+
+                            <!-- <div class="row">
+
+                                <h3>Weather</h3>
+                                <div class="table-responsive text-semibold">
+                                    <table class="table table-bordered" id="weather_table_div">
+                                        
+                                    </table>
+                                </div>
+
+                            </div> -->
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/dataglen/js/d3.v3.min.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+
+    <script>
+        var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+
+    </script>
+
+    <script src="/static/solarrms/js/demo/visualisations-summary_client.js"></script>
+{% endblock %}

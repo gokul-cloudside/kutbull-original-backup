@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar RMS DataGlen</title>
+
+
+    <!--STYLESHEET-->
+    <!--=================================================-->
+
+    <!-- 937100590455 -->
+
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="/static/solarrms/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link href="/static/solarrms/css/nifty.min.css" rel="stylesheet">
+
+
+    <!--Font Awesome [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+
+    <!--Animate.css [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/animate-css/animate.min.css" rel="stylesheet">
+
+
+    <!--Morris.js [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/morris-js/morris.min.css" rel="stylesheet">
+
+
+    <!--Switchery [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/switchery/switchery.min.css" rel="stylesheet">
+
+
+    <!--Bootstrap Select [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+
+    <link href="/static/dataglen/css/jquery.datetimepicker.css" rel="stylesheet">
+
+    <link href="/static/solarrms/js/month-picker/demo/MonthPicker.min.css" rel="stylesheet">
+
+    <!--SCRIPT-->
+    <!--=================================================-->
+
+    <!--Page Load Progress Bar [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/pace/pace.min.css" rel="stylesheet">
+
+    <link href="/static/solarrms/js/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet">
+
+    <script src="/static/solarrms/plugins/pace/pace.min.js"></script>
+
+</head>
+
+<!--TIPS-->
+<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+
+<body>
+	<div id="container" class="effect mainnav-lg">
+
+        <!--NAVBAR-->
+        <!--===================================================-->
+        <header id="navbar">
+            <div id="navbar-container" class="boxed">
+
+                <!--Brand logo & name-->
+                <!--================================-->
+                <div class="navbar-header">
+                    <a href="" class="navbar-brand">
+                        <!--<img src='{{ dataglenclient.clientLogo }}' alt="DATAGLEN" class="brand-icon">-->
+                        <div class="brand-title" style="padding-left: 0px; padding-right: 0px; text-align: center;">
+                            <span class="brand-text"></span>
+                            <span class="brand-text"></span>
+
+                        </div>
+                    </a>
+                </div>
+                <!--================================-->
+                <!--End brand logo & name-->
+
+
+                <!--Navbar Dropdown-->
+                <!--================================-->
+                <div class="navbar-content clearfix">
+                    <ul class="nav navbar-top-links pull-left">
+
+                        <!--Navigation toogle button-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!-- <li class="tgl-menu-btn">
+                            <a class="mainnav-toggle" href="/static/solarrms/#">
+                                <i class="fa fa-navicon fa-lg"></i>
+                            </a>
+                        </li> -->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!--End Navigation toogle button-->
+
+
+
+                        <!--Notification dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <li class="dropdown">
+                            <a href="{% url 'helpdesk_dashboard' %}">
+                                <i class="fa fa-bell fa-lg"></i>
+                                <span class="badge badge-header badge-danger"></span>
+                            </a>
+
+                            <!--Notification dropdown menu-->
+                            <div class="dropdown-menu dropdown-menu-md">
+                                <div class="pad-all bord-btm">
+                                    <p class="text-lg text-muted text-semibold mar-no">You have 0 notifications.</p>
+                                </div>
+                            </div>
+                        </li>
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!--End notifications dropdown-->
+
+                    </ul>
+
+                    <ul class="nav navbar-top-links pull-left">
+                        <li class="mar-lft" style="margin-top: 11px;">
+                            <span class="label label-info">
+                                <span id="todays_date"></span>
+                            </span>
+                        </li>
+                    </ul>
+
+                    <!--TODO add a logo-->
+                    <ul class="nav navbar-top-links pull-right">
+                        <!--User dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <li id="dropdown-user" class="dropdown" style="border-style: outset;border-left-width: 1px;border-bottom-width: 0px;border-right-width: 0px;border-top-width: 0px;">
+                            <a href="/static/solarrms/#" data-toggle="dropdown" class="dropdown-toggle text-right">
+                                <div class="username hidden-xs">Profile</div>
+                            </a>
+
+
+                            <div class="dropdown-menu dropdown-menu-md dropdown-menu-right panel-default">
+
+                                <!-- Dropdown heading  -->
+                                <div class="pad-all bord-btm">
+                                    <p class="text-lg text-muted text-semibold mar-btm">Premium Subscription</p>
+                                </div>
+
+
+                                <!-- User dropdown menu -->
+{#                                <ul class="head-list">#}
+{#                                    <li>#}
+{#                                        <a href="/static/solarrms/#">#}
+{#                                            <i class="fa fa-user fa-fw fa-lg"></i> Reset Password#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                </ul>#}
+
+                                <!-- Dropdown footer -->
+                                <div class="pad-all text-right">
+                                    <a href="{% url 'account_logout' %}" class="btn btn-primary">
+                                        <i class="fa fa-sign-out fa-fw"></i> Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!--End user dropdown-->
+
+                    </ul>
+
+                    <ul class="nav navbar-top-links pull-right" style="margin-bottom: -50px;height: 40px;width: 150px;">
+                        <!--User dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <li style="height: 40px;width: 141px;">
+                            <a href="{% url 'dashboards:post_successful_login' %}" class="navbar-brand" style="position: relative;display: inline-block;bottom: 0;left: 15px;width: 120px;padding-left: 0px;padding-right: 0px;">
+                                
+                                    <img src='{{ plant.groupLogo }}' alt="DATAGLEN" style="height: 26px;margin-top: 8px;">
+                                
+                                    <img src='{{ dataglenclient.clientLogo }}' alt="DATAGLEN" style="height: 26px;margin-top: 8px;">
+                                
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+                <!--================================-->
+                <!--End Navbar Dropdown-->
+
+            </div>
+        </header>
+        <!--===================================================-->
+        <!--END NAVBAR-->
+
+		<div class="boxed">
+
+			<!--CONTENT CONTAINER-->
+			<!--===================================================-->
+			<div id="content-container">
+                Hello
+				<div ng-view></div>
+			</div>
+			<!--===================================================-->
+			<!--END CONTENT CONTAINER-->
+
+            <!--MAIN NAVIGATION-->
+            <!--===================================================-->
+            <nav id="mainnav-container">
+                <div id="mainnav">
+
+                    <!--Menu-->
+                    <!--================================-->
+                    <div id="mainnav-menu-wrap">
+                        <div class="nano">
+                            <div class="nano-content">
+                                <ul id="mainnav-menu" class="list-group">
+
+						            <!--Category name-->
+						            <!-- <li class="list-header">Plants</li> -->
+
+						            <!--Menu list item-->
+						            <li class="">
+						                <a href="">
+						                    <i class="fa fa-tasks"></i>
+						                    <span class="menu-title">
+												<strong>Solar Plants</strong>
+											</span>
+						                </a>
+						            </li>
+
+						            <!--Category name-->
+						            <li class="list-header"></li>
+
+						            <!--Menu list item-->
+						            <li class="">
+						                <a href="">
+						                    <i class="fa fa-dashboard"></i>
+						                    <span class="menu-title">
+												<strong>Summary</strong>
+											</span>
+						                </a>
+						            </li>
+
+						            <!--Menu list item-->
+                                    <li>
+                                        <a href="#">
+                                            <i class="fa fa-list-alt" aria-hidden="true"></i>
+                                            <span class="menu-title">
+                                                <strong>Details</strong>
+                                            </span>
+                                            <i class="arrow"></i>
+                                        </a>
+
+                                        <!--Submenu-->
+                                        <ul class="collapse">
+                                            <li>
+                                                <a href="#">
+                                                    <i class="fa fa-line-chart"></i>
+                                                    <span class="menu-title">
+                                                        <strong>Plant Level</strong>
+                                                    </span>
+                                                    <i class="arrow"></i>
+                                                </a>
+
+                                                <!--Submenu-->
+                                                <ul class="collapse">
+                                                    <li><a href="">Power Generation</a></li>
+                                                    <li><a href="">Energy Generation</a></li>
+                                                        <li><a href="">Contextual Data</a></li>
+                                                        
+                                                    
+                                                </ul>
+                                            </li>
+                                            <li class="">
+                                                <a href="#">
+                                                    <i class="fa fa-plug"></i>
+                                                    <span class="menu-title">
+                                                        <strong>Inverter Level</strong>
+                                                    </span>
+                                                    <i class="arrow"></i>
+                                                </a>
+                                                <!--Submenu-->
+                                                <ul class="collapse">
+                                                    <li><a href="">Inverter Status</a></li>
+                                                    <li><a href="">Compare Performance</a></li>
+                                                </ul>
+                                            </li>
+                                            <li class="">
+                                                <a href="#">
+                                                    <i class="fa fa-cogs" aria-hidden="true"></i>
+                                                    <span class="menu-title">
+                                                        <strong>String Level</strong>
+                                                    </span>
+                                                    <i class="arrow"></i>
+                                                </a>
+                                                <ul class="collapse">
+                                                    <li><a href="">SMB Comparisons</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+						            <!--Menu list item-->
+						            <li>
+						                <a href="#">
+						                    <i class="fa fa-download" aria-hidden="true"></i>
+						                    <span class="menu-title">
+												<strong>Download</strong>
+											</span>
+											<i class="arrow"></i>
+						                </a>
+                                        <!--Submenu-->
+                                        <ul class="collapse">
+                                            <li><a href="">Inverters Data</a></li>
+                                            <li><a href="">Chart Download</a></li>
+                                            <li><a href="">Select Parameters</a></li>
+                                        </ul>
+						            </li>
+
+                                    <!--Menu list item-->
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                                <span class="menu-title">
+                                                    <strong>Analytics</strong>
+                                                </span>
+                                                <i class="arrow"></i>
+                                            </a>
+
+                                            <!--Submenu-->
+                                            <ul class="collapse">
+                                                <li>
+                                                    <a href="#">
+                                                        <i class="fa fa-line-chart"></i>
+                                                        <span class="menu-title">
+                                                            <strong>Plant Level</strong>
+                                                        </span>
+                                                        <i class="arrow"></i>
+                                                    </a>
+
+                                                    <!--Submenu-->
+                                                    <ul class="collapse">
+                                                        <li><a href="">Performance Ratio</a></li>
+                                                        <li><a href="">Context Analysis</a></li>
+                                                        <li><a href="">Report Generation</a></li>
+                                                            <li><a target="_blank" href="http://dataglen.net:8788/">Group Comparisons</a></li>
+                                                        
+                                                    </ul>
+                                                </li>
+                                    
+                                        </ul>
+                                    </li>
+
+{% comment %}
+                                    <li class="">
+						                <a href="#">
+						                    <i class="fa fa-dashboard"></i>
+						                    <span class="menu-title">
+												<strong>AJB status</strong>
+											</span>
+						                </a>
+						            </li>
+
+                                    <li class="">
+						                <a href="#">
+						                    <i class="fa fa-dashboard"></i>
+						                    <span class="menu-title">
+												<strong>Alerts</strong>
+											</span>
+						                </a>
+						            </li>
+{% endcomment %}
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--================================-->
+                    <!--End menu-->
+
+                </div>
+            </nav>
+            <!--===================================================-->
+            <!--END MAIN NAVIGATION-->
+		</div>
+
+
+
+        <!-- FOOTER -->
+        <!--===================================================-->
+        <footer id="footer">
+
+            <!-- Visible when footer positions are static -->
+
+
+            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <!-- Remove the class name "show-fixed" and "hide-fixed" to make the content always appears. -->
+            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+            <p class="pad-lft">&#0169; 2015-2016 DataGlen Technologies Private Limited</p>
+
+
+
+        </footer>
+        <!--===================================================-->
+        <!-- END FOOTER -->
+
+
+        <!-- SCROLL TOP BUTTON -->
+        <!--===================================================-->
+        <button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>
+        <!--===================================================-->
+
+
+
+	</div>
+	<!--===================================================-->
+	<!-- END OF CONTAINER -->
+
+    <!--JAVASCRIPT-->
+    <!--=================================================-->
+
+    <!--jQuery [ REQUIRED ]-->
+    <script src="/static/solarrms/js/jquery-2.1.1.min.js"></script>
+
+    <!--BootstrapJS [ RECOMMENDED ]-->
+    <script src="/static/solarrms/js/bootstrap.min.js"></script>
+
+    <!--ANGULAR CORE FILES-->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular-resource.min.js"></script>
+	<script src="/static/app/js/angular-spinkit-master/build/angular-spinkit.js"></script>
+
+    <!--Fast Click [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/fast-click/fastclick.min.js"></script>
+
+    <script src="/static/solarrms/js/js.cookie.js"></script>
+
+    <!--Nifty Admin [ RECOMMENDED ]-->
+    <script src="/static/solarrms/js/nifty.min.js"></script>
+
+
+    <!--Morris.js [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/morris-js/morris.min.js"></script>
+	<script src="/static/solarrms/plugins/morris-js/raphael-js/raphael.min.js"></script>
+
+    <!-- jQuery UI -->
+    <script src="/static/solarrms/js/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+
+    <script src="/static/dataglen/js/jquery.datetimepicker.js"></script>
+
+    <script src="/static/dataglen/js/date.format.js"></script>
+
+    <script src="/static/dataglen/js/underscore.js"></script>
+
+    <!--Sparkline [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/sparkline/jquery.sparkline.min.js"></script>
+
+    <script src="/static/solarrms/js/month-picker/demo/MonthPicker.min.js"></script>
+
+    <!--Skycons [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/skycons/skycons.min.js"></script>
+
+    <!--Gauge js [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/gauge-js/gauge.min.js"></script>
+
+
+    <!--Switchery [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/switchery/switchery.min.js"></script>
+
+
+    <!--Bootstrap Select [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!--Specify page [ SAMPLE ]-->
+    <script src="/static/solarrms/js/demo/dashboard1.js"></script>
+    
+    <!-- TICKETING APP CODE-->
+	<script src="/static/ticketingsystem/js/ticketing.js"></script>
+
+</body>
+</html>

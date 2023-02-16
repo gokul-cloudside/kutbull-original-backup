@@ -1,0 +1,103 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+{% load bootstrap3 %}
+
+{% block body_block %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2> Devices </h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{% url 'solar:index' %}">Home</a>
+            </li>
+            <li>
+                <a>Plant</a>
+            </li>
+            <li class="active">
+                <strong>Devices</strong>
+            </li>
+        </ol>
+    </div>
+    </div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>List of Devices Added</h5>
+                    <span class="pull-right"><a href="{% url 'solar:index' %}">Add New Plant</a></span>
+                </div>
+                <div class="ibox-content">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th>Key</th>
+                                <th>Activated</th>
+                                <th>Monitored</th>
+                            </tr>
+                        </thead>
+                        {% for feeder in feeders %}
+                            <tbody>
+                                <td> Feeder</td>
+                                <td> <a href="">{{ feeder.name }}</a></td>
+                                <td> <a href="">{{ feeder.sourceKey }}</a></td>
+                                <td> {{ feeder.isActive }} </td>
+                                <td> {% if feeder.isMonitored %}
+                                        <div style="color: green"> {{ feeder.isMonitored }}</div>
+                                     {% else %}
+                                        <div style="color: red"> {{ feeder.isMonitored }}</div>
+                                     {% endif %}
+                                </td>
+                            </tbody>
+                        {% endfor %}
+                        {% for inverter in inverters %}
+                            <tbody>
+                                <td> Inverter</td>
+                                <td> <a href="">{{ inverter.name }}</a></td>
+                                <td> <a href="">{{ inverter.sourceKey }}</a></td>
+                                <td> {{ inverter.isActive }} </td>
+                                <td> {% if inverter.isMonitored %}
+                                        <div style="color: green"> {{ inverter.isMonitored }}</div>
+                                     {% else %}
+                                        <div style="color: red"> {{ inverter.isMonitored }}</div>
+                                     {% endif %}
+                                </td>
+                            </tbody>
+                        {% endfor %}
+                        {% for independentInverter in independentInverters %}
+                            <tbody>
+                                <td> Independent Inverter</td>
+                                <td> <a href="">{{ independentInverter.name }}</a></td>
+                                <td> <a href="">{{ independentInverter.sourceKey }}</a></td>
+                                <td> {{ independentInverter.isActive }} </td>
+                                <td> {% if independentInverter.isMonitored %}
+                                        <div style="color: green"> {{ independentInverter.isMonitored }}</div>
+                                     {% else %}
+                                        <div style="color: red"> {{ independentInverter.isMonitored }}</div>
+                                     {% endif %}
+                                </td>
+                            </tbody>
+                        {% endfor %}
+                        {% for ajb in ajbs %}
+                            <tbody>
+                                <td> AJB</td>
+                                <td> <a href="">{{ ajb.name }}</a></td>
+                                <td> <a href="">{{ ajb.sourceKey }}</a></td>
+                                <td> {{ ajb.isActive }} </td>
+                                <td> {% if ajb.isMonitored %}
+                                        <div style="color: green"> {{ ajb.isMonitored }}</div>
+                                     {% else %}
+                                        <div style="color: red"> {{ ajb.isMonitored }}</div>
+                                     {% endif %}
+                                </td>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

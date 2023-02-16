@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html lang="en">
+<head>
+	<script type="text/javascript" src="/static/dataviz/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/dataviz/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/dataviz/js/jquery.datetimepicker.js"></script>
+
+    <title>Kut Bill</title>
+
+    <meta charset="UTF-8">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+
+    <link rel="stylesheet" type="text/css" href="/static/dataviz/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/dataviz/css/jquery.datetimepicker.css"/>
+
+    <style>
+        #monthly-volume-chart g.y {
+            display: none;
+        }
+    </style>
+	<style type="text/css">
+		.custom-date-style {
+			background-color: red !important;
+		}
+	</style>
+
+    <script>
+        function validate_form() {
+            var premise = document.getElementById("premise_name").value.trim();
+            var load = document.getElementById('load_name').value.trim();
+            var start_date = document.getElementById('start_time').value.trim();
+            var end_date = document.getElementById('end_time').value.trim();
+
+            if (premise == '' || premise == 'Select') {
+                alert('Premise name must be specified')
+                return false
+            }
+
+            if (load == '' || load == 'Select') {
+                alert('Load name must be specified')
+                return false
+            }
+
+            if (start_date == '' || end_date == '' ||end_date < start_date) {
+                alert('Valid start and end dates must be specified.')
+                return false
+            }
+            return true
+        }
+    </script>
+    <script>
+        function add_option(opt_value) {
+            var option = document.createElement("option");
+            option.textContent = opt_value;
+            option.value = opt_value;
+            return option;
+        }
+        function get_loads() {
+            var premise = document.getElementById("premise_name_options").value.trim();
+            var premise_name = document.getElementById("premise_name");
+            premise_name.value = premise;
+            var loads = document.getElementById("load_name_options");
+            loads.innerHTML = '';
+            if (premise == 'RadioStudio') {
+                loads.appendChild(add_option("Select"));
+                loads.appendChild(add_option("TEN"));
+                loads.appendChild(add_option("INV"));
+                loads.appendChild(add_option("all"));
+            } else if (premise == "Bala"){
+                loads.appendChild(add_option("Select"));
+                loads.appendChild(add_option("TV"));
+                loads.appendChild(add_option("WM"));
+                loads.appendChild(add_option("RF"));
+                loads.appendChild(add_option("all"));
+            } else if (premise == "Deva") {
+                loads.appendChild(add_option("Select"));
+                loads.appendChild(add_option("TV"));
+                loads.appendChild(add_option("RF"));
+                loads.appendChild(add_option("all"));
+            } else if (premise == "Sunil"){
+                loads.appendChild(add_option("Select"));
+                loads.appendChild(add_option("Microwave"));
+                loads.appendChild(add_option("all"));
+            } else if (premise == "RS") {
+                loads.appendChild(add_option("Select"));
+                loads.appendChild(add_option("Invout"));
+                loads.appendChild(add_option("all"));
+
+            }
+        }
+        function set_load_value(){
+            console.log("set_load_value");
+            var load_name = document.getElementById("load_name");
+            var load_name_options = document.getElementById("load_name_options").value.trim();
+            load_name.value = load_name_options;
+        }
+    </script>
+</head>
+
+<body>
+{% if errors %}
+    <ul>
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<form action="{% url 'dataviz:show_live_data' %}" method="post" onsubmit="return validate_form()">
+    {% csrf_token %}
+
+	<h1 align="center" style="color:grey; margin-top:20px;"> Kut Bill Dashboard </h1>
+	<hr>
+	<div class="container">
+		<div class="row">
+			<!-- <div class="span3"> <strong> Premise </strong> <input type="text" name="premise_name" value="" id="premise_name"/> </div>
+            <div class="span3"> <strong> Load </strong> <input type="text" name="load_name" value="" id="load_name"/> </div> -->
+            <input type="hidden" name="premise_name" id="premise_name">
+            <input type="hidden" name="load_name" id="load_name">
+            <div class="span3"> <strong> Premise </strong> <select class="form-control" id="premise_name_options" onchange="get_loads();"> <option>Select</option> <option>RadioStudio</option> <option>Bala</option> <option>RS</option> <option>Sunil</option> <option>Deva</option> </select> </div>
+			<div class="span3"> <strong> Load </strong> <select class="form-control" id="load_name_options" onchange="set_load_value();"></select> </div>
+			<div class="span3"> <strong> Start time </strong> <input type="text" name="start_time" class="date_time_input_data" value="" id="start_time"/> </div>
+			<div class="span3"> <strong> End time </strong> <input type="text" name="end_time" class="date_time_input_data" value="" id="end_time"/> </div>
+		</div>
+
+		<script type="text/javascript">
+			$('.date_time_input_data').datetimepicker();
+		</script>
+
+		<div class="btn-group btn-group-justified" role="group" aria-label="...">
+ 			<div class="btn-group" role="group">
+				<input type="submit" value="Visualize Data" class="btn btn-default"></input>
+ 			</div>
+ 		</div>
+
+		<script type="text/javascript">
+			$('#reset-fields').click(function(){
+				$('#id_premise_name').val("");
+				$('#id_load_name').val("");
+				$('#id_start_time').val("");
+				$('#id_end_time').val("");
+
+				//$('#premise-pie-chart').empty();
+				//$('#quarter-chart').empty();
+				//$('#day-of-week-chart').empty();
+				//$('#tsapc-chart').empty();
+			});
+
+		</script>
+		<hr>
+</div>
+
+	</div>
+
+</form>
+
+</body>
+</html>

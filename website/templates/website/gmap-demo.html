@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="UTF-8">
+        <title>Solar Estimator</title>
+        <script type="text/javascript"
+        src="http://maps.google.com/maps/api/js?sensor=false&libraries=places,drawing&key=AIzaSyAaNvnxxVyi-QkueLIMZSxtNLTmFjzsDhs"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <style type="text/css">
+            #map, html, body {
+                padding: 0;
+                margin: 0;
+                /*width: 960px;*/
+                height: 600px;
+            }
+
+            #panel {
+                width: 200px;
+                font-family: Arial, sans-serif;
+                font-size: 13px;
+                float: right;
+                margin: 10px;
+            }
+
+            #color-palette {
+                clear: both;
+            }
+
+            .color-button {
+                width: 14px;
+                height: 14px;
+                font-size: 0;
+                margin: 2px;
+                float: left;
+                cursor: pointer;
+            }
+
+            #delete-button {
+                margin-top: 5px;
+            }
+
+            #martix-area {
+		padding-left:2%;
+            }
+        </style>
+        <script type="text/javascript">
+            var drawingManager;
+            var selectedShape;
+            var colors = ['#1E90FF', '#FF1493', '#32CD32', '#FF8C00', '#4B0082'];
+            var selectedColor;
+            var colorButtons = {};
+            var newShape;
+
+            function clearSelection () {
+                if (selectedShape) {
+                    if (selectedShape.type !== 'marker') {
+                        selectedShape.setEditable(false);
+                    }
+
+                    selectedShape = null;
+                }
+            }
+
+            function setSelection (shape) {
+                if (shape.type !== 'marker') {
+                    clearSelection();
+                    shape.setEditable(true);
+                    selectColor(shape.get('fillColor') || shape.get('strokeColor'));
+                }
+
+                selectedShape = shape;
+            }
+
+            function deleteSelectedShape () {
+                if (selectedShape) {
+                    selectedShape.setMap(null);
+                }
+            }
+
+            function selectColor (color) {
+                selectedColor = color;
+                for (var i = 0; i < colors.length; ++i) {
+                    var currColor = colors[i];
+                    colorButtons[currColor].style.border = currColor == color ? '2px solid #789' : '2px solid #fff';
+                }
+
+                // Retrieves the current options from the drawing manager and replaces the
+                // stroke or fill color as appropriate.
+                var polylineOptions = drawingManager.get('polylineOptions');
+                polylineOptions.strokeColor = color;
+                drawingManager.set('polylineOptions', polylineOptions);
+
+                var rectangleOptions = drawingManager.get('rectangleOptions');
+                rectangleOptions.fillColor = color;
+                drawingManager.set('rectangleOptions', rectangleOptions);
+
+                var circleOptions = drawingManager.get('circleOptions');
+                circleOptions.fillColor = color;
+                drawingManager.set('circleOptions', circleOptions);
+
+                var polygonOptions = drawingManager.get('polygonOptions');
+                polygonOptions.fillColor = color;
+                drawingManager.set('polygonOptions', polygonOptions);
+            }
+
+            function setSelectedShapeColor (color) {
+                if (selectedShape) {
+                    if (selectedShape.type == google.maps.drawing.OverlayType.POLYLINE) {
+                        selectedShape.set('strokeColor', color);
+                    } else {
+                        selectedShape.set('fillColor', color);
+                    }
+                }
+            }
+
+            function makeColorButton (color) {
+                var button = document.createElement('span');
+                button.className = 'color-button';
+                button.style.backgroundColor = color;
+                google.maps.event.addDomListener(button, 'click', function () {
+                    selectColor(color);
+                    setSelectedShapeColor(color);
+                });
+
+                return button;
+            }
+
+            function buildColorPalette () {
+                var colorPalette = document.getElementById('color-palette');
+                for (var i = 0; i < colors.length; ++i) {
+                    var currColor = colors[i];
+                    var colorButton = makeColorButton(currColor);
+                    colorPalette.appendChild(colorButton);
+                    colorButtons[currColor] = colorButton;
+                }
+                selectColor(colors[0]);
+            }
+
+            function initialize () {
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 20,
+                    center: new google.maps.LatLng(40, -105),
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                        //mapTypeId: google.maps.MapTypeId.SATELLITE,
+                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                        position: google.maps.ControlPosition.TOP_RIGHT,
+                        mapTypeIds: ['roadmap', 'satellite'],
+
+				    },
+                    disableDefaultUI: true,
+                    zoomControl: true
+                });
+                var input = document.getElementById('locationTextField');
+				map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+                var autocomplete = new google.maps.places.Autocomplete(input);
+				autocomplete.bindTo('bounds', map);
+
+				autocomplete.addListener('place_changed', function() {
+					var place = autocomplete.getPlace();
+					if (!place.geometry) {
+						window.alert("Autocomplete's returned place contains no geometry");
+						return;
+					}
+
+					// If the place has a geometry, then present it on a map.
+					if (place.geometry.viewport) {
+						map.fitBounds(place.geometry.viewport);
+					} else {
+						map.setCenter(place.geometry.location);
+						map.setZoom(20);
+					}
+				});
+
+                var polyOptions = {
+                    strokeWeight: 0,
+                    fillOpacity: 0.45,
+                    editable: true,
+                    draggable: true
+                };
+                // Creates a drawing manager attached to the map that allows the user to draw
+                // markers, lines, and shapes.
+                drawingManager = new google.maps.drawing.DrawingManager({
+                    drawingMode: google.maps.drawing.OverlayType.POLYGON,
+                    drawingControl: true,
+                    drawingControlOptions: {
+                        position: google.maps.ControlPosition.TOP_CENTER,
+                        drawingModes: ['polygon', 'rectangle', 'marker']
+                    },
+                    markerOptions: {
+                        draggable: true
+                    },
+                    polylineOptions: {
+                        editable: true,
+                        draggable: true
+                    },
+                    rectangleOptions: polyOptions,
+                    circleOptions: polyOptions,
+                    polygonOptions: polyOptions,
+                    map: map,
+                });
+
+                google.maps.event.addListener(drawingManager, 'overlaycomplete', function (e) {
+                    newShape = e.overlay;
+
+                    newShape.type = e.type;
+                    $("#marker_area").val(0);
+                    if (e.type !== google.maps.drawing.OverlayType.MARKER) {
+                        // Switch back to non-drawing mode after drawing a shape.
+                        drawingManager.setDrawingMode(null);
+						$("#marker_area").hide();
+                        // Add an event listener that selects the newly-drawn shape when the user
+                        // mouses down on it.
+                        google.maps.event.addListener(newShape, 'click', function (e) {
+                            if (e.vertex !== undefined) {
+                                if (newShape.type === google.maps.drawing.OverlayType.POLYGON) {
+                                    var path = newShape.getPaths().getAt(e.path);
+                                    path.removeAt(e.vertex);
+                                    if (path.length < 3) {
+                                        newShape.setMap(null);
+                                    }
+                                }
+                                if (newShape.type === google.maps.drawing.OverlayType.POLYLINE) {
+                                    var path = newShape.getPath();
+                                    path.removeAt(e.vertex);
+                                    if (path.length < 2) {
+                                        newShape.setMap(null);
+                                    }
+                                }
+                              }
+                            setSelection(newShape);
+                        });
+                        setSelection(newShape);
+                        //alert(parseFloat(google.maps.geometry.spherical.computeArea(newShape.getPath()))*10.764);
+                    }
+                    else {
+						$("#marker_area").show();
+                        google.maps.event.addListener(newShape, 'click', function (e) {
+                            setSelection(newShape);
+
+                        });
+                        setSelection(newShape);
+                    }
+                });
+
+                // Clear the current selection when the drawing mode is changed, or when the
+                // map is clicked.
+                google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+                google.maps.event.addListener(map, 'click', clearSelection);
+                google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
+
+                buildColorPalette();
+            }
+            google.maps.event.addDomListener(window, 'load', initialize);
+            function get_area_square_feet(){
+				//alert(newShape);
+                                $("#left-text").hide();
+                                $("#martix-area").hide();
+				//alert(parseFloat(google.maps.geometry.spherical.computeArea(newShape.getPath())*10.764));
+				if(newShape.type == "rectangle"){
+					var rectBoundsLatlng = new Array;
+                    var rectBoundsLatlngPath = new Array;
+
+                    rectBoundsLatlng[0] = new google.maps.LatLng(newShape.bounds.f.b, newShape.bounds.b.b);
+					rectBoundsLatlng[1] = new google.maps.LatLng(newShape.bounds.f.f, newShape.bounds.b.f);
+					rectBoundsLatlngPath[0] = new google.maps.LatLng(rectBoundsLatlng[1].lat(), rectBoundsLatlng[0].lng());
+					rectBoundsLatlngPath[1] = new google.maps.LatLng(rectBoundsLatlng[0].lat(), rectBoundsLatlng[1].lng());
+					var areaPath = [rectBoundsLatlng[0], rectBoundsLatlngPath[0], rectBoundsLatlng[1], rectBoundsLatlngPath[1],    rectBoundsLatlng[0]];
+					var area_cal = parseFloat(google.maps.geometry.spherical.computeArea(areaPath)*10.764);
+					$("#result-area").html("Area (Sqft)="+area_cal);
+
+					return [area_cal, rectBoundsLatlng[0].lat(), rectBoundsLatlng[1].lng()];
+
+				}else if(newShape.type == "marker"){
+					lat = newShape.getPosition().lat();
+					lng = newShape.getPosition().lng();
+					area_cal = $("#marker_area").val();
+					area_cal = parseFloat(area_cal);
+					$("#result-area").html("Area (Sqft)="+ area_cal);
+					return [area_cal, lat, lng];
+				}else{
+					var area_cal = parseFloat(google.maps.geometry.spherical.computeArea(newShape.getPath())*10.764)
+					$("#result-area").html("Area (Sqft)="+ area_cal);
+					return [area_cal, newShape.getPath().getArray()[0].lat(), newShape.getPath().getArray()[0].lng()];
+				}
+			}
+  function xml_http_get(){
+	var area_output = new Array();
+	area_output = get_area_square_feet();
+	var area_in_feet = area_output[0];
+	var lat = area_output[1];
+	var lon = area_output[2];
+	var system_capacity = parseInt(area_in_feet*0.012);
+	$("#result-capacity").html("Capacity (kWp)="+system_capacity);
+	//get_url = "http://re.jrc.ec.europa.eu/pvgis5/PVcalc.php?lat="+lat+"&lon="+lon+"&peakpower="+system_capacity+"&loss=14";
+	// call to get dataset
+	get_url = "https://developer.nrel.gov/api/solar/data_query/v1.json?api_key=Krt7kGYeuGZjq5U0KS1v0PHFDierDs4OFVdT2MCg&lat="+lat+"&lon="+lon+"&radius=100";
+	var distance = 0;
+	var dataset;
+	$.ajax({url: get_url,
+		success: function(result_data){
+			$.each(result_data['outputs'], function(key, item) {
+			    if(item != null){
+				   if(distance ==0 || distance >= item['distance']){
+					  distance = item['distance'];
+					  dataset = key;
+					  console.log(key, item);
+				   }
+				}
+			});
+                        $("#left-text").show();
+			//alert(dataset+"-"+distance);
+            n_get_url = "https://developer.nrel.gov/api/pvwatts/v5.json?api_key=Krt7kGYeuGZjq5U0KS1v0PHFDierDs4OFVdT2MCg&lat="+lat+"&lon="+lon+"&system_capacity="+system_capacity+"&azimuth=180&tilt=40&array_type=1&module_type=1&losses=10&dataset="+dataset;
+	        $.ajax({url: n_get_url,
+		        success: function(result_data_1){
+			        var monthly = "<p>Ac Monthly (kWh)</p><ul>";
+			        monthly = monthly + "<li>JAN= "+result_data_1['outputs']['ac_monthly'][0]+"</li>";
+			        monthly = monthly + "<li>FEB= "+result_data_1['outputs']['ac_monthly'][1]+"</li>";
+			        monthly = monthly + "<li>MAR= "+result_data_1['outputs']['ac_monthly'][2]+"</li>";
+			        monthly = monthly + "<li>APR= "+result_data_1['outputs']['ac_monthly'][3]+"</li>";
+			        monthly = monthly + "<li>MAY= "+result_data_1['outputs']['ac_monthly'][4]+"</li>";
+			        monthly = monthly + "<li>JUN= "+result_data_1['outputs']['ac_monthly'][5]+"</li>";
+			        monthly = monthly + "<li>JUL= "+result_data_1['outputs']['ac_monthly'][6]+"</li>";
+			        monthly = monthly + "<li>AUG= "+result_data_1['outputs']['ac_monthly'][7]+"</li>";
+			        monthly = monthly + "<li>SEP= "+result_data_1['outputs']['ac_monthly'][8]+"</li>";
+			        monthly = monthly + "<li>OCT= "+result_data_1['outputs']['ac_monthly'][9]+"</li>";
+			        monthly = monthly + "<li>NOV= "+result_data_1['outputs']['ac_monthly'][10]+"</li>";
+			        monthly = monthly + "<li>DEC= "+result_data_1['outputs']['ac_monthly'][11]+"</li>";
+			        monthly = monthly + "</ul>";
+			        $("#ac").html(monthly);
+
+					var monthly = "<p>Poa Monthly (kWh/m2)</p><ul>";
+			        monthly = monthly + "<li>JAN= "+result_data_1['outputs']['poa_monthly'][0]+"</li>";
+			        monthly = monthly + "<li>FEB= "+result_data_1['outputs']['poa_monthly'][1]+"</li>";
+			        monthly = monthly + "<li>MAR= "+result_data_1['outputs']['poa_monthly'][2]+"</li>";
+			        monthly = monthly + "<li>APR= "+result_data_1['outputs']['poa_monthly'][3]+"</li>";
+			        monthly = monthly + "<li>MAY= "+result_data_1['outputs']['poa_monthly'][4]+"</li>";
+			        monthly = monthly + "<li>JUN= "+result_data_1['outputs']['poa_monthly'][5]+"</li>";
+			        monthly = monthly + "<li>JUL= "+result_data_1['outputs']['poa_monthly'][6]+"</li>";
+			        monthly = monthly + "<li>AUG= "+result_data_1['outputs']['poa_monthly'][7]+"</li>";
+			        monthly = monthly + "<li>SEP= "+result_data_1['outputs']['poa_monthly'][8]+"</li>";
+			        monthly = monthly + "<li>OCT= "+result_data_1['outputs']['poa_monthly'][9]+"</li>";
+			        monthly = monthly + "<li>NOV= "+result_data_1['outputs']['poa_monthly'][10]+"</li>";
+			        monthly = monthly + "<li>DEC= "+result_data_1['outputs']['poa_monthly'][11]+"</li>";
+			        monthly = monthly + "</ul>";
+			        $("#poa").html(monthly);
+
+			        var monthly = "<p>Solrad Monthly (kWh/m2/day)</p><ul>";
+			        monthly = monthly + "<li>JAN= "+result_data_1['outputs']['solrad_monthly'][0]+"</li>";
+			        monthly = monthly + "<li>FEB= "+result_data_1['outputs']['solrad_monthly'][1]+"</li>";
+			        monthly = monthly + "<li>MAR= "+result_data_1['outputs']['solrad_monthly'][2]+"</li>";
+			        monthly = monthly + "<li>APR= "+result_data_1['outputs']['solrad_monthly'][3]+"</li>";
+			        monthly = monthly + "<li>MAY= "+result_data_1['outputs']['solrad_monthly'][4]+"</li>";
+			        monthly = monthly + "<li>JUN= "+result_data_1['outputs']['solrad_monthly'][5]+"</li>";
+			        monthly = monthly + "<li>JUL= "+result_data_1['outputs']['solrad_monthly'][6]+"</li>";
+			        monthly = monthly + "<li>AUG= "+result_data_1['outputs']['solrad_monthly'][7]+"</li>";
+			        monthly = monthly + "<li>SEP= "+result_data_1['outputs']['solrad_monthly'][8]+"</li>";
+			        monthly = monthly + "<li>OCT= "+result_data_1['outputs']['solrad_monthly'][9]+"</li>";
+			        monthly = monthly + "<li>NOV= "+result_data_1['outputs']['solrad_monthly'][10]+"</li>";
+			        monthly = monthly + "<li>DEC= "+result_data_1['outputs']['solrad_monthly'][11]+"</li>";
+			        monthly = monthly + "</ul>";
+			        $("#solrad").html(monthly);
+
+			        $("#dc").html(monthly);
+			        var monthly = "<p>Dc Monthly (kWh)</p><ul>";
+			        monthly = monthly + "<li>JAN= "+result_data_1['outputs']['dc_monthly'][0]+"</li>";
+			        monthly = monthly + "<li>FEB= "+result_data_1['outputs']['dc_monthly'][1]+"</li>";
+			        monthly = monthly + "<li>MAR= "+result_data_1['outputs']['dc_monthly'][2]+"</li>";
+			        monthly = monthly + "<li>APR= "+result_data_1['outputs']['dc_monthly'][3]+"</li>";
+			        monthly = monthly + "<li>MAY= "+result_data_1['outputs']['dc_monthly'][4]+"</li>";
+			        monthly = monthly + "<li>JUN= "+result_data_1['outputs']['dc_monthly'][5]+"</li>";
+			        monthly = monthly + "<li>JUL= "+result_data_1['outputs']['dc_monthly'][6]+"</li>";
+			        monthly = monthly + "<li>AUG= "+result_data_1['outputs']['dc_monthly'][7]+"</li>";
+			        monthly = monthly + "<li>SEP= "+result_data_1['outputs']['dc_monthly'][8]+"</li>";
+			        monthly = monthly + "<li>OCT= "+result_data_1['outputs']['dc_monthly'][9]+"</li>";
+			        monthly = monthly + "<li>NOV= "+result_data_1['outputs']['dc_monthly'][10]+"</li>";
+			        monthly = monthly + "<li>DEC= "+result_data_1['outputs']['dc_monthly'][11]+"</li>";
+			        monthly = monthly + "</ul>";
+			        $("#dc").html(monthly);
+
+			        $("#ac_a").html("<p>Ac Annual (KWh)= "+result_data_1['outputs']['ac_annual']+"</p>");
+			        $("#sr_a").html("<p>Solrad Annual (KWh/m2/day)= "+result_data_1['outputs']['solrad_annual']+"</p>");
+			        $("#cp_f").html("<p>Capacity Factor = "+result_data_1['outputs']['capacity_factor']+"</p>");
+
+					$("#fmd").html("<p>For more details please scroll down!</p>");
+                                $("#martix-area").show()
+	                },
+                        error: function(result_data_1){
+				$("#martix-area1").html('Please try again later!');
+                                $("#left-text").hide();
+                                $("#martix-area").hide();
+
+			}});
+                 },
+            error: function(result_data){
+		 $("#left-text1").html('Please try again later!');
+                                $("#left-text").hide();
+                                $("#martix-area").hide();
+
+
+    }});
+  }
+  </script>
+
+    </head>
+    <body>
+		    <div id="panel" style="float:right">
+            <div style="display:none" id="color-palette"></div>
+            <div>
+                <button id="delete-button">Delete Selected Shape</button>
+                <button id="delete-button" onclick="xml_http_get()">Estimate Solar Generation</button>
+                <!--button id="delete-button" onclick="xml_http_get()">Get Solar Estimate</button-->
+                <br /><br />
+                <input placeholder="Area in SQFT" type="text" style="display:none;width:180px" id='marker_area' />
+                <br /><br />
+                <div id="left-text1"></div>
+                <div id="left-text">
+                   <div id="result-area"></div>
+                   <br />
+                   <div id="result-capacity"></div>
+                   <br />
+		   <div id="ac_a"></div>
+		   <div id="sr_a"></div>
+		   <div id="cp_f"></div>
+		   <div id="fmd"></div>
+               </div>
+            </div>
+            </div>
+
+        <div id="map"></div>
+        <br /><br />
+       <div id="martix-area1"></div>
+        <div id="martix-area">
+			<div id="ac"></div>
+			<div id="poa"></div>
+			<div id="solrad"></div>
+			<div id="dc"></div>
+        </div>
+        <input id="locationTextField" style="height: 33px;margin: 1%;width: 30%;" class="controls" type="text" placeholder="Enter a location">
+    </body>
+</html>

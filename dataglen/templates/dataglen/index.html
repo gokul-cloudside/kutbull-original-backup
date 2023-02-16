@@ -1,0 +1,271 @@
+{% extends 'dataglen/dataglenbase.html' %}
+
+{% block extrahead %}
+    <link href="/static/dataglen/css/spinkit.css" rel="stylesheet">
+    <!-- D3 and NVD3 -->
+    <script src="/static/dataglen/js/d3.js"></script>
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+
+    <script type="text/javascript">
+        var live_chart = null;
+        $(document).ready(function(){
+            setTimeout(function(){
+               load_user_data();
+             },1000); // milliseconds
+        });
+
+        function csrfSafeMethod(method) {
+            return (/^(HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        function load_user_data(){
+            var csrftoken = $.cookie('csrftoken');
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                url: "/dataglen/dashboard/",
+                success: function(data){
+                    $('#sources_len').empty().html(data['sources_len']);
+                    $('#valid_records').empty().html(data['valid_records']);
+                    $('#invalid_records').empty().html(data['invalid_records']);
+                    $('#stable').empty().html(data['stable']);
+                    $('#errors').empty().html(data['errors']);
+                    $('#warnings').empty().html(data['warnings']);
+                    $('#unmonitored').empty().html(data['unmonitored']);
+                    live_data_chart(data['live_data_chart']);
+                    data = null;
+                },
+                error: function(data){
+                    data = null;
+                }
+            });
+
+            setTimeout(function(){
+               load_user_data();
+             },20000);
+        }
+
+    </script>
+{% endblock %}
+
+{% block body_block %}
+    <!--The top row-->
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <!-- Sensors -->
+            <div class="col-lg-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="pull-right"><a href="{% url 'dataglen:source-list' %}">List Sources</a></span>
+                        <h5>Data Sources</h5>
+                    </div>
+                    <div class="ibox-content">
+                        {% if sources_len %}
+                            <h1 class="no-margins" id="sources_len">{{ sources_len }}</h1>
+                        {% else %}
+                            <h1 class="no-margins" id="sources_len"> 0 </h1>
+                        {% endif %}
+                        <!--<div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>-->
+                    </div>
+                </div>
+            </div>
+
+            <!--Data points -->
+            <div class="col-lg-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="pull-right"><a href="{% url 'dataglen:view-data' %}">View Data</a></span>
+                        <h5>Valid Transactions</h5>
+                    </div>
+                    <div class="ibox-content">
+                        {% if valid_records %}
+                            <h1 class="no-margins" id="valid_records">{{ valid_records }} </h1>
+                        {% else %}
+                            <h1 class="no-margins" id="valid_records"> 0 </h1>
+                        {% endif %}
+                        <!--<div class="stat-percent font-bold text-info">42% <i class="fa fa-level-up"></i></div>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Bids -->
+            <div class="col-lg-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        {% if invalid_records %}
+                            <span class="label label-danger pull-right"><a href="{% url 'dataglen:discarded-stats' %}" class="text-info">View</a></span>
+                        {% else %}
+                            {% if valid_records %}
+                                <span class="label pull-right label-primary">Success!</span>
+                            {% endif %}
+                        {% endif %}
+                        <h5> Invalid Transactions </h5>
+                    </div>
+                    <div class="ibox-content">
+                        {% if invalid_records %}
+                            <h1 class="no-margins" id="invalid_records">{{ invalid_records }} </h1>
+                        {% else %}
+                            <h1 class="no-margins" id="invalid_records"> 0 </h1>
+                        {% endif %}
+                        <!--<div class="stat-percent font-bold text-info">42% <i class="fa fa-level-up"></i></div>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Errors -->
+            <div class="col-lg-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5> Archived Sources</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins"> NA </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div class="row">
+            <div class="col-lg-3">
+                <a href="{% url 'dataglen:source-list' %}">
+                <div class="widget style1 blue-bg">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <i class="fa fa-power-off fa-4x"></i>
+                        </div>
+                        <div class="col-xs-8 text-right">
+                            <span> Unmonitored </span>
+                            <h2 class="font-bold" id="unmonitored"> {{ unmonitored }}</h2>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <div class="col-lg-3">
+                <a href="{% url 'dataglen:monitoring_status' %}">
+                <div class="widget style1 navy-bg">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <i class="fa fa-thumbs-up fa-4x"></i>
+                        </div>
+                        <div class="col-xs-8 text-right">
+                            <span> Stable Sources  </span>
+                            <h2 class="font-bold" id="stable"> {{ stable }}</h2>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <div class="col-lg-3">
+                <a href="{% url 'dataglen:monitoring_status' %}">
+                <div class="widget style1 yellow-bg">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <i class="fa fa-warning fa-4x"></i>
+                        </div>
+                        <div class="col-xs-8 text-right">
+                            <span> Warnings </span>
+                            <h2 class="font-bold" id="warnings"> {{ warnings }}</h2>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <div class="col-lg-3">
+                <a href="{% url 'dataglen:monitoring_status' %}">
+                <div class="widget style1 red-bg">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <i class="fa fa-bell fa-4x"></i>
+                        </div>
+                        <div class="col-xs-8 text-right">
+                            <span> Potential Errors </span>
+                            <h2 class="font-bold" id="errors"> {{ errors }}</h2>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5> Real-time Data Write Requests Flow </h5>
+                        </div>
+
+                        <div class="ibox-content">
+                            <div class="row">
+                            <div class="col-lg-12" >
+
+                                <div class="spiner-example" id="spinner">
+                                    <div class="sk-spinner sk-spinner-wave">
+                                        <div class="sk-rect1"></div>
+                                        <div class="sk-rect2"></div>
+                                        <div class="sk-rect3"></div>
+                                        <div class="sk-rect4"></div>
+                                        <div class="sk-rect5"></div>
+                                    </div>
+                                </div>
+
+                                <div style="height:210px" id="data_chart">
+                                    <svg>
+                                    <!--Chart will come here-->
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function live_data_chart(data){
+            $("#spinner").hide();
+            if (live_chart == null) {
+                nv.addGraph(function () {
+                    live_chart = nv.models.stackedAreaChart()
+                            .x(function (d) { return d[0] })
+                            .y(function (d) { return d[1] })
+                            .useInteractiveGuideline(false)
+                            .showControls(false)
+                            .color(['#98df8a', '#d62728']);
+
+                    live_chart.xAxis
+                        .axisLabel("Time")
+                        .tickFormat(function (d) {
+                            return d3.time.format('%H:%M %d/%m/%y')(new Date(d))
+                        });
+
+                    live_chart.yAxis
+                            .axisLabel("Transaction (per minute)")
+                            .tickFormat(d3.format("d"));
+
+                    d3.select('#data_chart svg')
+                              .datum(data)
+                              .call(live_chart);
+
+                    nv.utils.windowResize(live_chart.update);
+                    return live_chart;
+                });
+            } else {
+                d3.select('#data_chart svg').empty();
+                d3.select('#data_chart svg')
+                          .datum(data)
+                          .call(live_chart);
+            }
+        }
+    </script>
+
+{% endblock %}

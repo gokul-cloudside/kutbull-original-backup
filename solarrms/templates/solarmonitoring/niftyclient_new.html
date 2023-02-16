@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar RMS DataGlen</title>
+
+
+    <style>
+        .plant-box {
+            background-color: #ffffff;
+            border: 1px solid #e7eaec;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="/static/solarrms/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link href="/static/solarrms/css/nifty.min.css" rel="stylesheet">
+
+
+    <!--Font Awesome [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+
+    <!--Animate.css [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/animate-css/animate.min.css" rel="stylesheet">
+
+
+    <!--Morris.js [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/morris-js/morris.min.css" rel="stylesheet">
+
+
+    <!--Switchery [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/switchery/switchery.min.css" rel="stylesheet">
+
+
+    <!--Bootstrap Select [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+
+    <link href="/static/dataglen/css/jquery.datetimepicker.css" rel="stylesheet">
+
+    <link href="/static/solarrms/js/month-picker/demo/MonthPicker.min.css" rel="stylesheet">
+
+    <!--SCRIPT-->
+    <!--=================================================-->
+
+    <!--Page Load Progress Bar [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/pace/pace.min.css" rel="stylesheet">
+
+    <link href="/static/solarrms/js/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet">
+
+    <script src="/static/solarrms/plugins/pace/pace.min.js"></script>
+
+    {% block extrahead %}
+
+    {% endblock %}
+
+</head>
+
+<!--TIPS-->
+<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+
+<body>
+    <div id="container" class="effect mainnav-lg">
+
+        <!--NAVBAR-->
+        <!--===================================================-->
+        <header id="navbar">
+            <div id="navbar-container" class="boxed">
+
+                <!--Brand logo & name-->
+                <!--================================-->
+                <!--================================-->
+                <!--End brand logo & name-->
+                <div class="navbar-header">
+                    <a href="/dashboards/redirect/" class="navbar-brand" style="background-color: #565656;height: 44px;padding-top: 2px;">
+                        <!--<img src='http://www.waaree.com/Images/logo.png' alt="DATAGLEN" class="brand-icon">-->
+                        <div class="brand-title" style="padding-left: 0px; padding-right: 0px; text-align: center;">
+                            <span class="brand-text" id="dataglen_client_name"></span>
+                        </div>
+                    </a>
+                </div>
+
+                <!--Navbar Dropdown-->
+                <!--================================-->
+                <div class="navbar-content clearfix" style="background-color: #565656;">
+                    <ul class="nav navbar-top-links pull-left">
+                        <div class="row" style="margin-top:4px;">
+                    
+                            <div class="panel-control">
+                                <ul class="nav nav-tabs" style="margin-top:0px;color: white;">
+                                    <li class="active"><a href="#dashboard_client-lft" data-toggle="tab" id="dashboard_clienttab">Dashboard</a></li>
+                                    <li><a href="#block_client-lft" data-toggle="tab" onClick="" id="block_clienttab">Clients</a></li>
+                                    <li><a href="#table_client-lft" data-toggle="tab" onClick="" id="table_clienttab">Table</a></li>
+                                </ul>
+                            </div>
+                            <!--===================================================-->
+    
+                        </div>
+                    </ul>
+                    <!--TODO add a logo-->
+                    <ul class="nav navbar-top-links pull-right">
+                        <!--User dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <li id="dropdown-user" class="dropdown" style="border-style: outset;border-left-width: 1px;border-bottom-width: 0px;border-right-width: 0px;border-top-width: 0px;">
+                            <a href="/static/solarrms/#" data-toggle="dropdown" class="dropdown-toggle text-right">
+                                <div class="username hidden-xs">Profile</div>
+                            </a>
+
+
+                            <div class="dropdown-menu dropdown-menu-md dropdown-menu-right panel-default">
+
+                                <!-- Dropdown heading  -->
+                                <div class="pad-all bord-btm">
+                                    <p class="text-lg text-muted text-semibold mar-btm">Premium Subscription</p>
+                                </div>
+
+
+{#                                <!-- User dropdown menu -->#}
+{#                                <ul class="head-list">#}
+{#                                    <li>#}
+{#                                        <a href="/static/solarrms/#">#}
+{#                                            <i class="fa fa-user fa-fw fa-lg"></i> Reset Password#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                </ul>#}
+{##}
+                                <!-- Dropdown footer -->
+                                <div class="pad-all text-right">
+                                    <a href="{% url 'account_logout' %}" class="btn btn-primary">
+                                        <i class="fa fa-sign-out fa-fw"></i> Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!--End user dropdown-->
+
+                    </ul>
+                    <ul class="nav navbar-top-links pull-right" style="margin-bottom: -50px;height: 40px;width: 150px;">
+                        <!--User dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <li style="height: 40px;width: 141px;">
+                            <a href="{% url 'dashboards:post_successful_login' %}" class="navbar-brand" style="position: relative;display: inline-block;bottom: 0;left: 15px;width: 120px;padding-left: 0px;padding-right: 0px;">
+                                <img src='{{ dataglenclient.clientLogo }}' alt="DATAGLEN" style="height: 26px;margin-top: 8px;">
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+                <!--================================-->
+                <!--End Navbar Dropdown-->
+
+            </div>
+        </header>
+        <!--===================================================-->
+        <!--END NAVBAR-->
+
+        <div id="page-content" style="padding-left: 0px;padding-right: 0px;">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="row">
+                            <div class="col-md-4" style="height: 30vh;">
+                                <div class="panel widget">
+                                    <div class="bg-warning text-center" style="overflow: hidden">
+                                        <h4 class="mar-no pad-top">Energy Generation</h4>
+                                        <p class="mar-btm">From all plants</p>
+                                    </div>
+                                    <div class="pad-lft">
+                                        <div id="total_generation">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-12" style="margin-top: 36px;">
+                    <div id="client-panel" class="">
+                        <div style="">
+                            <div class="tab-content">
+                                <div class="tab-pane fade in active" id="dashboard_client-lft">
+                                    <div class="col-md-9">
+                                        <div class="row" >
+                                            <div class="col-md-4 pad-top">
+                                                <!-- <h4 class="text-center">Total Generation</h4> -->
+
+                                            </div>
+                                            <div class="col-md-4">
+                                                <!-- <h4 class="text-center">p & CUF</h4> -->
+                                                <div id="cuf_pr" style="height: 40vh;">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <!-- <h4 class="text-center">PR & CUF</h4> -->
+                                                <div id="" style="height: 40vh;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <!-- <h4 class="text-center">Grid & Equipment Unavailablity</h4> -->
+                                                <div id="availability" style="height: 40vh;">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <!-- <h4 class="text-center">Tickets</h4> -->
+                                                <div id="tickets" style="height: 38vh"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div id="" style="height: 40vh;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="row">
+                                            <div class="panel">
+                                                <div id="dashboard-geocoding-map" style="height:80vh"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                        <!-- <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="row">
+                                                        <div class="panel">
+                                                            <div id="dashboard-geocoding-map" style="height:385px"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                </div>
+                                    <!-- <div class="row">
+                                        <div class="col-md-12">
+                                            <div id="plants_table">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                                <div class="tab-pane fade" id="block_client-lft">
+
+                                    <div class="panel-body">
+                                        <div id="plant_blocks">
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="tab-pane fade" id="table_client-lft">
+                                    <div class="row" style="margin-top: 20px;">
+                                        <div class="col-md-12">
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-10">
+                                                <div id="plants_table">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <!--===================================================-->
+        <footer id="footer" style="padding-left: 53px;">
+
+            <!-- Visible when footer positions are static -->
+
+
+            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <!-- Remove the class name "show-fixed" and "hide-fixed" to make the content always appears. -->
+            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+            <p>&#0169; 2015-2016 DataGlen Technologies Private Limited</p>
+
+
+        </footer>
+        <!--===================================================-->
+        <!-- END FOOTER -->
+
+
+        <!-- SCROLL TOP BUTTON -->
+        <!--===================================================-->
+        <button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>
+        <!--===================================================-->
+
+
+    </div>
+    <!--===================================================-->
+    <!-- END OF CONTAINER -->
+
+    <script src="/static/solarrms/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/solarrms/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+
+    <!-- Data Tables -->
+    <link href="/static/dataglen/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="/static/dataglen/css/plugins/dataTables/dataTables.responsive.css" rel="stylesheet">
+    <link href="/static/dataglen/css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet">
+
+    <!-- Data Tables -->
+    <script src="/static/dataglen/js/jquery.dataTables.js"></script>
+    <script src="/static/dataglen/js/dataTables.bootstrap.js"></script>
+    <script src="/static/dataglen/js/dataTables.responsive.js"></script>
+    <script src="/static/dataglen/js/dataTables.tableTools.min.js"></script>
+
+    <!--JAVASCRIPT-->
+    <!--=================================================-->
+    <script src="https://maps.google.com/maps/api/js?key=AIzaSyAAL-BxO6HSksJtE6VThUIafRki05sG6Dg"></script>
+	<script src="/static/solarrms/plugins/gmaps/gmaps.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+    <script>
+        /*var plants_info = {{ plants_info|safe }};
+        console.log(plants_info);
+        var all_slugs = [];
+        all_slugs = {{ plant_slugs|safe }};*/
+
+    </script>
+
+    <script src="/static/solarrms/js/js_functions/basic_bar_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/js_functions/dual_axis_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/js_functions/relative_bar_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/demo/niftyclient_new.js"></script>
+
+</body>
+</html>

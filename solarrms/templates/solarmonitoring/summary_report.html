@@ -1,0 +1,448 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+
+	<style>
+		.nvd3 g.nv-groups path.nv-line {
+		  stroke-width: 5px;
+		}
+
+		.width-70 {
+			width: 70px;
+		}
+	</style>
+
+{% endblock %}
+
+{% block body_block %}
+
+				<!--Page Title-->
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<div id="page-title">
+					<h1 class="page-header text-overflow"></h1>
+				</div>
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<!--End page title-->
+
+				<!--Page content-->
+				<!--===================================================-->
+				<div id="page-content">
+
+					<div class="row">
+
+						<div class="col-lg-4"></div>
+						<div class="col-lg-4">
+
+							<div class="panel-body">
+
+								<div class="col-md-9">
+				                	<input type="text" class="form-control datetimepicker_start" id="start" placeholder="Pick a Date" required="required">
+				                </div>
+				                <div class="col-md-3">
+			                		<button type="submit" id="summary_report-update" data-toggle="panel-overlay" data-target="#summary_report-update" class="btn btn-success width-70">Update</button>
+			                	</div>
+
+							</div>
+
+						</div>
+						<div class="col-lg-4"></div>
+
+					</div>
+
+					<div class="row">
+
+						<div class="col-lg-4">
+					        <div class="row">
+					            <div class="col-sm-12 col-lg-12">
+
+					                <div class="panel panel-purple panel-colorful">
+					                    <div class="pad-all">
+					                    	<div class="col-lg-12">
+                                            	<a href={% url 'solar:plant-energy-generation' plant.slug%}>
+                                            		<p class="mar-no">
+							                            <span class="pull-right text-bold" id="generation_expected" style="color: white;" hidden></span><span class="pull-right text-bold" id="generation_today" style="color: white;"></span>
+							                            <span style="color: white;">Generation (</span><span id="date_selected" style="color: white;"></span><span id="generation_expected_div" style="color: white;" hidden>/PVsyst</span><span style="color: white;">)</span>
+							                        </p>
+                                                </a>
+                                            </div>
+                                            <div  class="col-lg-12">
+                                            	<p class="mar-no">
+						                            <span class="pull-right text-bold" id="total_generation" style="color: white;"></span>
+						                            <span style="color: white;">Total Generation
+						                            </span>
+						                        </p>
+                                            </div>
+                                            <div class="col-lg-12">
+                                            	<p class="mar-no">
+						                            <span class="pull-right text-bold" id="expected_performance_ratio" hidden></span><span class="pull-right text-bold" id="performance_ratio"></span>
+						                            <span>PR (<span id="date_selected_pr" style="color: white;"></span><span id="expected_performance_ratio_div" hidden>/PVsyst</span><span style="color: white;">)</span>
+						                        </p>
+                                            </div>
+                                            <div  class="col-lg-12">
+                                            	<p class="mar-no">
+                                            		<span class="pull-right text-bold" id="pvsyst_tilt_angle" hidden></span><span class="pull-right text-bold" id="cuf_value"></span>
+						                            <span>CUF</span><span id="pvsyst_tilt_angle_div" hidden>/PVsyst Tilt</span>
+						                        </p>
+                                            </div>
+
+                                        </div>
+                                        <div class="pad-btm pad-lft pad-rgt text-center">
+
+                                        	<p class="text-lg text-semibold text-center">Performance Ratio</p>
+
+                                            <div id="pr_bar" class="box-inline"></div>
+
+                                        </div>
+					                </div>
+					            </div>
+					        </div>
+                        </div>
+
+					    <div class="col-lg-4">
+					        
+					    </div>
+					    <div class="col-lg-4">
+					        <div class="row">
+					            
+					        </div>
+					    </div>
+					</div>
+
+					<div class="row">
+					    <div class="col-lg-12">
+					        <div id="inverters-energy-panel-network" class="panel">
+					            <div class="panel-heading">
+					                <div class="col-md-6">
+					                	<h3 class="panel-title"> Energy Generation<span id="date_today_generation"> </span></h3>
+					                </div>
+					            </div>
+
+					            <div class="panel-control pull-left">
+						            <ul class="nav nav-tabs pull-left">
+					                    <li class="active"><a href="#inverter_energy-lft" data-toggle="tab" id="inverter_energytab" onClick="redraw_window();">Inverter Energy</a></li>
+					                    <li><a href="#group_energy-lft" data-toggle="tab" id="group_energytab" onClick="redraw_window();">Group Energy</a></li>
+					                </ul>
+					    		</div>
+
+				                <div class="panel-body">
+					            	<div class="tab-content">
+					                	<div class="tab-pane fade in active" id="inverter_energy-lft">
+
+	                                		<div id="inverter_energy_chart" style="height: 455px; margin-top: 40px;">
+						                        <svg>
+						                        </svg>
+						                    </div>
+
+	                                	</div>
+
+	                                	<div class="tab-pane fade" id="group_energy-lft">
+
+	                                		<div id="group_energy_chart" style="height: 225px; margin-top: 40px;">
+                                                <svg style="float: left;">
+
+                                                </svg>
+                                            </div>
+	                                	</div>
+
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+
+                    <!-- <div class="row">
+					    <div class="col-lg-12">
+
+					        <div id="yearenergy-panel-network-summary" class="panel">
+					            <div class="panel-heading">
+					                <div class="col-md-6">
+					                	<h3 class="panel-title"><span id="energy_heading"></span> Energy Generation</h3>
+					                </div>
+					                <div class="col-md-6 pad-top pull-right col-md-6_year">
+			                        	<div class="col-md-2"></div>
+					                	<div class="col-md-6">
+						                	<select class="form-control" id="start_energy_year">
+					                        	
+					                      	</select>
+						                </div>
+						                <div class="col-md-2">
+					                		<button type="submit" id="yearenergy-panel-network-summary-update" data-toggle="panel-overlay" data-target="#yearenergy-panel-network-summary-update" class="btn btn-success width-70">Update</button>
+					                	</div>
+					                	<div class="col-md-2">
+					                		<button type="submit" id="yearenergy-panel-network-summary-refresh" data-toggle="panel-overlay" data-target="#yearenergy-panel-network-summary-refresh" class="btn btn-info pad-no">Refresh</button>
+					                	</div>
+					                </div>
+					            </div>
+
+					            <div id="year_energy_chart_no_data">
+			                    </div>
+					            <div class="ibox-content" style="height: 365px">
+			                    	<div id="year_energy_chart" style="height: 290px">
+			                    	</div>
+			                	</div>
+			                </div>
+			            </div>
+			        </div> -->
+						    
+				    <!-- <div class="row">
+                        <a href="{% url 'solar:ticket-list' plant.slug %}">
+						<div class="col-md-6 col-lg-3">
+
+							<div class="panel media pad-all">
+								<div class="media-left">
+									<span class="icon-wrap icon-wrap-sm icon-circle bg-danger">
+									<i class="fa fa-exclamation fa-2x"></i>
+									</span>
+								</div>
+								<div class="media-body">
+									<p class="text-2x mar-no text-thin" id="unacknowledged_tickets">0</p>
+									<p class="text-bold mar-no">Unacknowledged Tickets</p>
+								</div>
+							</div>
+						</div>
+                        </a>
+                        <a href="{% url 'solar:ticket-list' plant.slug %}">
+						<div class="col-md-6 col-lg-3">
+							<div class="panel media pad-all">
+								<div class="media-left">
+									<span class="icon-wrap icon-wrap-sm icon-circle bg-warning">
+									<i class="fa fa-bolt fa-2x"></i>
+									</span>
+								</div>
+
+								<div class="media-body">
+									<p class="text-2x mar-no text-thin" id="open_tickets">0</p>
+									<p class="text-bold mar-no">Open Tickets</p>
+								</div>
+							</div>
+
+						</div>
+                        </a>
+                        <a href="{% url 'solar:ticket-list' plant.slug %}">
+						<div class="col-md-6 col-lg-3">
+							<div class="panel media pad-all">
+								<div class="media-left">
+									<span class="icon-wrap icon-wrap-sm icon-circle bg-info">
+									<i class="fa fa-check fa-2x"></i>
+									</span>
+								</div>
+
+								<div class="media-body">
+									<p class="text-2x mar-no text-thin" id="closed_tickets">0</p>
+									<p class="text-bold mar-no">Closed Tickets</p>
+								</div>
+							</div>
+						</div>
+                        </a>
+						<div class="col-md-6 col-lg-3">
+							<div class="panel media pad-all">
+								<div class="media-left">
+									<span class="icon-wrap icon-wrap-sm icon-circle bg-success">
+									<i class="fa fa-envira fa-2x"></i>
+									</span>
+								</div>
+								<div class="media-body">
+									<p class="text-2x mar-no text-thin">
+										<span id="co2_savings">
+										</span>
+									</p>
+									<p class="text-bold mar-no">CO<sub>2</sub> Savings</p>
+								</div>
+							</div>
+
+						</div>
+					</div> -->
+
+                	<!-- <div class="row">
+					    <div class="col-lg-12">
+					        <div id="power-panel-network" class="panel">
+					            <div class="panel-heading">
+					                <div class="col-md-6">
+					                	<h3 class="panel-title">Today's<span id="date_today_generation"> </span> Generation</h3>
+					                </div>
+					            </div>
+
+					            <div class="panel-control pull-left">
+						            <ul class="nav nav-tabs pull-left">
+					                    <li class="active"><a href="#plant_power-lft" data-toggle="tab" id="plant_powertab">Plant Power</a></li>
+					                    <li><a href="#group_power_chart-lft" data-toggle="tab" id="group_powertab" onClick="redraw_window();">Group Power</a></li>
+					                </ul>
+					    		</div>
+
+				                <div class="panel-body">
+					            	<div class="tab-content">
+					                	<div class="tab-pane fade in active" id="plant_power-lft">
+
+	                                		<div id="power_chart" style="height: 255px; margin-top: 40px;">
+						                        <svg>
+						                        </svg>
+						                    </div>
+
+	                                	</div>
+
+	                                	<div class="tab-pane fade" id="group_power_chart-lft">
+
+	                                		<div id="group_power_chart" style="height: 225px; margin-top: 40px;">
+                                                <svg style="float: left;">
+
+                                                </svg>
+                                            </div>
+	                                	</div>
+
+	                                </div>
+	                            </div> -->
+
+					            
+
+
+{#					                    <div class="col-lg-4">#}
+{#					                        <p class="text-semibold text-uppercase">Generation Today</p>#}
+{#					                        <div class="row">#}
+{#					                            <div class="col-xs-12">#}
+{#					                                <div class="media">#}
+{#					                                    <div class="media-left">#}
+{#					                                        <span class="text-3x text-thin">{{ today_generation|floatformat }} kWh</span>#}
+{#					                                    </div>#}
+{#					                                </div>#}
+{#					                            </div>#}
+{#					                            <div class="col-xs-6 text-sm">#}
+{#					                            </div>#}
+{#					                        </div>#}
+{#                                        </div>#}
+{##}
+{#					                    <div class="col-lg-4">#}
+{#					                        <p class="text-uppercase text-semibold">Devices Status</p>#}
+{#					                        <ul class="list-unstyled">#}
+{#					                            <li>#}
+{#					                                <div class="media">#}
+{#					                                    <div class="media-left">#}
+{#                                                            <p>#}
+{#                                                                <span class="text-lg">Inverters connected/disconnected</span>#}
+{#                                                                <span class="pad-lft text-semibold">#}
+{#                                                                    <span class="text-lg text-success">{{ inverters_status.stable|length }}</span> / <span class="text-lg text-danger">{{ inverters_status.errors|length }}</span>#}
+{#                                                                </span>#}
+{#                                                            </p>#}
+{#                                                            <p>#}
+{#                                                                <span class="text-lg">AJBs connected/disconnected</span>#}
+{#                                                                <span class="pad-lft text-semibold">#}
+{#                                                                    <span class="text-lg text-success">{{ inverters_status.stable|length }}</span> / <span class="text-lg text-danger">{{ inverters_status.errors|length }}</span>#}
+{#                                                                </span>#}
+{#                                                            </p>#}
+{##}
+{#					                                    </div>#}
+{#					                                </div>#}
+{#					                            </li>#}
+{#					                        </ul>#}
+{#					                    </div>#}
+{##}
+{#					                    <div class="col-lg-4">#}
+{#					                        <p class="text-uppercase text-semibold">Time</p>#}
+{#					                        <ul class="list-unstyled ">#}
+{#					                            <li>#}
+{#					                                <div class="media">#}
+{#					                                    <div class="media-left">#}
+{#					                                        <span class="text-2x text-thin">{{ date }}</span>#}
+{#					                                    </div>#}
+{#					                                </div>#}
+{#					                            </li>#}
+{#					                        </ul>#}
+{#					                    </div>#}
+
+
+					    	<!-- </div>
+						</div>
+					</div> -->
+
+				<!-- <div class="panel">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h3 class="" style="font-weight: normal;padding: 0px 20px 0 31px;font-size: 1.44em;">
+                            	<span>Inverter Status</span>
+                            	<br/>
+                            	<span id="present_time" style="font-size: 15px;"></span>
+                            </h3>
+                            <div class="row">
+	                         	<div class="col-lg-12">
+
+	                         		<div id="inverter-groups" class="panel" style="margin-bottom: 0px;">
+							            
+						                <div class="panel-control pull-left">
+							                <ul class="nav nav-tabs pull-left">
+							                    <li class="active"><a href="#orientations-lft" data-toggle="tab" id="orientationstab">Orientations</a></li>
+							                    <li><a href="#groups-lft" data-toggle="tab" id="groupstab">Groups</a></li>
+							                </ul>
+							            </div>
+
+							            <div class="row"></div>
+							            <div class="panel-body">
+							            	<div class="tab-content">
+							                	<div class="tab-pane fade in active" id="orientations-lft">
+
+			                                		<div id="inverter_status" style="margin-left:10px">
+
+			                                		</div>
+
+			                                	</div>
+
+			                                	<div class="tab-pane fade" id="groups-lft">
+
+			                                		<div id="inverter_status_groups" style="margin-left:10px">
+
+			                                		</div>
+
+			                                	</div>
+
+			                                </div>
+			                            </div>
+			                        </div>
+			                   	</div>
+	                        </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- <div class="modal fade inverter_modal" id="inverter_modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title"><span id="inverter_name"></span> Details</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p id="status_name"></p>
+                                <p id="status_connected"></p>
+                                <p id="status_orientation"></p>
+                                <p id="status_capacity"></p>
+                                <p id="status_power"></p>
+                                <p id="status_generation"></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+            </div>
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/dataglen/js/d3.v3.min.js" charset="utf-8"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/solarrms/js/papaparse.min.js"></script>
+
+    <script>
+    	var live_chart = null;
+
+        var plant_location = '{{ plant.openweather }}';
+        var plant_slug = '{{ plant.slug }}';
+        
+    </script>
+
+    <script src="/static/solarrms/js/demo/plant_power_data.js"></script>
+    <script src="/static/solarrms/js/demo/visualisations-summary_report.js"></script>
+{% endblock %}

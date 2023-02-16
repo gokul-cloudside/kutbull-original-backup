@@ -1,0 +1,41 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+
+{% block body_block %}
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            {% for solar_plant in solar_plants %}
+                {% if forloop.counter|divisibleby:4 %}
+                    </div>
+                    <div class="row">
+                {% endif %}
+                <div class="col-lg-4">
+                    <div class="contact-box">
+                        <a href={% url 'solar:plant' solar_plant.instance.slug %}>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h3><strong>{{ solar_plant.instance.name }}</strong></h3>
+                                    <p><i class="fa fa-map-marker"></i> {{ solar_plant.instance.location }}</p>
+                                    {% if solar_plant.inverters_status.errors == 0 and solar_plant.inverters_status.stable == 0 and solar_plant.inverters_status.warnings == 0 %}
+                                        <button class="btn btn-outline btn-info" type="button"><i class="fa fa-info"></i> No inverters! </button>
+                                    {% elif solar_plant.inverters_status.errors == 0 and solar_plant.inverters_status.stable > 0 %}
+                                        <button class="btn btn-outline btn-primary" type="button"><i class="fa fa-check"></i> No issues! </button>
+                                    {% else %}
+                                        <button class="btn btn-outline btn-danger" type="button"><i class="fa fa-close"></i> Errors! </button>
+                                    {% endif %}
+                                </div>
+                                <div class="col-lg-6">
+                                    Plant Capacity: <strong> {{ solar_plant.instance.capacity }} </strong>
+                                    Today's Gen.: <strong> {{ solar_plant.today_generation|floatformat }} KWh </strong> <br>
+                                    Inv. Connected: <strong> {{ solar_plant.inverters_status.stable }}</strong> <br>
+                                    Inv. Disconnected: <strong> {{ solar_plant.inverters_status.errors }}</strong> <br>
+                                    Sending Invalid Data: <strong> {{ solar_plant.inverters_status.warnings }}</strong> <br>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>KutBill</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+
+    <script>
+        $(function () {
+            $('#id_start_date').datepicker();
+            $('#id_end_date').datepicker();
+        });
+    </script>
+
+    <script>
+
+        function validate_form() {
+
+            var premise = document.getElementById('id_premise').value.trim();
+            var load = document.getElementById('id_load').value.trim();
+            var start_date = document.getElementById('id_start_date').value.trim();
+            var end_date = document.getElementById('id_end_date').value.trim();
+
+            if (premise == '') {
+                alert('Premise name must be specified')
+                return false
+            }
+
+            if (load == '') {
+                alert('Load name must be specified')
+                return false
+            }
+
+            if (start_date == '' || end_date == '' ||end_date < start_date) {
+                alert('Valid start and end dates must be specified.')
+                return false
+            }
+
+            return true
+        }
+    </script>
+</head>
+
+<body>
+{% if errors %}
+    <ul>
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<h1>Pick a Load</h1>
+
+<form name="index_form" action="{% url 'dataviz:show_data' %}"  method="post" onsubmit="return validate_form()">
+    {% csrf_token %}
+
+    <table width="450px">
+        {{ form.as_table }}
+
+        <tr>
+            <td colspan="1" style="text-align:center">
+                <input type="submit" value="Submit">
+            </td>
+
+            <td colspan="1" style="text-align:center">
+                <input type="reset" value="Reset">
+            </td>
+        </tr>
+    </table>
+</form>
+
+</body>
+</html>

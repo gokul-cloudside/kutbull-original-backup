@@ -1,0 +1,4588 @@
+{
+    "basePath": "/",
+    "definitions": {
+        "ActionFieldSerializer": {
+            "properties": {
+                "name": {
+                    "description": "Name of the data stream, should be unique for this source",
+                    "type": "string"
+                },
+                "source": {
+                    "description": "Key of the source this ActionField belongs to",
+                    "type": "string"
+                },
+                "streamDataType": {
+                    "description": "Type of the data this stream reports",
+                    "enum": [
+                        "INTEGER",
+                        "BOOLEAN",
+                        "STRING",
+                        "FLOAT",
+                        "LONG",
+                        "MAC",
+                        "TIMESTAMP",
+                        "DATE",
+                        "TIME"
+                    ]
+                },
+                "streamPositionInCSV": {
+                    "description": "Applicable only if source dataFormat is CSV, should be unique",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "streamDataUnit": {
+                    "description": "Data Unit",
+                    "type": "string"
+                },
+                "streamDateTimeFormat": {
+                    "description": "DateTime field values should be reported in ISO 8601 formats. You can specify custom formats here.",
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "source",
+                "streamDataType",
+                "streamDataUnit",
+                "streamDateTimeFormat",
+                "streamPositionInCSV",
+                "type"
+            ]
+        },
+        "ConfigFieldSerializer": {
+            "properties": {
+                "name": {
+                    "description": "Name of the data stream, should be unique for this source",
+                    "type": "string"
+                },
+                "source": {
+                    "description": "Key of the source this ConfigField belongs to",
+                    "type": "string"
+                },
+                "streamDataType": {
+                    "description": "Type of the data this stream reports",
+                    "enum": [
+                        "INTEGER",
+                        "BOOLEAN",
+                        "STRING",
+                        "FLOAT",
+                        "LONG",
+                        "MAC",
+                        "TIMESTAMP",
+                        "DATE",
+                        "TIME"
+                    ]
+                },
+                "streamPositionInCSV": {
+                    "description": "Applicable only if source dataFormat is CSV, should be unique",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "streamDataUnit": {
+                    "description": "Data Unit",
+                    "type": "string"
+                },
+                "streamDateTimeFormat": {
+                    "description": "DateTime field values should be reported in ISO 8601 formats. You can specify custom formats here.",
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "source",
+                "streamDataType",
+                "streamDataUnit",
+                "streamDateTimeFormat",
+                "streamPositionInCSV",
+                "type"
+            ]
+        },
+        "EnergyDataValues": {
+            "properties": {
+                "energy": {
+                    "description": "Energy value",
+                    "format": "float",
+                    "type": "number"
+                },
+                "timestamp": {
+                    "description": "Timestamp",
+                    "format": "date-time",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "energy",
+                "timestamp"
+            ]
+        },
+        "InverterDataValues": {
+            "properties": {
+                "sourceKey": {
+                    "description": "The key value of the inverter",
+                    "type": "string"
+                },
+                "streams": {
+                    "items": {
+                        "$ref": "#/definitions/InverterStreamDataValues"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "sourceKey",
+                "streams"
+            ]
+        },
+        "InverterSerializer": {
+            "properties": {
+                "name": {
+                    "description": "Name of the source, it should be unique",
+                    "type": "string"
+                },
+                "sourceKey": {
+                    "description": "Unique sensor key, a read only field",
+                    "type": "string"
+                },
+                "manufacturer": {
+                    "description": "Manufacturer name",
+                    "type": "string"
+                },
+                "dataReportingInterval": {
+                    "description": "Data reporting interval (in seconds)",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "dataTimezone": {
+                    "description": "Source timezone",
+                    "enum": [
+                        "Africa/Abidjan",
+                        "Africa/Accra",
+                        "Africa/Addis_Ababa",
+                        "Africa/Algiers",
+                        "Africa/Asmara",
+                        "Africa/Asmera",
+                        "Africa/Bamako",
+                        "Africa/Bangui",
+                        "Africa/Banjul",
+                        "Africa/Bissau",
+                        "Africa/Blantyre",
+                        "Africa/Brazzaville",
+                        "Africa/Bujumbura",
+                        "Africa/Cairo",
+                        "Africa/Casablanca",
+                        "Africa/Ceuta",
+                        "Africa/Conakry",
+                        "Africa/Dakar",
+                        "Africa/Dar_es_Salaam",
+                        "Africa/Djibouti",
+                        "Africa/Douala",
+                        "Africa/El_Aaiun",
+                        "Africa/Freetown",
+                        "Africa/Gaborone",
+                        "Africa/Harare",
+                        "Africa/Johannesburg",
+                        "Africa/Juba",
+                        "Africa/Kampala",
+                        "Africa/Khartoum",
+                        "Africa/Kigali",
+                        "Africa/Kinshasa",
+                        "Africa/Lagos",
+                        "Africa/Libreville",
+                        "Africa/Lome",
+                        "Africa/Luanda",
+                        "Africa/Lubumbashi",
+                        "Africa/Lusaka",
+                        "Africa/Malabo",
+                        "Africa/Maputo",
+                        "Africa/Maseru",
+                        "Africa/Mbabane",
+                        "Africa/Mogadishu",
+                        "Africa/Monrovia",
+                        "Africa/Nairobi",
+                        "Africa/Ndjamena",
+                        "Africa/Niamey",
+                        "Africa/Nouakchott",
+                        "Africa/Ouagadougou",
+                        "Africa/Porto-Novo",
+                        "Africa/Sao_Tome",
+                        "Africa/Timbuktu",
+                        "Africa/Tripoli",
+                        "Africa/Tunis",
+                        "Africa/Windhoek",
+                        "America/Adak",
+                        "America/Anchorage",
+                        "America/Anguilla",
+                        "America/Antigua",
+                        "America/Araguaina",
+                        "America/Argentina/Buenos_Aires",
+                        "America/Argentina/Catamarca",
+                        "America/Argentina/ComodRivadavia",
+                        "America/Argentina/Cordoba",
+                        "America/Argentina/Jujuy",
+                        "America/Argentina/La_Rioja",
+                        "America/Argentina/Mendoza",
+                        "America/Argentina/Rio_Gallegos",
+                        "America/Argentina/Salta",
+                        "America/Argentina/San_Juan",
+                        "America/Argentina/San_Luis",
+                        "America/Argentina/Tucuman",
+                        "America/Argentina/Ushuaia",
+                        "America/Aruba",
+                        "America/Asuncion",
+                        "America/Atikokan",
+                        "America/Atka",
+                        "America/Bahia",
+                        "America/Bahia_Banderas",
+                        "America/Barbados",
+                        "America/Belem",
+                        "America/Belize",
+                        "America/Blanc-Sablon",
+                        "America/Boa_Vista",
+                        "America/Bogota",
+                        "America/Boise",
+                        "America/Buenos_Aires",
+                        "America/Cambridge_Bay",
+                        "America/Campo_Grande",
+                        "America/Cancun",
+                        "America/Caracas",
+                        "America/Catamarca",
+                        "America/Cayenne",
+                        "America/Cayman",
+                        "America/Chicago",
+                        "America/Chihuahua",
+                        "America/Coral_Harbour",
+                        "America/Cordoba",
+                        "America/Costa_Rica",
+                        "America/Creston",
+                        "America/Cuiaba",
+                        "America/Curacao",
+                        "America/Danmarkshavn",
+                        "America/Dawson",
+                        "America/Dawson_Creek",
+                        "America/Denver",
+                        "America/Detroit",
+                        "America/Dominica",
+                        "America/Edmonton",
+                        "America/Eirunepe",
+                        "America/El_Salvador",
+                        "America/Ensenada",
+                        "America/Fort_Wayne",
+                        "America/Fortaleza",
+                        "America/Glace_Bay",
+                        "America/Godthab",
+                        "America/Goose_Bay",
+                        "America/Grand_Turk",
+                        "America/Grenada",
+                        "America/Guadeloupe",
+                        "America/Guatemala",
+                        "America/Guayaquil",
+                        "America/Guyana",
+                        "America/Halifax",
+                        "America/Havana",
+                        "America/Hermosillo",
+                        "America/Indiana/Indianapolis",
+                        "America/Indiana/Knox",
+                        "America/Indiana/Marengo",
+                        "America/Indiana/Petersburg",
+                        "America/Indiana/Tell_City",
+                        "America/Indiana/Vevay",
+                        "America/Indiana/Vincennes",
+                        "America/Indiana/Winamac",
+                        "America/Indianapolis",
+                        "America/Inuvik",
+                        "America/Iqaluit",
+                        "America/Jamaica",
+                        "America/Jujuy",
+                        "America/Juneau",
+                        "America/Kentucky/Louisville",
+                        "America/Kentucky/Monticello",
+                        "America/Knox_IN",
+                        "America/Kralendijk",
+                        "America/La_Paz",
+                        "America/Lima",
+                        "America/Los_Angeles",
+                        "America/Louisville",
+                        "America/Lower_Princes",
+                        "America/Maceio",
+                        "America/Managua",
+                        "America/Manaus",
+                        "America/Marigot",
+                        "America/Martinique",
+                        "America/Matamoros",
+                        "America/Mazatlan",
+                        "America/Mendoza",
+                        "America/Menominee",
+                        "America/Merida",
+                        "America/Metlakatla",
+                        "America/Mexico_City",
+                        "America/Miquelon",
+                        "America/Moncton",
+                        "America/Monterrey",
+                        "America/Montevideo",
+                        "America/Montreal",
+                        "America/Montserrat",
+                        "America/Nassau",
+                        "America/New_York",
+                        "America/Nipigon",
+                        "America/Nome",
+                        "America/Noronha",
+                        "America/North_Dakota/Beulah",
+                        "America/North_Dakota/Center",
+                        "America/North_Dakota/New_Salem",
+                        "America/Ojinaga",
+                        "America/Panama",
+                        "America/Pangnirtung",
+                        "America/Paramaribo",
+                        "America/Phoenix",
+                        "America/Port-au-Prince",
+                        "America/Port_of_Spain",
+                        "America/Porto_Acre",
+                        "America/Porto_Velho",
+                        "America/Puerto_Rico",
+                        "America/Rainy_River",
+                        "America/Rankin_Inlet",
+                        "America/Recife",
+                        "America/Regina",
+                        "America/Resolute",
+                        "America/Rio_Branco",
+                        "America/Rosario",
+                        "America/Santa_Isabel",
+                        "America/Santarem",
+                        "America/Santiago",
+                        "America/Santo_Domingo",
+                        "America/Sao_Paulo",
+                        "America/Scoresbysund",
+                        "America/Shiprock",
+                        "America/Sitka",
+                        "America/St_Barthelemy",
+                        "America/St_Johns",
+                        "America/St_Kitts",
+                        "America/St_Lucia",
+                        "America/St_Thomas",
+                        "America/St_Vincent",
+                        "America/Swift_Current",
+                        "America/Tegucigalpa",
+                        "America/Thule",
+                        "America/Thunder_Bay",
+                        "America/Tijuana",
+                        "America/Toronto",
+                        "America/Tortola",
+                        "America/Vancouver",
+                        "America/Virgin",
+                        "America/Whitehorse",
+                        "America/Winnipeg",
+                        "America/Yakutat",
+                        "America/Yellowknife",
+                        "Antarctica/Casey",
+                        "Antarctica/Davis",
+                        "Antarctica/DumontDUrville",
+                        "Antarctica/Macquarie",
+                        "Antarctica/Mawson",
+                        "Antarctica/McMurdo",
+                        "Antarctica/Palmer",
+                        "Antarctica/Rothera",
+                        "Antarctica/South_Pole",
+                        "Antarctica/Syowa",
+                        "Antarctica/Troll",
+                        "Antarctica/Vostok",
+                        "Arctic/Longyearbyen",
+                        "Asia/Aden",
+                        "Asia/Almaty",
+                        "Asia/Amman",
+                        "Asia/Anadyr",
+                        "Asia/Aqtau",
+                        "Asia/Aqtobe",
+                        "Asia/Ashgabat",
+                        "Asia/Ashkhabad",
+                        "Asia/Baghdad",
+                        "Asia/Bahrain",
+                        "Asia/Baku",
+                        "Asia/Bangkok",
+                        "Asia/Beirut",
+                        "Asia/Bishkek",
+                        "Asia/Brunei",
+                        "Asia/Calcutta",
+                        "Asia/Chita",
+                        "Asia/Choibalsan",
+                        "Asia/Chongqing",
+                        "Asia/Chungking",
+                        "Asia/Colombo",
+                        "Asia/Dacca",
+                        "Asia/Damascus",
+                        "Asia/Dhaka",
+                        "Asia/Dili",
+                        "Asia/Dubai",
+                        "Asia/Dushanbe",
+                        "Asia/Gaza",
+                        "Asia/Harbin",
+                        "Asia/Hebron",
+                        "Asia/Ho_Chi_Minh",
+                        "Asia/Hong_Kong",
+                        "Asia/Hovd",
+                        "Asia/Irkutsk",
+                        "Asia/Istanbul",
+                        "Asia/Jakarta",
+                        "Asia/Jayapura",
+                        "Asia/Jerusalem",
+                        "Asia/Kabul",
+                        "Asia/Kamchatka",
+                        "Asia/Karachi",
+                        "Asia/Kashgar",
+                        "Asia/Kathmandu",
+                        "Asia/Katmandu",
+                        "Asia/Khandyga",
+                        "Asia/Kolkata",
+                        "Asia/Krasnoyarsk",
+                        "Asia/Kuala_Lumpur",
+                        "Asia/Kuching",
+                        "Asia/Kuwait",
+                        "Asia/Macao",
+                        "Asia/Macau",
+                        "Asia/Magadan",
+                        "Asia/Makassar",
+                        "Asia/Manila",
+                        "Asia/Muscat",
+                        "Asia/Nicosia",
+                        "Asia/Novokuznetsk",
+                        "Asia/Novosibirsk",
+                        "Asia/Omsk",
+                        "Asia/Oral",
+                        "Asia/Phnom_Penh",
+                        "Asia/Pontianak",
+                        "Asia/Pyongyang",
+                        "Asia/Qatar",
+                        "Asia/Qyzylorda",
+                        "Asia/Rangoon",
+                        "Asia/Riyadh",
+                        "Asia/Saigon",
+                        "Asia/Sakhalin",
+                        "Asia/Samarkand",
+                        "Asia/Seoul",
+                        "Asia/Shanghai",
+                        "Asia/Singapore",
+                        "Asia/Srednekolymsk",
+                        "Asia/Taipei",
+                        "Asia/Tashkent",
+                        "Asia/Tbilisi",
+                        "Asia/Tehran",
+                        "Asia/Tel_Aviv",
+                        "Asia/Thimbu",
+                        "Asia/Thimphu",
+                        "Asia/Tokyo",
+                        "Asia/Ujung_Pandang",
+                        "Asia/Ulaanbaatar",
+                        "Asia/Ulan_Bator",
+                        "Asia/Urumqi",
+                        "Asia/Ust-Nera",
+                        "Asia/Vientiane",
+                        "Asia/Vladivostok",
+                        "Asia/Yakutsk",
+                        "Asia/Yekaterinburg",
+                        "Asia/Yerevan",
+                        "Atlantic/Azores",
+                        "Atlantic/Bermuda",
+                        "Atlantic/Canary",
+                        "Atlantic/Cape_Verde",
+                        "Atlantic/Faeroe",
+                        "Atlantic/Faroe",
+                        "Atlantic/Jan_Mayen",
+                        "Atlantic/Madeira",
+                        "Atlantic/Reykjavik",
+                        "Atlantic/South_Georgia",
+                        "Atlantic/St_Helena",
+                        "Atlantic/Stanley",
+                        "Australia/ACT",
+                        "Australia/Adelaide",
+                        "Australia/Brisbane",
+                        "Australia/Broken_Hill",
+                        "Australia/Canberra",
+                        "Australia/Currie",
+                        "Australia/Darwin",
+                        "Australia/Eucla",
+                        "Australia/Hobart",
+                        "Australia/LHI",
+                        "Australia/Lindeman",
+                        "Australia/Lord_Howe",
+                        "Australia/Melbourne",
+                        "Australia/NSW",
+                        "Australia/North",
+                        "Australia/Perth",
+                        "Australia/Queensland",
+                        "Australia/South",
+                        "Australia/Sydney",
+                        "Australia/Tasmania",
+                        "Australia/Victoria",
+                        "Australia/West",
+                        "Australia/Yancowinna",
+                        "Brazil/Acre",
+                        "Brazil/DeNoronha",
+                        "Brazil/East",
+                        "Brazil/West",
+                        "CET",
+                        "CST6CDT",
+                        "Canada/Atlantic",
+                        "Canada/Central",
+                        "Canada/East-Saskatchewan",
+                        "Canada/Eastern",
+                        "Canada/Mountain",
+                        "Canada/Newfoundland",
+                        "Canada/Pacific",
+                        "Canada/Saskatchewan",
+                        "Canada/Yukon",
+                        "Chile/Continental",
+                        "Chile/EasterIsland",
+                        "Cuba",
+                        "EET",
+                        "EST",
+                        "EST5EDT",
+                        "Egypt",
+                        "Eire",
+                        "Etc/GMT",
+                        "Etc/GMT+0",
+                        "Etc/GMT+1",
+                        "Etc/GMT+10",
+                        "Etc/GMT+11",
+                        "Etc/GMT+12",
+                        "Etc/GMT+2",
+                        "Etc/GMT+3",
+                        "Etc/GMT+4",
+                        "Etc/GMT+5",
+                        "Etc/GMT+6",
+                        "Etc/GMT+7",
+                        "Etc/GMT+8",
+                        "Etc/GMT+9",
+                        "Etc/GMT-0",
+                        "Etc/GMT-1",
+                        "Etc/GMT-10",
+                        "Etc/GMT-11",
+                        "Etc/GMT-12",
+                        "Etc/GMT-13",
+                        "Etc/GMT-14",
+                        "Etc/GMT-2",
+                        "Etc/GMT-3",
+                        "Etc/GMT-4",
+                        "Etc/GMT-5",
+                        "Etc/GMT-6",
+                        "Etc/GMT-7",
+                        "Etc/GMT-8",
+                        "Etc/GMT-9",
+                        "Etc/GMT0",
+                        "Etc/Greenwich",
+                        "Etc/UCT",
+                        "Etc/UTC",
+                        "Etc/Universal",
+                        "Etc/Zulu",
+                        "Europe/Amsterdam",
+                        "Europe/Andorra",
+                        "Europe/Athens",
+                        "Europe/Belfast",
+                        "Europe/Belgrade",
+                        "Europe/Berlin",
+                        "Europe/Bratislava",
+                        "Europe/Brussels",
+                        "Europe/Bucharest",
+                        "Europe/Budapest",
+                        "Europe/Busingen",
+                        "Europe/Chisinau",
+                        "Europe/Copenhagen",
+                        "Europe/Dublin",
+                        "Europe/Gibraltar",
+                        "Europe/Guernsey",
+                        "Europe/Helsinki",
+                        "Europe/Isle_of_Man",
+                        "Europe/Istanbul",
+                        "Europe/Jersey",
+                        "Europe/Kaliningrad",
+                        "Europe/Kiev",
+                        "Europe/Lisbon",
+                        "Europe/Ljubljana",
+                        "Europe/London",
+                        "Europe/Luxembourg",
+                        "Europe/Madrid",
+                        "Europe/Malta",
+                        "Europe/Mariehamn",
+                        "Europe/Minsk",
+                        "Europe/Monaco",
+                        "Europe/Moscow",
+                        "Europe/Nicosia",
+                        "Europe/Oslo",
+                        "Europe/Paris",
+                        "Europe/Podgorica",
+                        "Europe/Prague",
+                        "Europe/Riga",
+                        "Europe/Rome",
+                        "Europe/Samara",
+                        "Europe/San_Marino",
+                        "Europe/Sarajevo",
+                        "Europe/Simferopol",
+                        "Europe/Skopje",
+                        "Europe/Sofia",
+                        "Europe/Stockholm",
+                        "Europe/Tallinn",
+                        "Europe/Tirane",
+                        "Europe/Tiraspol",
+                        "Europe/Uzhgorod",
+                        "Europe/Vaduz",
+                        "Europe/Vatican",
+                        "Europe/Vienna",
+                        "Europe/Vilnius",
+                        "Europe/Volgograd",
+                        "Europe/Warsaw",
+                        "Europe/Zagreb",
+                        "Europe/Zaporozhye",
+                        "Europe/Zurich",
+                        "GB",
+                        "GB-Eire",
+                        "GMT",
+                        "GMT+0",
+                        "GMT-0",
+                        "GMT0",
+                        "Greenwich",
+                        "HST",
+                        "Hongkong",
+                        "Iceland",
+                        "Indian/Antananarivo",
+                        "Indian/Chagos",
+                        "Indian/Christmas",
+                        "Indian/Cocos",
+                        "Indian/Comoro",
+                        "Indian/Kerguelen",
+                        "Indian/Mahe",
+                        "Indian/Maldives",
+                        "Indian/Mauritius",
+                        "Indian/Mayotte",
+                        "Indian/Reunion",
+                        "Iran",
+                        "Israel",
+                        "Jamaica",
+                        "Japan",
+                        "Kwajalein",
+                        "Libya",
+                        "MET",
+                        "MST",
+                        "MST7MDT",
+                        "Mexico/BajaNorte",
+                        "Mexico/BajaSur",
+                        "Mexico/General",
+                        "NZ",
+                        "NZ-CHAT",
+                        "Navajo",
+                        "PRC",
+                        "PST8PDT",
+                        "Pacific/Apia",
+                        "Pacific/Auckland",
+                        "Pacific/Bougainville",
+                        "Pacific/Chatham",
+                        "Pacific/Chuuk",
+                        "Pacific/Easter",
+                        "Pacific/Efate",
+                        "Pacific/Enderbury",
+                        "Pacific/Fakaofo",
+                        "Pacific/Fiji",
+                        "Pacific/Funafuti",
+                        "Pacific/Galapagos",
+                        "Pacific/Gambier",
+                        "Pacific/Guadalcanal",
+                        "Pacific/Guam",
+                        "Pacific/Honolulu",
+                        "Pacific/Johnston",
+                        "Pacific/Kiritimati",
+                        "Pacific/Kosrae",
+                        "Pacific/Kwajalein",
+                        "Pacific/Majuro",
+                        "Pacific/Marquesas",
+                        "Pacific/Midway",
+                        "Pacific/Nauru",
+                        "Pacific/Niue",
+                        "Pacific/Norfolk",
+                        "Pacific/Noumea",
+                        "Pacific/Pago_Pago",
+                        "Pacific/Palau",
+                        "Pacific/Pitcairn",
+                        "Pacific/Pohnpei",
+                        "Pacific/Ponape",
+                        "Pacific/Port_Moresby",
+                        "Pacific/Rarotonga",
+                        "Pacific/Saipan",
+                        "Pacific/Samoa",
+                        "Pacific/Tahiti",
+                        "Pacific/Tarawa",
+                        "Pacific/Tongatapu",
+                        "Pacific/Truk",
+                        "Pacific/Wake",
+                        "Pacific/Wallis",
+                        "Pacific/Yap",
+                        "Poland",
+                        "Portugal",
+                        "ROC",
+                        "ROK",
+                        "Singapore",
+                        "Turkey",
+                        "UCT",
+                        "US/Alaska",
+                        "US/Aleutian",
+                        "US/Arizona",
+                        "US/Central",
+                        "US/East-Indiana",
+                        "US/Eastern",
+                        "US/Hawaii",
+                        "US/Indiana-Starke",
+                        "US/Michigan",
+                        "US/Mountain",
+                        "US/Pacific",
+                        "US/Pacific-New",
+                        "US/Samoa",
+                        "UTC",
+                        "Universal",
+                        "W-SU",
+                        "WET",
+                        "Zulu"
+                    ]
+                },
+                "isActive": {
+                    "description": "Data will be accepted only if this parameter is True",
+                    "type": "boolean"
+                },
+                "isMonitored": {
+                    "description": "This source will be monitored only if this parameter is True",
+                    "type": "boolean"
+                },
+                "sourceMacAddress": {
+                    "description": "Source hardware identifier",
+                    "type": "string"
+                },
+                "timeoutInterval": {
+                    "description": "If there is no data for these many seconds, a notification will be raised",
+                    "format": "int64",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "name",
+                "sourceKey",
+                "manufacturer",
+                "dataReportingInterval",
+                "sourceMacAddress",
+                "isActive",
+                "isMonitored",
+                "timeoutInterval",
+                "dataTimezone"
+            ]
+        },
+        "InverterStreamDataValues": {
+            "properties": {
+                "name": {
+                    "description": "Stream name",
+                    "type": "string"
+                },
+                "timestamps": {
+                    "description": "The timestamps at which data was reported",
+                    "type": "string"
+                },
+                "values": {
+                    "description": "Stream values at the given timestamps",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "values",
+                "timestamps"
+            ]
+        },
+        "PlantSerializer": {
+            "properties": {
+                "name": {
+                    "description": "The name of the organization",
+                    "type": "string"
+                },
+                "slug": {
+                    "description": "The name in all lowercase, suitable for URL identification",
+                    "type": "string"
+                },
+                "capacity": {
+                    "description": "The capacity of the solar plant in KW",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "location": {
+                    "description": "The location of the plant (City, State)",
+                    "type": "string"
+                },
+                "latitude": {
+                    "description": "The latitude coordinates of the plant location",
+                    "format": "float",
+                    "type": "number"
+                },
+                "longitude": {
+                    "description": "The latitude coordinates of the plant location",
+                    "format": "float",
+                    "type": "number"
+                }               
+            },
+            "required": [
+                "name",
+                "slug",
+                "capacity",
+                "location",
+                "latitude",
+                "longitude"
+            ]
+        },
+        "SourceActionValues": {
+            "properties": {
+                "insertionTime": {
+                    "description": "The timestamps at which action was reported",
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "sourceKey": {
+                    "description": "The key value of the source",
+                    "type": "string"
+                },
+                "streams": {
+                    "items": {
+                        "$ref": "#/definitions/StreamActionValues"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "sourceKey",
+                "insertionTime",
+                "streams"
+            ]
+        },
+        "SourceConfigValues": {
+            "properties": {
+                "insertionTime": {
+                    "description": "The timestamps at which action was reported",
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "sourceKey": {
+                    "description": "The key value of the source",
+                    "type": "string"
+                },
+                "streams": {
+                    "items": {
+                        "$ref": "#/definitions/StreamConfigValues"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "sourceKey",
+                "insertionTime",
+                "streams"
+            ]
+        },
+        "SourceDataValues": {
+            "properties": {
+                "sourceKey": {
+                    "description": "The key value of the source",
+                    "type": "string"
+                },
+                "streams": {
+                    "description": "The value of the mentioned streams",
+                    "items": {
+                        "$ref": "#/definitions/StreamDataValues"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "sourceKey",
+                "streams"
+            ]
+        },
+        "SourceSerializer": {
+            "properties": {
+                "name": {
+                    "description": "Name of the source, it should be unique",
+                    "type": "string"
+                },
+                "sourceKey": {
+                    "description": "Unique sensor key, a read only field",
+                    "type": "string"
+                },
+                "dataFormat": {
+                    "description": "The format in which this source sends data records",
+                    "enum": [
+                        "JSON",
+                        "CSV"
+                    ]
+                },
+                "dataReportingInterval": {
+                    "description": "Data reporting interval (in seconds)",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "UID": {
+                    "description": "If UID is specified, it should be unique across the entire platform.",
+                    "type": "string"
+                },
+                "actuationEnabled": {
+                    "description": "If this source has actuation features enabled. Keep it unchecked if unsure.",
+                    "type": "boolean"
+                },
+                "csvDataKeyName": {
+                    "description": "Key name that holds comma separated data (applicable only if source dataFormat is CSV)",
+                    "type": "string"
+                },
+                "dataTimezone": {
+                    "description": "Source timezone",
+                    "enum": [
+                        "Africa/Abidjan",
+                        "Africa/Accra",
+                        "Africa/Addis_Ababa",
+                        "Africa/Algiers",
+                        "Africa/Asmara",
+                        "Africa/Asmera",
+                        "Africa/Bamako",
+                        "Africa/Bangui",
+                        "Africa/Banjul",
+                        "Africa/Bissau",
+                        "Africa/Blantyre",
+                        "Africa/Brazzaville",
+                        "Africa/Bujumbura",
+                        "Africa/Cairo",
+                        "Africa/Casablanca",
+                        "Africa/Ceuta",
+                        "Africa/Conakry",
+                        "Africa/Dakar",
+                        "Africa/Dar_es_Salaam",
+                        "Africa/Djibouti",
+                        "Africa/Douala",
+                        "Africa/El_Aaiun",
+                        "Africa/Freetown",
+                        "Africa/Gaborone",
+                        "Africa/Harare",
+                        "Africa/Johannesburg",
+                        "Africa/Juba",
+                        "Africa/Kampala",
+                        "Africa/Khartoum",
+                        "Africa/Kigali",
+                        "Africa/Kinshasa",
+                        "Africa/Lagos",
+                        "Africa/Libreville",
+                        "Africa/Lome",
+                        "Africa/Luanda",
+                        "Africa/Lubumbashi",
+                        "Africa/Lusaka",
+                        "Africa/Malabo",
+                        "Africa/Maputo",
+                        "Africa/Maseru",
+                        "Africa/Mbabane",
+                        "Africa/Mogadishu",
+                        "Africa/Monrovia",
+                        "Africa/Nairobi",
+                        "Africa/Ndjamena",
+                        "Africa/Niamey",
+                        "Africa/Nouakchott",
+                        "Africa/Ouagadougou",
+                        "Africa/Porto-Novo",
+                        "Africa/Sao_Tome",
+                        "Africa/Timbuktu",
+                        "Africa/Tripoli",
+                        "Africa/Tunis",
+                        "Africa/Windhoek",
+                        "America/Adak",
+                        "America/Anchorage",
+                        "America/Anguilla",
+                        "America/Antigua",
+                        "America/Araguaina",
+                        "America/Argentina/Buenos_Aires",
+                        "America/Argentina/Catamarca",
+                        "America/Argentina/ComodRivadavia",
+                        "America/Argentina/Cordoba",
+                        "America/Argentina/Jujuy",
+                        "America/Argentina/La_Rioja",
+                        "America/Argentina/Mendoza",
+                        "America/Argentina/Rio_Gallegos",
+                        "America/Argentina/Salta",
+                        "America/Argentina/San_Juan",
+                        "America/Argentina/San_Luis",
+                        "America/Argentina/Tucuman",
+                        "America/Argentina/Ushuaia",
+                        "America/Aruba",
+                        "America/Asuncion",
+                        "America/Atikokan",
+                        "America/Atka",
+                        "America/Bahia",
+                        "America/Bahia_Banderas",
+                        "America/Barbados",
+                        "America/Belem",
+                        "America/Belize",
+                        "America/Blanc-Sablon",
+                        "America/Boa_Vista",
+                        "America/Bogota",
+                        "America/Boise",
+                        "America/Buenos_Aires",
+                        "America/Cambridge_Bay",
+                        "America/Campo_Grande",
+                        "America/Cancun",
+                        "America/Caracas",
+                        "America/Catamarca",
+                        "America/Cayenne",
+                        "America/Cayman",
+                        "America/Chicago",
+                        "America/Chihuahua",
+                        "America/Coral_Harbour",
+                        "America/Cordoba",
+                        "America/Costa_Rica",
+                        "America/Creston",
+                        "America/Cuiaba",
+                        "America/Curacao",
+                        "America/Danmarkshavn",
+                        "America/Dawson",
+                        "America/Dawson_Creek",
+                        "America/Denver",
+                        "America/Detroit",
+                        "America/Dominica",
+                        "America/Edmonton",
+                        "America/Eirunepe",
+                        "America/El_Salvador",
+                        "America/Ensenada",
+                        "America/Fort_Wayne",
+                        "America/Fortaleza",
+                        "America/Glace_Bay",
+                        "America/Godthab",
+                        "America/Goose_Bay",
+                        "America/Grand_Turk",
+                        "America/Grenada",
+                        "America/Guadeloupe",
+                        "America/Guatemala",
+                        "America/Guayaquil",
+                        "America/Guyana",
+                        "America/Halifax",
+                        "America/Havana",
+                        "America/Hermosillo",
+                        "America/Indiana/Indianapolis",
+                        "America/Indiana/Knox",
+                        "America/Indiana/Marengo",
+                        "America/Indiana/Petersburg",
+                        "America/Indiana/Tell_City",
+                        "America/Indiana/Vevay",
+                        "America/Indiana/Vincennes",
+                        "America/Indiana/Winamac",
+                        "America/Indianapolis",
+                        "America/Inuvik",
+                        "America/Iqaluit",
+                        "America/Jamaica",
+                        "America/Jujuy",
+                        "America/Juneau",
+                        "America/Kentucky/Louisville",
+                        "America/Kentucky/Monticello",
+                        "America/Knox_IN",
+                        "America/Kralendijk",
+                        "America/La_Paz",
+                        "America/Lima",
+                        "America/Los_Angeles",
+                        "America/Louisville",
+                        "America/Lower_Princes",
+                        "America/Maceio",
+                        "America/Managua",
+                        "America/Manaus",
+                        "America/Marigot",
+                        "America/Martinique",
+                        "America/Matamoros",
+                        "America/Mazatlan",
+                        "America/Mendoza",
+                        "America/Menominee",
+                        "America/Merida",
+                        "America/Metlakatla",
+                        "America/Mexico_City",
+                        "America/Miquelon",
+                        "America/Moncton",
+                        "America/Monterrey",
+                        "America/Montevideo",
+                        "America/Montreal",
+                        "America/Montserrat",
+                        "America/Nassau",
+                        "America/New_York",
+                        "America/Nipigon",
+                        "America/Nome",
+                        "America/Noronha",
+                        "America/North_Dakota/Beulah",
+                        "America/North_Dakota/Center",
+                        "America/North_Dakota/New_Salem",
+                        "America/Ojinaga",
+                        "America/Panama",
+                        "America/Pangnirtung",
+                        "America/Paramaribo",
+                        "America/Phoenix",
+                        "America/Port-au-Prince",
+                        "America/Port_of_Spain",
+                        "America/Porto_Acre",
+                        "America/Porto_Velho",
+                        "America/Puerto_Rico",
+                        "America/Rainy_River",
+                        "America/Rankin_Inlet",
+                        "America/Recife",
+                        "America/Regina",
+                        "America/Resolute",
+                        "America/Rio_Branco",
+                        "America/Rosario",
+                        "America/Santa_Isabel",
+                        "America/Santarem",
+                        "America/Santiago",
+                        "America/Santo_Domingo",
+                        "America/Sao_Paulo",
+                        "America/Scoresbysund",
+                        "America/Shiprock",
+                        "America/Sitka",
+                        "America/St_Barthelemy",
+                        "America/St_Johns",
+                        "America/St_Kitts",
+                        "America/St_Lucia",
+                        "America/St_Thomas",
+                        "America/St_Vincent",
+                        "America/Swift_Current",
+                        "America/Tegucigalpa",
+                        "America/Thule",
+                        "America/Thunder_Bay",
+                        "America/Tijuana",
+                        "America/Toronto",
+                        "America/Tortola",
+                        "America/Vancouver",
+                        "America/Virgin",
+                        "America/Whitehorse",
+                        "America/Winnipeg",
+                        "America/Yakutat",
+                        "America/Yellowknife",
+                        "Antarctica/Casey",
+                        "Antarctica/Davis",
+                        "Antarctica/DumontDUrville",
+                        "Antarctica/Macquarie",
+                        "Antarctica/Mawson",
+                        "Antarctica/McMurdo",
+                        "Antarctica/Palmer",
+                        "Antarctica/Rothera",
+                        "Antarctica/South_Pole",
+                        "Antarctica/Syowa",
+                        "Antarctica/Troll",
+                        "Antarctica/Vostok",
+                        "Arctic/Longyearbyen",
+                        "Asia/Aden",
+                        "Asia/Almaty",
+                        "Asia/Amman",
+                        "Asia/Anadyr",
+                        "Asia/Aqtau",
+                        "Asia/Aqtobe",
+                        "Asia/Ashgabat",
+                        "Asia/Ashkhabad",
+                        "Asia/Baghdad",
+                        "Asia/Bahrain",
+                        "Asia/Baku",
+                        "Asia/Bangkok",
+                        "Asia/Beirut",
+                        "Asia/Bishkek",
+                        "Asia/Brunei",
+                        "Asia/Calcutta",
+                        "Asia/Chita",
+                        "Asia/Choibalsan",
+                        "Asia/Chongqing",
+                        "Asia/Chungking",
+                        "Asia/Colombo",
+                        "Asia/Dacca",
+                        "Asia/Damascus",
+                        "Asia/Dhaka",
+                        "Asia/Dili",
+                        "Asia/Dubai",
+                        "Asia/Dushanbe",
+                        "Asia/Gaza",
+                        "Asia/Harbin",
+                        "Asia/Hebron",
+                        "Asia/Ho_Chi_Minh",
+                        "Asia/Hong_Kong",
+                        "Asia/Hovd",
+                        "Asia/Irkutsk",
+                        "Asia/Istanbul",
+                        "Asia/Jakarta",
+                        "Asia/Jayapura",
+                        "Asia/Jerusalem",
+                        "Asia/Kabul",
+                        "Asia/Kamchatka",
+                        "Asia/Karachi",
+                        "Asia/Kashgar",
+                        "Asia/Kathmandu",
+                        "Asia/Katmandu",
+                        "Asia/Khandyga",
+                        "Asia/Kolkata",
+                        "Asia/Krasnoyarsk",
+                        "Asia/Kuala_Lumpur",
+                        "Asia/Kuching",
+                        "Asia/Kuwait",
+                        "Asia/Macao",
+                        "Asia/Macau",
+                        "Asia/Magadan",
+                        "Asia/Makassar",
+                        "Asia/Manila",
+                        "Asia/Muscat",
+                        "Asia/Nicosia",
+                        "Asia/Novokuznetsk",
+                        "Asia/Novosibirsk",
+                        "Asia/Omsk",
+                        "Asia/Oral",
+                        "Asia/Phnom_Penh",
+                        "Asia/Pontianak",
+                        "Asia/Pyongyang",
+                        "Asia/Qatar",
+                        "Asia/Qyzylorda",
+                        "Asia/Rangoon",
+                        "Asia/Riyadh",
+                        "Asia/Saigon",
+                        "Asia/Sakhalin",
+                        "Asia/Samarkand",
+                        "Asia/Seoul",
+                        "Asia/Shanghai",
+                        "Asia/Singapore",
+                        "Asia/Srednekolymsk",
+                        "Asia/Taipei",
+                        "Asia/Tashkent",
+                        "Asia/Tbilisi",
+                        "Asia/Tehran",
+                        "Asia/Tel_Aviv",
+                        "Asia/Thimbu",
+                        "Asia/Thimphu",
+                        "Asia/Tokyo",
+                        "Asia/Ujung_Pandang",
+                        "Asia/Ulaanbaatar",
+                        "Asia/Ulan_Bator",
+                        "Asia/Urumqi",
+                        "Asia/Ust-Nera",
+                        "Asia/Vientiane",
+                        "Asia/Vladivostok",
+                        "Asia/Yakutsk",
+                        "Asia/Yekaterinburg",
+                        "Asia/Yerevan",
+                        "Atlantic/Azores",
+                        "Atlantic/Bermuda",
+                        "Atlantic/Canary",
+                        "Atlantic/Cape_Verde",
+                        "Atlantic/Faeroe",
+                        "Atlantic/Faroe",
+                        "Atlantic/Jan_Mayen",
+                        "Atlantic/Madeira",
+                        "Atlantic/Reykjavik",
+                        "Atlantic/South_Georgia",
+                        "Atlantic/St_Helena",
+                        "Atlantic/Stanley",
+                        "Australia/ACT",
+                        "Australia/Adelaide",
+                        "Australia/Brisbane",
+                        "Australia/Broken_Hill",
+                        "Australia/Canberra",
+                        "Australia/Currie",
+                        "Australia/Darwin",
+                        "Australia/Eucla",
+                        "Australia/Hobart",
+                        "Australia/LHI",
+                        "Australia/Lindeman",
+                        "Australia/Lord_Howe",
+                        "Australia/Melbourne",
+                        "Australia/NSW",
+                        "Australia/North",
+                        "Australia/Perth",
+                        "Australia/Queensland",
+                        "Australia/South",
+                        "Australia/Sydney",
+                        "Australia/Tasmania",
+                        "Australia/Victoria",
+                        "Australia/West",
+                        "Australia/Yancowinna",
+                        "Brazil/Acre",
+                        "Brazil/DeNoronha",
+                        "Brazil/East",
+                        "Brazil/West",
+                        "CET",
+                        "CST6CDT",
+                        "Canada/Atlantic",
+                        "Canada/Central",
+                        "Canada/East-Saskatchewan",
+                        "Canada/Eastern",
+                        "Canada/Mountain",
+                        "Canada/Newfoundland",
+                        "Canada/Pacific",
+                        "Canada/Saskatchewan",
+                        "Canada/Yukon",
+                        "Chile/Continental",
+                        "Chile/EasterIsland",
+                        "Cuba",
+                        "EET",
+                        "EST",
+                        "EST5EDT",
+                        "Egypt",
+                        "Eire",
+                        "Etc/GMT",
+                        "Etc/GMT+0",
+                        "Etc/GMT+1",
+                        "Etc/GMT+10",
+                        "Etc/GMT+11",
+                        "Etc/GMT+12",
+                        "Etc/GMT+2",
+                        "Etc/GMT+3",
+                        "Etc/GMT+4",
+                        "Etc/GMT+5",
+                        "Etc/GMT+6",
+                        "Etc/GMT+7",
+                        "Etc/GMT+8",
+                        "Etc/GMT+9",
+                        "Etc/GMT-0",
+                        "Etc/GMT-1",
+                        "Etc/GMT-10",
+                        "Etc/GMT-11",
+                        "Etc/GMT-12",
+                        "Etc/GMT-13",
+                        "Etc/GMT-14",
+                        "Etc/GMT-2",
+                        "Etc/GMT-3",
+                        "Etc/GMT-4",
+                        "Etc/GMT-5",
+                        "Etc/GMT-6",
+                        "Etc/GMT-7",
+                        "Etc/GMT-8",
+                        "Etc/GMT-9",
+                        "Etc/GMT0",
+                        "Etc/Greenwich",
+                        "Etc/UCT",
+                        "Etc/UTC",
+                        "Etc/Universal",
+                        "Etc/Zulu",
+                        "Europe/Amsterdam",
+                        "Europe/Andorra",
+                        "Europe/Athens",
+                        "Europe/Belfast",
+                        "Europe/Belgrade",
+                        "Europe/Berlin",
+                        "Europe/Bratislava",
+                        "Europe/Brussels",
+                        "Europe/Bucharest",
+                        "Europe/Budapest",
+                        "Europe/Busingen",
+                        "Europe/Chisinau",
+                        "Europe/Copenhagen",
+                        "Europe/Dublin",
+                        "Europe/Gibraltar",
+                        "Europe/Guernsey",
+                        "Europe/Helsinki",
+                        "Europe/Isle_of_Man",
+                        "Europe/Istanbul",
+                        "Europe/Jersey",
+                        "Europe/Kaliningrad",
+                        "Europe/Kiev",
+                        "Europe/Lisbon",
+                        "Europe/Ljubljana",
+                        "Europe/London",
+                        "Europe/Luxembourg",
+                        "Europe/Madrid",
+                        "Europe/Malta",
+                        "Europe/Mariehamn",
+                        "Europe/Minsk",
+                        "Europe/Monaco",
+                        "Europe/Moscow",
+                        "Europe/Nicosia",
+                        "Europe/Oslo",
+                        "Europe/Paris",
+                        "Europe/Podgorica",
+                        "Europe/Prague",
+                        "Europe/Riga",
+                        "Europe/Rome",
+                        "Europe/Samara",
+                        "Europe/San_Marino",
+                        "Europe/Sarajevo",
+                        "Europe/Simferopol",
+                        "Europe/Skopje",
+                        "Europe/Sofia",
+                        "Europe/Stockholm",
+                        "Europe/Tallinn",
+                        "Europe/Tirane",
+                        "Europe/Tiraspol",
+                        "Europe/Uzhgorod",
+                        "Europe/Vaduz",
+                        "Europe/Vatican",
+                        "Europe/Vienna",
+                        "Europe/Vilnius",
+                        "Europe/Volgograd",
+                        "Europe/Warsaw",
+                        "Europe/Zagreb",
+                        "Europe/Zaporozhye",
+                        "Europe/Zurich",
+                        "GB",
+                        "GB-Eire",
+                        "GMT",
+                        "GMT+0",
+                        "GMT-0",
+                        "GMT0",
+                        "Greenwich",
+                        "HST",
+                        "Hongkong",
+                        "Iceland",
+                        "Indian/Antananarivo",
+                        "Indian/Chagos",
+                        "Indian/Christmas",
+                        "Indian/Cocos",
+                        "Indian/Comoro",
+                        "Indian/Kerguelen",
+                        "Indian/Mahe",
+                        "Indian/Maldives",
+                        "Indian/Mauritius",
+                        "Indian/Mayotte",
+                        "Indian/Reunion",
+                        "Iran",
+                        "Israel",
+                        "Jamaica",
+                        "Japan",
+                        "Kwajalein",
+                        "Libya",
+                        "MET",
+                        "MST",
+                        "MST7MDT",
+                        "Mexico/BajaNorte",
+                        "Mexico/BajaSur",
+                        "Mexico/General",
+                        "NZ",
+                        "NZ-CHAT",
+                        "Navajo",
+                        "PRC",
+                        "PST8PDT",
+                        "Pacific/Apia",
+                        "Pacific/Auckland",
+                        "Pacific/Bougainville",
+                        "Pacific/Chatham",
+                        "Pacific/Chuuk",
+                        "Pacific/Easter",
+                        "Pacific/Efate",
+                        "Pacific/Enderbury",
+                        "Pacific/Fakaofo",
+                        "Pacific/Fiji",
+                        "Pacific/Funafuti",
+                        "Pacific/Galapagos",
+                        "Pacific/Gambier",
+                        "Pacific/Guadalcanal",
+                        "Pacific/Guam",
+                        "Pacific/Honolulu",
+                        "Pacific/Johnston",
+                        "Pacific/Kiritimati",
+                        "Pacific/Kosrae",
+                        "Pacific/Kwajalein",
+                        "Pacific/Majuro",
+                        "Pacific/Marquesas",
+                        "Pacific/Midway",
+                        "Pacific/Nauru",
+                        "Pacific/Niue",
+                        "Pacific/Norfolk",
+                        "Pacific/Noumea",
+                        "Pacific/Pago_Pago",
+                        "Pacific/Palau",
+                        "Pacific/Pitcairn",
+                        "Pacific/Pohnpei",
+                        "Pacific/Ponape",
+                        "Pacific/Port_Moresby",
+                        "Pacific/Rarotonga",
+                        "Pacific/Saipan",
+                        "Pacific/Samoa",
+                        "Pacific/Tahiti",
+                        "Pacific/Tarawa",
+                        "Pacific/Tongatapu",
+                        "Pacific/Truk",
+                        "Pacific/Wake",
+                        "Pacific/Wallis",
+                        "Pacific/Yap",
+                        "Poland",
+                        "Portugal",
+                        "ROC",
+                        "ROK",
+                        "Singapore",
+                        "Turkey",
+                        "UCT",
+                        "US/Alaska",
+                        "US/Aleutian",
+                        "US/Arizona",
+                        "US/Central",
+                        "US/East-Indiana",
+                        "US/Eastern",
+                        "US/Hawaii",
+                        "US/Indiana-Starke",
+                        "US/Michigan",
+                        "US/Mountain",
+                        "US/Pacific",
+                        "US/Pacific-New",
+                        "US/Samoa",
+                        "UTC",
+                        "Universal",
+                        "W-SU",
+                        "WET",
+                        "Zulu"
+                    ]
+                },
+                "isActive": {
+                    "description": "Data will be accepted only if this parameter is True",
+                    "type": "boolean"
+                },
+                "isMonitored": {
+                    "description": "This source will be monitored only if this parameter is True",
+                    "type": "boolean"
+                },
+                "sourceMacAddress": {
+                    "description": "Source hardware identifier",
+                    "type": "string"
+                },
+                "textMessageWithError": {
+                    "description": "Text message to be accompanied with an error",
+                    "type": "string"
+                },
+                "textMessageWithHTTP200": {
+                    "description": "Text message to be accompanied with HTTP 200 OK",
+                    "type": "string"
+                },
+                "timeoutInterval": {
+                    "description": "If there is no data for these many seconds, a notification will be raised",
+                    "format": "int64",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "name",
+                "sourceKey",
+                "UID",
+                "dataFormat",
+                "dataReportingInterval",
+                "sourceMacAddress",
+                "textMessageWithHTTP200",
+                "textMessageWithError",
+                "isActive",
+                "isMonitored",
+                "actuationEnabled",
+                "csvDataKeyName",
+                "timeoutInterval",
+                "dataTimezone"
+            ]
+        },
+        "StreamActionValues": {
+            "properties": {
+                "name": {
+                    "description": "Stream name",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "Stream values at the given timestamps",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "value"
+            ]
+        },
+        "StreamConfigValues": {
+            "properties": {
+                "name": {
+                    "description": "Stream name",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "Stream values at the given timestamps",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "value"
+            ]
+        },
+        "StreamDataValues": {
+            "properties": {
+                "count": {
+                    "description": "Data Count",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "endTime": {
+                    "description": "The last timestamp of the returned data",
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Stream name",
+                    "type": "string"
+                },
+                "startTime": {
+                    "description": "The first timestamp of the returned data",
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "timestamps": {
+                    "description": "The timestamps at which data was reported",
+                    "items": {"type":"string"},
+                    "type": "array"
+                },
+                "values": {
+                    "description": "Stream values at the given timestamps",
+                    "items": {"type":"string"},
+                    "type": "array"
+                }
+            },
+            "required": [
+                "name",
+                "count",
+                "startTime",
+                "endTime",
+                "values",
+                "timestamps"
+            ]
+        },
+        "StreamSerializer": {
+            "properties": {
+                "name": {
+                    "description": "Name of the data stream, should be unique for this source",
+                    "type": "string"
+                },
+                "source": {
+                    "description": "Key of the source this stream belongs to",
+                    "type": "string"
+                },
+                "streamDataType": {
+                    "description": "Type of the data this stream reports",
+                    "enum": [
+                        "INTEGER",
+                        "BOOLEAN",
+                        "STRING",
+                        "FLOAT",
+                        "LONG",
+                        "MAC",
+                        "TIMESTAMP",
+                        "DATE",
+                        "TIME"
+                    ]
+                },
+                "streamPositionInCSV": {
+                    "description": "Applicable only if source dataFormat is CSV, should be unique",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "streamDataUnit": {
+                    "description": "Data Unit",
+                    "type": "string"
+                },
+                "streamDateTimeFormat": {
+                    "description": "DateTime field values should be reported in ISO 8601 formats. You can specify custom formats here.",
+                    "type": "string"
+                },
+                "multiplicationFactor": {
+                    "description": "Multiplication factor for this stream, applicable only for numerical streams. Defaults to one.",
+                    "format": "float",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "name",
+                "source",
+                "streamDataType",
+                "streamDataUnit",
+                "streamDateTimeFormat",
+                "streamPositionInCSV",
+                "multiplicationFactor"
+            ]
+        },
+        "WriteActionFieldSerializer": {
+            "properties": {
+                "name": {
+                    "description": "Name of the data stream, should be unique for this source",
+                    "type": "string"
+                },
+                "streamDataType": {
+                    "description": "Type of the data this stream reports",
+                    "enum": [
+                        "INTEGER",
+                        "BOOLEAN",
+                        "STRING",
+                        "FLOAT",
+                        "LONG",
+                        "MAC",
+                        "TIMESTAMP",
+                        "DATE",
+                        "TIME"
+                    ]
+                },
+                "streamPositionInCSV": {
+                    "description": "Applicable only if source dataFormat is CSV, should be unique",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "streamDataUnit": {
+                    "description": "Data Unit",
+                    "type": "string"
+                },
+                "streamDateTimeFormat": {
+                    "description": "DateTime field values should be reported in ISO 8601 formats. You can specify custom formats here.",
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "streamDataType"
+            ]
+        },
+        "WriteConfigFieldSerializer": {
+            "properties": {
+                "name": {
+                    "description": "Name of the data stream, should be unique for this source",
+                    "type": "string"
+                },
+                "streamDataType": {
+                    "description": "Type of the data this stream reports",
+                    "enum": [
+                        "INTEGER",
+                        "BOOLEAN",
+                        "STRING",
+                        "FLOAT",
+                        "LONG",
+                        "MAC",
+                        "TIMESTAMP",
+                        "DATE",
+                        "TIME"
+                    ]
+                },
+                "streamPositionInCSV": {
+                    "description": "Applicable only if source dataFormat is CSV, should be unique",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "streamDataUnit": {
+                    "description": "Data Unit",
+                    "type": "string"
+                },
+                "streamDateTimeFormat": {
+                    "description": "DateTime field values should be reported in ISO 8601 formats. You can specify custom formats here.",
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "streamDataType"
+            ]
+        },
+        "WriteEnergyDataValues": {
+            "properties": {
+                "energy": {
+                    "description": "Energy value",
+                    "format": "float",
+                    "type": "number"
+                },
+                "timestamp": {
+                    "description": "Timestamp",
+                    "format": "date-time",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "energy",
+                "timestamp"
+            ]
+        },
+        "WriteInverterDataValues": {
+            "properties": {
+                "sourceKey": {
+                    "description": "The key value of the inverter",
+                    "type": "string"
+                },
+                "streams": {
+                    "items": {
+                        "$ref": "#/definitions/InverterStreamDataValues"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "sourceKey",
+                "streams"
+            ]
+        },
+        "WriteInverterSerializer": {
+            "properties": {
+                "dataReportingInterval": {
+                    "description": "Data reporting interval (in seconds)",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "dataTimezone": {
+                    "description": "Source timezone",
+                    "enum": [
+                        "Africa/Abidjan",
+                        "Africa/Accra",
+                        "Africa/Addis_Ababa",
+                        "Africa/Algiers",
+                        "Africa/Asmara",
+                        "Africa/Asmera",
+                        "Africa/Bamako",
+                        "Africa/Bangui",
+                        "Africa/Banjul",
+                        "Africa/Bissau",
+                        "Africa/Blantyre",
+                        "Africa/Brazzaville",
+                        "Africa/Bujumbura",
+                        "Africa/Cairo",
+                        "Africa/Casablanca",
+                        "Africa/Ceuta",
+                        "Africa/Conakry",
+                        "Africa/Dakar",
+                        "Africa/Dar_es_Salaam",
+                        "Africa/Djibouti",
+                        "Africa/Douala",
+                        "Africa/El_Aaiun",
+                        "Africa/Freetown",
+                        "Africa/Gaborone",
+                        "Africa/Harare",
+                        "Africa/Johannesburg",
+                        "Africa/Juba",
+                        "Africa/Kampala",
+                        "Africa/Khartoum",
+                        "Africa/Kigali",
+                        "Africa/Kinshasa",
+                        "Africa/Lagos",
+                        "Africa/Libreville",
+                        "Africa/Lome",
+                        "Africa/Luanda",
+                        "Africa/Lubumbashi",
+                        "Africa/Lusaka",
+                        "Africa/Malabo",
+                        "Africa/Maputo",
+                        "Africa/Maseru",
+                        "Africa/Mbabane",
+                        "Africa/Mogadishu",
+                        "Africa/Monrovia",
+                        "Africa/Nairobi",
+                        "Africa/Ndjamena",
+                        "Africa/Niamey",
+                        "Africa/Nouakchott",
+                        "Africa/Ouagadougou",
+                        "Africa/Porto-Novo",
+                        "Africa/Sao_Tome",
+                        "Africa/Timbuktu",
+                        "Africa/Tripoli",
+                        "Africa/Tunis",
+                        "Africa/Windhoek",
+                        "America/Adak",
+                        "America/Anchorage",
+                        "America/Anguilla",
+                        "America/Antigua",
+                        "America/Araguaina",
+                        "America/Argentina/Buenos_Aires",
+                        "America/Argentina/Catamarca",
+                        "America/Argentina/ComodRivadavia",
+                        "America/Argentina/Cordoba",
+                        "America/Argentina/Jujuy",
+                        "America/Argentina/La_Rioja",
+                        "America/Argentina/Mendoza",
+                        "America/Argentina/Rio_Gallegos",
+                        "America/Argentina/Salta",
+                        "America/Argentina/San_Juan",
+                        "America/Argentina/San_Luis",
+                        "America/Argentina/Tucuman",
+                        "America/Argentina/Ushuaia",
+                        "America/Aruba",
+                        "America/Asuncion",
+                        "America/Atikokan",
+                        "America/Atka",
+                        "America/Bahia",
+                        "America/Bahia_Banderas",
+                        "America/Barbados",
+                        "America/Belem",
+                        "America/Belize",
+                        "America/Blanc-Sablon",
+                        "America/Boa_Vista",
+                        "America/Bogota",
+                        "America/Boise",
+                        "America/Buenos_Aires",
+                        "America/Cambridge_Bay",
+                        "America/Campo_Grande",
+                        "America/Cancun",
+                        "America/Caracas",
+                        "America/Catamarca",
+                        "America/Cayenne",
+                        "America/Cayman",
+                        "America/Chicago",
+                        "America/Chihuahua",
+                        "America/Coral_Harbour",
+                        "America/Cordoba",
+                        "America/Costa_Rica",
+                        "America/Creston",
+                        "America/Cuiaba",
+                        "America/Curacao",
+                        "America/Danmarkshavn",
+                        "America/Dawson",
+                        "America/Dawson_Creek",
+                        "America/Denver",
+                        "America/Detroit",
+                        "America/Dominica",
+                        "America/Edmonton",
+                        "America/Eirunepe",
+                        "America/El_Salvador",
+                        "America/Ensenada",
+                        "America/Fort_Wayne",
+                        "America/Fortaleza",
+                        "America/Glace_Bay",
+                        "America/Godthab",
+                        "America/Goose_Bay",
+                        "America/Grand_Turk",
+                        "America/Grenada",
+                        "America/Guadeloupe",
+                        "America/Guatemala",
+                        "America/Guayaquil",
+                        "America/Guyana",
+                        "America/Halifax",
+                        "America/Havana",
+                        "America/Hermosillo",
+                        "America/Indiana/Indianapolis",
+                        "America/Indiana/Knox",
+                        "America/Indiana/Marengo",
+                        "America/Indiana/Petersburg",
+                        "America/Indiana/Tell_City",
+                        "America/Indiana/Vevay",
+                        "America/Indiana/Vincennes",
+                        "America/Indiana/Winamac",
+                        "America/Indianapolis",
+                        "America/Inuvik",
+                        "America/Iqaluit",
+                        "America/Jamaica",
+                        "America/Jujuy",
+                        "America/Juneau",
+                        "America/Kentucky/Louisville",
+                        "America/Kentucky/Monticello",
+                        "America/Knox_IN",
+                        "America/Kralendijk",
+                        "America/La_Paz",
+                        "America/Lima",
+                        "America/Los_Angeles",
+                        "America/Louisville",
+                        "America/Lower_Princes",
+                        "America/Maceio",
+                        "America/Managua",
+                        "America/Manaus",
+                        "America/Marigot",
+                        "America/Martinique",
+                        "America/Matamoros",
+                        "America/Mazatlan",
+                        "America/Mendoza",
+                        "America/Menominee",
+                        "America/Merida",
+                        "America/Metlakatla",
+                        "America/Mexico_City",
+                        "America/Miquelon",
+                        "America/Moncton",
+                        "America/Monterrey",
+                        "America/Montevideo",
+                        "America/Montreal",
+                        "America/Montserrat",
+                        "America/Nassau",
+                        "America/New_York",
+                        "America/Nipigon",
+                        "America/Nome",
+                        "America/Noronha",
+                        "America/North_Dakota/Beulah",
+                        "America/North_Dakota/Center",
+                        "America/North_Dakota/New_Salem",
+                        "America/Ojinaga",
+                        "America/Panama",
+                        "America/Pangnirtung",
+                        "America/Paramaribo",
+                        "America/Phoenix",
+                        "America/Port-au-Prince",
+                        "America/Port_of_Spain",
+                        "America/Porto_Acre",
+                        "America/Porto_Velho",
+                        "America/Puerto_Rico",
+                        "America/Rainy_River",
+                        "America/Rankin_Inlet",
+                        "America/Recife",
+                        "America/Regina",
+                        "America/Resolute",
+                        "America/Rio_Branco",
+                        "America/Rosario",
+                        "America/Santa_Isabel",
+                        "America/Santarem",
+                        "America/Santiago",
+                        "America/Santo_Domingo",
+                        "America/Sao_Paulo",
+                        "America/Scoresbysund",
+                        "America/Shiprock",
+                        "America/Sitka",
+                        "America/St_Barthelemy",
+                        "America/St_Johns",
+                        "America/St_Kitts",
+                        "America/St_Lucia",
+                        "America/St_Thomas",
+                        "America/St_Vincent",
+                        "America/Swift_Current",
+                        "America/Tegucigalpa",
+                        "America/Thule",
+                        "America/Thunder_Bay",
+                        "America/Tijuana",
+                        "America/Toronto",
+                        "America/Tortola",
+                        "America/Vancouver",
+                        "America/Virgin",
+                        "America/Whitehorse",
+                        "America/Winnipeg",
+                        "America/Yakutat",
+                        "America/Yellowknife",
+                        "Antarctica/Casey",
+                        "Antarctica/Davis",
+                        "Antarctica/DumontDUrville",
+                        "Antarctica/Macquarie",
+                        "Antarctica/Mawson",
+                        "Antarctica/McMurdo",
+                        "Antarctica/Palmer",
+                        "Antarctica/Rothera",
+                        "Antarctica/South_Pole",
+                        "Antarctica/Syowa",
+                        "Antarctica/Troll",
+                        "Antarctica/Vostok",
+                        "Arctic/Longyearbyen",
+                        "Asia/Aden",
+                        "Asia/Almaty",
+                        "Asia/Amman",
+                        "Asia/Anadyr",
+                        "Asia/Aqtau",
+                        "Asia/Aqtobe",
+                        "Asia/Ashgabat",
+                        "Asia/Ashkhabad",
+                        "Asia/Baghdad",
+                        "Asia/Bahrain",
+                        "Asia/Baku",
+                        "Asia/Bangkok",
+                        "Asia/Beirut",
+                        "Asia/Bishkek",
+                        "Asia/Brunei",
+                        "Asia/Calcutta",
+                        "Asia/Chita",
+                        "Asia/Choibalsan",
+                        "Asia/Chongqing",
+                        "Asia/Chungking",
+                        "Asia/Colombo",
+                        "Asia/Dacca",
+                        "Asia/Damascus",
+                        "Asia/Dhaka",
+                        "Asia/Dili",
+                        "Asia/Dubai",
+                        "Asia/Dushanbe",
+                        "Asia/Gaza",
+                        "Asia/Harbin",
+                        "Asia/Hebron",
+                        "Asia/Ho_Chi_Minh",
+                        "Asia/Hong_Kong",
+                        "Asia/Hovd",
+                        "Asia/Irkutsk",
+                        "Asia/Istanbul",
+                        "Asia/Jakarta",
+                        "Asia/Jayapura",
+                        "Asia/Jerusalem",
+                        "Asia/Kabul",
+                        "Asia/Kamchatka",
+                        "Asia/Karachi",
+                        "Asia/Kashgar",
+                        "Asia/Kathmandu",
+                        "Asia/Katmandu",
+                        "Asia/Khandyga",
+                        "Asia/Kolkata",
+                        "Asia/Krasnoyarsk",
+                        "Asia/Kuala_Lumpur",
+                        "Asia/Kuching",
+                        "Asia/Kuwait",
+                        "Asia/Macao",
+                        "Asia/Macau",
+                        "Asia/Magadan",
+                        "Asia/Makassar",
+                        "Asia/Manila",
+                        "Asia/Muscat",
+                        "Asia/Nicosia",
+                        "Asia/Novokuznetsk",
+                        "Asia/Novosibirsk",
+                        "Asia/Omsk",
+                        "Asia/Oral",
+                        "Asia/Phnom_Penh",
+                        "Asia/Pontianak",
+                        "Asia/Pyongyang",
+                        "Asia/Qatar",
+                        "Asia/Qyzylorda",
+                        "Asia/Rangoon",
+                        "Asia/Riyadh",
+                        "Asia/Saigon",
+                        "Asia/Sakhalin",
+                        "Asia/Samarkand",
+                        "Asia/Seoul",
+                        "Asia/Shanghai",
+                        "Asia/Singapore",
+                        "Asia/Srednekolymsk",
+                        "Asia/Taipei",
+                        "Asia/Tashkent",
+                        "Asia/Tbilisi",
+                        "Asia/Tehran",
+                        "Asia/Tel_Aviv",
+                        "Asia/Thimbu",
+                        "Asia/Thimphu",
+                        "Asia/Tokyo",
+                        "Asia/Ujung_Pandang",
+                        "Asia/Ulaanbaatar",
+                        "Asia/Ulan_Bator",
+                        "Asia/Urumqi",
+                        "Asia/Ust-Nera",
+                        "Asia/Vientiane",
+                        "Asia/Vladivostok",
+                        "Asia/Yakutsk",
+                        "Asia/Yekaterinburg",
+                        "Asia/Yerevan",
+                        "Atlantic/Azores",
+                        "Atlantic/Bermuda",
+                        "Atlantic/Canary",
+                        "Atlantic/Cape_Verde",
+                        "Atlantic/Faeroe",
+                        "Atlantic/Faroe",
+                        "Atlantic/Jan_Mayen",
+                        "Atlantic/Madeira",
+                        "Atlantic/Reykjavik",
+                        "Atlantic/South_Georgia",
+                        "Atlantic/St_Helena",
+                        "Atlantic/Stanley",
+                        "Australia/ACT",
+                        "Australia/Adelaide",
+                        "Australia/Brisbane",
+                        "Australia/Broken_Hill",
+                        "Australia/Canberra",
+                        "Australia/Currie",
+                        "Australia/Darwin",
+                        "Australia/Eucla",
+                        "Australia/Hobart",
+                        "Australia/LHI",
+                        "Australia/Lindeman",
+                        "Australia/Lord_Howe",
+                        "Australia/Melbourne",
+                        "Australia/NSW",
+                        "Australia/North",
+                        "Australia/Perth",
+                        "Australia/Queensland",
+                        "Australia/South",
+                        "Australia/Sydney",
+                        "Australia/Tasmania",
+                        "Australia/Victoria",
+                        "Australia/West",
+                        "Australia/Yancowinna",
+                        "Brazil/Acre",
+                        "Brazil/DeNoronha",
+                        "Brazil/East",
+                        "Brazil/West",
+                        "CET",
+                        "CST6CDT",
+                        "Canada/Atlantic",
+                        "Canada/Central",
+                        "Canada/East-Saskatchewan",
+                        "Canada/Eastern",
+                        "Canada/Mountain",
+                        "Canada/Newfoundland",
+                        "Canada/Pacific",
+                        "Canada/Saskatchewan",
+                        "Canada/Yukon",
+                        "Chile/Continental",
+                        "Chile/EasterIsland",
+                        "Cuba",
+                        "EET",
+                        "EST",
+                        "EST5EDT",
+                        "Egypt",
+                        "Eire",
+                        "Etc/GMT",
+                        "Etc/GMT+0",
+                        "Etc/GMT+1",
+                        "Etc/GMT+10",
+                        "Etc/GMT+11",
+                        "Etc/GMT+12",
+                        "Etc/GMT+2",
+                        "Etc/GMT+3",
+                        "Etc/GMT+4",
+                        "Etc/GMT+5",
+                        "Etc/GMT+6",
+                        "Etc/GMT+7",
+                        "Etc/GMT+8",
+                        "Etc/GMT+9",
+                        "Etc/GMT-0",
+                        "Etc/GMT-1",
+                        "Etc/GMT-10",
+                        "Etc/GMT-11",
+                        "Etc/GMT-12",
+                        "Etc/GMT-13",
+                        "Etc/GMT-14",
+                        "Etc/GMT-2",
+                        "Etc/GMT-3",
+                        "Etc/GMT-4",
+                        "Etc/GMT-5",
+                        "Etc/GMT-6",
+                        "Etc/GMT-7",
+                        "Etc/GMT-8",
+                        "Etc/GMT-9",
+                        "Etc/GMT0",
+                        "Etc/Greenwich",
+                        "Etc/UCT",
+                        "Etc/UTC",
+                        "Etc/Universal",
+                        "Etc/Zulu",
+                        "Europe/Amsterdam",
+                        "Europe/Andorra",
+                        "Europe/Athens",
+                        "Europe/Belfast",
+                        "Europe/Belgrade",
+                        "Europe/Berlin",
+                        "Europe/Bratislava",
+                        "Europe/Brussels",
+                        "Europe/Bucharest",
+                        "Europe/Budapest",
+                        "Europe/Busingen",
+                        "Europe/Chisinau",
+                        "Europe/Copenhagen",
+                        "Europe/Dublin",
+                        "Europe/Gibraltar",
+                        "Europe/Guernsey",
+                        "Europe/Helsinki",
+                        "Europe/Isle_of_Man",
+                        "Europe/Istanbul",
+                        "Europe/Jersey",
+                        "Europe/Kaliningrad",
+                        "Europe/Kiev",
+                        "Europe/Lisbon",
+                        "Europe/Ljubljana",
+                        "Europe/London",
+                        "Europe/Luxembourg",
+                        "Europe/Madrid",
+                        "Europe/Malta",
+                        "Europe/Mariehamn",
+                        "Europe/Minsk",
+                        "Europe/Monaco",
+                        "Europe/Moscow",
+                        "Europe/Nicosia",
+                        "Europe/Oslo",
+                        "Europe/Paris",
+                        "Europe/Podgorica",
+                        "Europe/Prague",
+                        "Europe/Riga",
+                        "Europe/Rome",
+                        "Europe/Samara",
+                        "Europe/San_Marino",
+                        "Europe/Sarajevo",
+                        "Europe/Simferopol",
+                        "Europe/Skopje",
+                        "Europe/Sofia",
+                        "Europe/Stockholm",
+                        "Europe/Tallinn",
+                        "Europe/Tirane",
+                        "Europe/Tiraspol",
+                        "Europe/Uzhgorod",
+                        "Europe/Vaduz",
+                        "Europe/Vatican",
+                        "Europe/Vienna",
+                        "Europe/Vilnius",
+                        "Europe/Volgograd",
+                        "Europe/Warsaw",
+                        "Europe/Zagreb",
+                        "Europe/Zaporozhye",
+                        "Europe/Zurich",
+                        "GB",
+                        "GB-Eire",
+                        "GMT",
+                        "GMT+0",
+                        "GMT-0",
+                        "GMT0",
+                        "Greenwich",
+                        "HST",
+                        "Hongkong",
+                        "Iceland",
+                        "Indian/Antananarivo",
+                        "Indian/Chagos",
+                        "Indian/Christmas",
+                        "Indian/Cocos",
+                        "Indian/Comoro",
+                        "Indian/Kerguelen",
+                        "Indian/Mahe",
+                        "Indian/Maldives",
+                        "Indian/Mauritius",
+                        "Indian/Mayotte",
+                        "Indian/Reunion",
+                        "Iran",
+                        "Israel",
+                        "Jamaica",
+                        "Japan",
+                        "Kwajalein",
+                        "Libya",
+                        "MET",
+                        "MST",
+                        "MST7MDT",
+                        "Mexico/BajaNorte",
+                        "Mexico/BajaSur",
+                        "Mexico/General",
+                        "NZ",
+                        "NZ-CHAT",
+                        "Navajo",
+                        "PRC",
+                        "PST8PDT",
+                        "Pacific/Apia",
+                        "Pacific/Auckland",
+                        "Pacific/Bougainville",
+                        "Pacific/Chatham",
+                        "Pacific/Chuuk",
+                        "Pacific/Easter",
+                        "Pacific/Efate",
+                        "Pacific/Enderbury",
+                        "Pacific/Fakaofo",
+                        "Pacific/Fiji",
+                        "Pacific/Funafuti",
+                        "Pacific/Galapagos",
+                        "Pacific/Gambier",
+                        "Pacific/Guadalcanal",
+                        "Pacific/Guam",
+                        "Pacific/Honolulu",
+                        "Pacific/Johnston",
+                        "Pacific/Kiritimati",
+                        "Pacific/Kosrae",
+                        "Pacific/Kwajalein",
+                        "Pacific/Majuro",
+                        "Pacific/Marquesas",
+                        "Pacific/Midway",
+                        "Pacific/Nauru",
+                        "Pacific/Niue",
+                        "Pacific/Norfolk",
+                        "Pacific/Noumea",
+                        "Pacific/Pago_Pago",
+                        "Pacific/Palau",
+                        "Pacific/Pitcairn",
+                        "Pacific/Pohnpei",
+                        "Pacific/Ponape",
+                        "Pacific/Port_Moresby",
+                        "Pacific/Rarotonga",
+                        "Pacific/Saipan",
+                        "Pacific/Samoa",
+                        "Pacific/Tahiti",
+                        "Pacific/Tarawa",
+                        "Pacific/Tongatapu",
+                        "Pacific/Truk",
+                        "Pacific/Wake",
+                        "Pacific/Wallis",
+                        "Pacific/Yap",
+                        "Poland",
+                        "Portugal",
+                        "ROC",
+                        "ROK",
+                        "Singapore",
+                        "Turkey",
+                        "UCT",
+                        "US/Alaska",
+                        "US/Aleutian",
+                        "US/Arizona",
+                        "US/Central",
+                        "US/East-Indiana",
+                        "US/Eastern",
+                        "US/Hawaii",
+                        "US/Indiana-Starke",
+                        "US/Michigan",
+                        "US/Mountain",
+                        "US/Pacific",
+                        "US/Pacific-New",
+                        "US/Samoa",
+                        "UTC",
+                        "Universal",
+                        "W-SU",
+                        "WET",
+                        "Zulu"
+                    ]
+                },
+                "isActive": {
+                    "description": "Data will be accepted only if this parameter is True",
+                    "type": "boolean"
+                },
+                "isMonitored": {
+                    "description": "This source will be monitored only if this parameter is True",
+                    "type": "boolean"
+                },
+                "manufacturer": {
+                    "description": "Manufacturer name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name of the source, it should be unique",
+                    "type": "string"
+                },
+                "sourceKey": {
+                    "description": "Unique sensor key, a read only field",
+                    "type": "string"
+                },
+                "sourceMacAddress": {
+                    "description": "Source hardware identifier",
+                    "type": "string"
+                },
+                "timeoutInterval": {
+                    "description": "If there is no data for these many seconds, a notification will be raised",
+                    "format": "int64",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "name",
+                "manufacturer"
+            ]
+        },
+        "WriteInverterStreamDataValues": {
+            "properties": {
+                "name": {
+                    "description": "Stream name",
+                    "type": "string"
+                },
+                "timestamps": {
+                    "description": "The timestamps at which data was reported",
+                    "type": "string"
+                },
+                "values": {
+                    "description": "Stream values at the given timestamps",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "values",
+                "timestamps"
+            ]
+        },
+        "WritePlantSerializer": {
+            "properties": {
+                "capacity": {
+                    "description": "The capacity of the solar plant in KW",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "latitude": {
+                    "description": "The latitude coordinates of the plant location",
+                    "format": "float",
+                    "type": "number"
+                },
+                "location": {
+                    "description": "The location of the plant (City, State)",
+                    "type": "string"
+                },
+                "longitude": {
+                    "description": "The latitude coordinates of the plant location",
+                    "format": "float",
+                    "type": "number"
+                },
+                "name": {
+                    "description": "The name of the organization",
+                    "type": "string"
+                },
+                "slug": {
+                    "description": "The name in all lowercase, suitable for URL identification",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "slug",
+                "capacity",
+                "location"
+            ]
+        },
+        "WriteSourceActionValues": {
+            "properties": {
+                "insertionTime": {
+                    "description": "The timestamps at which action was reported",
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "sourceKey": {
+                    "description": "The key value of the source",
+                    "type": "string"
+                },
+                "streams": {
+                    "items": {
+                        "$ref": "#/definitions/StreamActionValues"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "sourceKey",
+                "insertionTime",
+                "streams"
+            ]
+        },
+        "WriteSourceConfigValues": {
+            "properties": {
+                "insertionTime": {
+                    "description": "The timestamps at which action was reported",
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "sourceKey": {
+                    "description": "The key value of the source",
+                    "type": "string"
+                },
+                "streams": {
+                    "items": {
+                        "$ref": "#/definitions/StreamConfigValues"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "sourceKey",
+                "insertionTime",
+                "streams"
+            ]
+        },
+        "WriteSourceDataValues": {
+            "properties": {
+                "sourceKey": {
+                    "description": "The key value of the source",
+                    "type": "string"
+                },
+                "streams": {
+                    "description": "The value of the mentioned streams",
+                    "items": {
+                        "$ref": "#/definitions/StreamDataValues"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "sourceKey",
+                "streams"
+            ]
+        },
+        "WriteSourceSerializer": {
+            "properties": {
+                "name": {
+                    "description": "Name of the source, it should be unique",
+                    "type": "string"
+                },
+                "dataFormat": {
+                    "description": "The format in which this source sends data records",
+                    "enum": [
+                        "JSON",
+                        "CSV"
+                    ]
+                },
+                "dataReportingInterval": {
+                    "description": "Data reporting interval (in seconds)",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "UID": {
+                    "description": "If UID is specified, it should be unique across the entire platform.",
+                    "type": "string"
+                },
+                "actuationEnabled": {
+                    "description": "If this source has actuation features enabled. Keep it unchecked if unsure.",
+                    "type": "boolean"
+                },
+                "csvDataKeyName": {
+                    "description": "Key name that holds comma separated data (applicable only if source dataFormat is CSV)",
+                    "type": "string"
+                },
+                "dataTimezone": {
+                    "description": "Source timezone",
+                    "enum": [
+                        "Africa/Abidjan",
+                        "Africa/Accra",
+                        "Africa/Addis_Ababa",
+                        "Africa/Algiers",
+                        "Africa/Asmara",
+                        "Africa/Asmera",
+                        "Africa/Bamako",
+                        "Africa/Bangui",
+                        "Africa/Banjul",
+                        "Africa/Bissau",
+                        "Africa/Blantyre",
+                        "Africa/Brazzaville",
+                        "Africa/Bujumbura",
+                        "Africa/Cairo",
+                        "Africa/Casablanca",
+                        "Africa/Ceuta",
+                        "Africa/Conakry",
+                        "Africa/Dakar",
+                        "Africa/Dar_es_Salaam",
+                        "Africa/Djibouti",
+                        "Africa/Douala",
+                        "Africa/El_Aaiun",
+                        "Africa/Freetown",
+                        "Africa/Gaborone",
+                        "Africa/Harare",
+                        "Africa/Johannesburg",
+                        "Africa/Juba",
+                        "Africa/Kampala",
+                        "Africa/Khartoum",
+                        "Africa/Kigali",
+                        "Africa/Kinshasa",
+                        "Africa/Lagos",
+                        "Africa/Libreville",
+                        "Africa/Lome",
+                        "Africa/Luanda",
+                        "Africa/Lubumbashi",
+                        "Africa/Lusaka",
+                        "Africa/Malabo",
+                        "Africa/Maputo",
+                        "Africa/Maseru",
+                        "Africa/Mbabane",
+                        "Africa/Mogadishu",
+                        "Africa/Monrovia",
+                        "Africa/Nairobi",
+                        "Africa/Ndjamena",
+                        "Africa/Niamey",
+                        "Africa/Nouakchott",
+                        "Africa/Ouagadougou",
+                        "Africa/Porto-Novo",
+                        "Africa/Sao_Tome",
+                        "Africa/Timbuktu",
+                        "Africa/Tripoli",
+                        "Africa/Tunis",
+                        "Africa/Windhoek",
+                        "America/Adak",
+                        "America/Anchorage",
+                        "America/Anguilla",
+                        "America/Antigua",
+                        "America/Araguaina",
+                        "America/Argentina/Buenos_Aires",
+                        "America/Argentina/Catamarca",
+                        "America/Argentina/ComodRivadavia",
+                        "America/Argentina/Cordoba",
+                        "America/Argentina/Jujuy",
+                        "America/Argentina/La_Rioja",
+                        "America/Argentina/Mendoza",
+                        "America/Argentina/Rio_Gallegos",
+                        "America/Argentina/Salta",
+                        "America/Argentina/San_Juan",
+                        "America/Argentina/San_Luis",
+                        "America/Argentina/Tucuman",
+                        "America/Argentina/Ushuaia",
+                        "America/Aruba",
+                        "America/Asuncion",
+                        "America/Atikokan",
+                        "America/Atka",
+                        "America/Bahia",
+                        "America/Bahia_Banderas",
+                        "America/Barbados",
+                        "America/Belem",
+                        "America/Belize",
+                        "America/Blanc-Sablon",
+                        "America/Boa_Vista",
+                        "America/Bogota",
+                        "America/Boise",
+                        "America/Buenos_Aires",
+                        "America/Cambridge_Bay",
+                        "America/Campo_Grande",
+                        "America/Cancun",
+                        "America/Caracas",
+                        "America/Catamarca",
+                        "America/Cayenne",
+                        "America/Cayman",
+                        "America/Chicago",
+                        "America/Chihuahua",
+                        "America/Coral_Harbour",
+                        "America/Cordoba",
+                        "America/Costa_Rica",
+                        "America/Creston",
+                        "America/Cuiaba",
+                        "America/Curacao",
+                        "America/Danmarkshavn",
+                        "America/Dawson",
+                        "America/Dawson_Creek",
+                        "America/Denver",
+                        "America/Detroit",
+                        "America/Dominica",
+                        "America/Edmonton",
+                        "America/Eirunepe",
+                        "America/El_Salvador",
+                        "America/Ensenada",
+                        "America/Fort_Wayne",
+                        "America/Fortaleza",
+                        "America/Glace_Bay",
+                        "America/Godthab",
+                        "America/Goose_Bay",
+                        "America/Grand_Turk",
+                        "America/Grenada",
+                        "America/Guadeloupe",
+                        "America/Guatemala",
+                        "America/Guayaquil",
+                        "America/Guyana",
+                        "America/Halifax",
+                        "America/Havana",
+                        "America/Hermosillo",
+                        "America/Indiana/Indianapolis",
+                        "America/Indiana/Knox",
+                        "America/Indiana/Marengo",
+                        "America/Indiana/Petersburg",
+                        "America/Indiana/Tell_City",
+                        "America/Indiana/Vevay",
+                        "America/Indiana/Vincennes",
+                        "America/Indiana/Winamac",
+                        "America/Indianapolis",
+                        "America/Inuvik",
+                        "America/Iqaluit",
+                        "America/Jamaica",
+                        "America/Jujuy",
+                        "America/Juneau",
+                        "America/Kentucky/Louisville",
+                        "America/Kentucky/Monticello",
+                        "America/Knox_IN",
+                        "America/Kralendijk",
+                        "America/La_Paz",
+                        "America/Lima",
+                        "America/Los_Angeles",
+                        "America/Louisville",
+                        "America/Lower_Princes",
+                        "America/Maceio",
+                        "America/Managua",
+                        "America/Manaus",
+                        "America/Marigot",
+                        "America/Martinique",
+                        "America/Matamoros",
+                        "America/Mazatlan",
+                        "America/Mendoza",
+                        "America/Menominee",
+                        "America/Merida",
+                        "America/Metlakatla",
+                        "America/Mexico_City",
+                        "America/Miquelon",
+                        "America/Moncton",
+                        "America/Monterrey",
+                        "America/Montevideo",
+                        "America/Montreal",
+                        "America/Montserrat",
+                        "America/Nassau",
+                        "America/New_York",
+                        "America/Nipigon",
+                        "America/Nome",
+                        "America/Noronha",
+                        "America/North_Dakota/Beulah",
+                        "America/North_Dakota/Center",
+                        "America/North_Dakota/New_Salem",
+                        "America/Ojinaga",
+                        "America/Panama",
+                        "America/Pangnirtung",
+                        "America/Paramaribo",
+                        "America/Phoenix",
+                        "America/Port-au-Prince",
+                        "America/Port_of_Spain",
+                        "America/Porto_Acre",
+                        "America/Porto_Velho",
+                        "America/Puerto_Rico",
+                        "America/Rainy_River",
+                        "America/Rankin_Inlet",
+                        "America/Recife",
+                        "America/Regina",
+                        "America/Resolute",
+                        "America/Rio_Branco",
+                        "America/Rosario",
+                        "America/Santa_Isabel",
+                        "America/Santarem",
+                        "America/Santiago",
+                        "America/Santo_Domingo",
+                        "America/Sao_Paulo",
+                        "America/Scoresbysund",
+                        "America/Shiprock",
+                        "America/Sitka",
+                        "America/St_Barthelemy",
+                        "America/St_Johns",
+                        "America/St_Kitts",
+                        "America/St_Lucia",
+                        "America/St_Thomas",
+                        "America/St_Vincent",
+                        "America/Swift_Current",
+                        "America/Tegucigalpa",
+                        "America/Thule",
+                        "America/Thunder_Bay",
+                        "America/Tijuana",
+                        "America/Toronto",
+                        "America/Tortola",
+                        "America/Vancouver",
+                        "America/Virgin",
+                        "America/Whitehorse",
+                        "America/Winnipeg",
+                        "America/Yakutat",
+                        "America/Yellowknife",
+                        "Antarctica/Casey",
+                        "Antarctica/Davis",
+                        "Antarctica/DumontDUrville",
+                        "Antarctica/Macquarie",
+                        "Antarctica/Mawson",
+                        "Antarctica/McMurdo",
+                        "Antarctica/Palmer",
+                        "Antarctica/Rothera",
+                        "Antarctica/South_Pole",
+                        "Antarctica/Syowa",
+                        "Antarctica/Troll",
+                        "Antarctica/Vostok",
+                        "Arctic/Longyearbyen",
+                        "Asia/Aden",
+                        "Asia/Almaty",
+                        "Asia/Amman",
+                        "Asia/Anadyr",
+                        "Asia/Aqtau",
+                        "Asia/Aqtobe",
+                        "Asia/Ashgabat",
+                        "Asia/Ashkhabad",
+                        "Asia/Baghdad",
+                        "Asia/Bahrain",
+                        "Asia/Baku",
+                        "Asia/Bangkok",
+                        "Asia/Beirut",
+                        "Asia/Bishkek",
+                        "Asia/Brunei",
+                        "Asia/Calcutta",
+                        "Asia/Chita",
+                        "Asia/Choibalsan",
+                        "Asia/Chongqing",
+                        "Asia/Chungking",
+                        "Asia/Colombo",
+                        "Asia/Dacca",
+                        "Asia/Damascus",
+                        "Asia/Dhaka",
+                        "Asia/Dili",
+                        "Asia/Dubai",
+                        "Asia/Dushanbe",
+                        "Asia/Gaza",
+                        "Asia/Harbin",
+                        "Asia/Hebron",
+                        "Asia/Ho_Chi_Minh",
+                        "Asia/Hong_Kong",
+                        "Asia/Hovd",
+                        "Asia/Irkutsk",
+                        "Asia/Istanbul",
+                        "Asia/Jakarta",
+                        "Asia/Jayapura",
+                        "Asia/Jerusalem",
+                        "Asia/Kabul",
+                        "Asia/Kamchatka",
+                        "Asia/Karachi",
+                        "Asia/Kashgar",
+                        "Asia/Kathmandu",
+                        "Asia/Katmandu",
+                        "Asia/Khandyga",
+                        "Asia/Kolkata",
+                        "Asia/Krasnoyarsk",
+                        "Asia/Kuala_Lumpur",
+                        "Asia/Kuching",
+                        "Asia/Kuwait",
+                        "Asia/Macao",
+                        "Asia/Macau",
+                        "Asia/Magadan",
+                        "Asia/Makassar",
+                        "Asia/Manila",
+                        "Asia/Muscat",
+                        "Asia/Nicosia",
+                        "Asia/Novokuznetsk",
+                        "Asia/Novosibirsk",
+                        "Asia/Omsk",
+                        "Asia/Oral",
+                        "Asia/Phnom_Penh",
+                        "Asia/Pontianak",
+                        "Asia/Pyongyang",
+                        "Asia/Qatar",
+                        "Asia/Qyzylorda",
+                        "Asia/Rangoon",
+                        "Asia/Riyadh",
+                        "Asia/Saigon",
+                        "Asia/Sakhalin",
+                        "Asia/Samarkand",
+                        "Asia/Seoul",
+                        "Asia/Shanghai",
+                        "Asia/Singapore",
+                        "Asia/Srednekolymsk",
+                        "Asia/Taipei",
+                        "Asia/Tashkent",
+                        "Asia/Tbilisi",
+                        "Asia/Tehran",
+                        "Asia/Tel_Aviv",
+                        "Asia/Thimbu",
+                        "Asia/Thimphu",
+                        "Asia/Tokyo",
+                        "Asia/Ujung_Pandang",
+                        "Asia/Ulaanbaatar",
+                        "Asia/Ulan_Bator",
+                        "Asia/Urumqi",
+                        "Asia/Ust-Nera",
+                        "Asia/Vientiane",
+                        "Asia/Vladivostok",
+                        "Asia/Yakutsk",
+                        "Asia/Yekaterinburg",
+                        "Asia/Yerevan",
+                        "Atlantic/Azores",
+                        "Atlantic/Bermuda",
+                        "Atlantic/Canary",
+                        "Atlantic/Cape_Verde",
+                        "Atlantic/Faeroe",
+                        "Atlantic/Faroe",
+                        "Atlantic/Jan_Mayen",
+                        "Atlantic/Madeira",
+                        "Atlantic/Reykjavik",
+                        "Atlantic/South_Georgia",
+                        "Atlantic/St_Helena",
+                        "Atlantic/Stanley",
+                        "Australia/ACT",
+                        "Australia/Adelaide",
+                        "Australia/Brisbane",
+                        "Australia/Broken_Hill",
+                        "Australia/Canberra",
+                        "Australia/Currie",
+                        "Australia/Darwin",
+                        "Australia/Eucla",
+                        "Australia/Hobart",
+                        "Australia/LHI",
+                        "Australia/Lindeman",
+                        "Australia/Lord_Howe",
+                        "Australia/Melbourne",
+                        "Australia/NSW",
+                        "Australia/North",
+                        "Australia/Perth",
+                        "Australia/Queensland",
+                        "Australia/South",
+                        "Australia/Sydney",
+                        "Australia/Tasmania",
+                        "Australia/Victoria",
+                        "Australia/West",
+                        "Australia/Yancowinna",
+                        "Brazil/Acre",
+                        "Brazil/DeNoronha",
+                        "Brazil/East",
+                        "Brazil/West",
+                        "CET",
+                        "CST6CDT",
+                        "Canada/Atlantic",
+                        "Canada/Central",
+                        "Canada/East-Saskatchewan",
+                        "Canada/Eastern",
+                        "Canada/Mountain",
+                        "Canada/Newfoundland",
+                        "Canada/Pacific",
+                        "Canada/Saskatchewan",
+                        "Canada/Yukon",
+                        "Chile/Continental",
+                        "Chile/EasterIsland",
+                        "Cuba",
+                        "EET",
+                        "EST",
+                        "EST5EDT",
+                        "Egypt",
+                        "Eire",
+                        "Etc/GMT",
+                        "Etc/GMT+0",
+                        "Etc/GMT+1",
+                        "Etc/GMT+10",
+                        "Etc/GMT+11",
+                        "Etc/GMT+12",
+                        "Etc/GMT+2",
+                        "Etc/GMT+3",
+                        "Etc/GMT+4",
+                        "Etc/GMT+5",
+                        "Etc/GMT+6",
+                        "Etc/GMT+7",
+                        "Etc/GMT+8",
+                        "Etc/GMT+9",
+                        "Etc/GMT-0",
+                        "Etc/GMT-1",
+                        "Etc/GMT-10",
+                        "Etc/GMT-11",
+                        "Etc/GMT-12",
+                        "Etc/GMT-13",
+                        "Etc/GMT-14",
+                        "Etc/GMT-2",
+                        "Etc/GMT-3",
+                        "Etc/GMT-4",
+                        "Etc/GMT-5",
+                        "Etc/GMT-6",
+                        "Etc/GMT-7",
+                        "Etc/GMT-8",
+                        "Etc/GMT-9",
+                        "Etc/GMT0",
+                        "Etc/Greenwich",
+                        "Etc/UCT",
+                        "Etc/UTC",
+                        "Etc/Universal",
+                        "Etc/Zulu",
+                        "Europe/Amsterdam",
+                        "Europe/Andorra",
+                        "Europe/Athens",
+                        "Europe/Belfast",
+                        "Europe/Belgrade",
+                        "Europe/Berlin",
+                        "Europe/Bratislava",
+                        "Europe/Brussels",
+                        "Europe/Bucharest",
+                        "Europe/Budapest",
+                        "Europe/Busingen",
+                        "Europe/Chisinau",
+                        "Europe/Copenhagen",
+                        "Europe/Dublin",
+                        "Europe/Gibraltar",
+                        "Europe/Guernsey",
+                        "Europe/Helsinki",
+                        "Europe/Isle_of_Man",
+                        "Europe/Istanbul",
+                        "Europe/Jersey",
+                        "Europe/Kaliningrad",
+                        "Europe/Kiev",
+                        "Europe/Lisbon",
+                        "Europe/Ljubljana",
+                        "Europe/London",
+                        "Europe/Luxembourg",
+                        "Europe/Madrid",
+                        "Europe/Malta",
+                        "Europe/Mariehamn",
+                        "Europe/Minsk",
+                        "Europe/Monaco",
+                        "Europe/Moscow",
+                        "Europe/Nicosia",
+                        "Europe/Oslo",
+                        "Europe/Paris",
+                        "Europe/Podgorica",
+                        "Europe/Prague",
+                        "Europe/Riga",
+                        "Europe/Rome",
+                        "Europe/Samara",
+                        "Europe/San_Marino",
+                        "Europe/Sarajevo",
+                        "Europe/Simferopol",
+                        "Europe/Skopje",
+                        "Europe/Sofia",
+                        "Europe/Stockholm",
+                        "Europe/Tallinn",
+                        "Europe/Tirane",
+                        "Europe/Tiraspol",
+                        "Europe/Uzhgorod",
+                        "Europe/Vaduz",
+                        "Europe/Vatican",
+                        "Europe/Vienna",
+                        "Europe/Vilnius",
+                        "Europe/Volgograd",
+                        "Europe/Warsaw",
+                        "Europe/Zagreb",
+                        "Europe/Zaporozhye",
+                        "Europe/Zurich",
+                        "GB",
+                        "GB-Eire",
+                        "GMT",
+                        "GMT+0",
+                        "GMT-0",
+                        "GMT0",
+                        "Greenwich",
+                        "HST",
+                        "Hongkong",
+                        "Iceland",
+                        "Indian/Antananarivo",
+                        "Indian/Chagos",
+                        "Indian/Christmas",
+                        "Indian/Cocos",
+                        "Indian/Comoro",
+                        "Indian/Kerguelen",
+                        "Indian/Mahe",
+                        "Indian/Maldives",
+                        "Indian/Mauritius",
+                        "Indian/Mayotte",
+                        "Indian/Reunion",
+                        "Iran",
+                        "Israel",
+                        "Jamaica",
+                        "Japan",
+                        "Kwajalein",
+                        "Libya",
+                        "MET",
+                        "MST",
+                        "MST7MDT",
+                        "Mexico/BajaNorte",
+                        "Mexico/BajaSur",
+                        "Mexico/General",
+                        "NZ",
+                        "NZ-CHAT",
+                        "Navajo",
+                        "PRC",
+                        "PST8PDT",
+                        "Pacific/Apia",
+                        "Pacific/Auckland",
+                        "Pacific/Bougainville",
+                        "Pacific/Chatham",
+                        "Pacific/Chuuk",
+                        "Pacific/Easter",
+                        "Pacific/Efate",
+                        "Pacific/Enderbury",
+                        "Pacific/Fakaofo",
+                        "Pacific/Fiji",
+                        "Pacific/Funafuti",
+                        "Pacific/Galapagos",
+                        "Pacific/Gambier",
+                        "Pacific/Guadalcanal",
+                        "Pacific/Guam",
+                        "Pacific/Honolulu",
+                        "Pacific/Johnston",
+                        "Pacific/Kiritimati",
+                        "Pacific/Kosrae",
+                        "Pacific/Kwajalein",
+                        "Pacific/Majuro",
+                        "Pacific/Marquesas",
+                        "Pacific/Midway",
+                        "Pacific/Nauru",
+                        "Pacific/Niue",
+                        "Pacific/Norfolk",
+                        "Pacific/Noumea",
+                        "Pacific/Pago_Pago",
+                        "Pacific/Palau",
+                        "Pacific/Pitcairn",
+                        "Pacific/Pohnpei",
+                        "Pacific/Ponape",
+                        "Pacific/Port_Moresby",
+                        "Pacific/Rarotonga",
+                        "Pacific/Saipan",
+                        "Pacific/Samoa",
+                        "Pacific/Tahiti",
+                        "Pacific/Tarawa",
+                        "Pacific/Tongatapu",
+                        "Pacific/Truk",
+                        "Pacific/Wake",
+                        "Pacific/Wallis",
+                        "Pacific/Yap",
+                        "Poland",
+                        "Portugal",
+                        "ROC",
+                        "ROK",
+                        "Singapore",
+                        "Turkey",
+                        "UCT",
+                        "US/Alaska",
+                        "US/Aleutian",
+                        "US/Arizona",
+                        "US/Central",
+                        "US/East-Indiana",
+                        "US/Eastern",
+                        "US/Hawaii",
+                        "US/Indiana-Starke",
+                        "US/Michigan",
+                        "US/Mountain",
+                        "US/Pacific",
+                        "US/Pacific-New",
+                        "US/Samoa",
+                        "UTC",
+                        "Universal",
+                        "W-SU",
+                        "WET",
+                        "Zulu"
+                    ]
+                },
+                "isActive": {
+                    "description": "Data will be accepted only if this parameter is True",
+                    "type": "boolean"
+                },
+                "isMonitored": {
+                    "description": "This source will be monitored only if this parameter is True",
+                    "type": "boolean"
+                },
+                "sourceMacAddress": {
+                    "description": "Source hardware identifier",
+                    "type": "string"
+                },
+                "textMessageWithError": {
+                    "description": "Text message to be accompanied with an error",
+                    "type": "string"
+                },
+                "textMessageWithHTTP200": {
+                    "description": "Text message to be accompanied with HTTP 200 OK",
+                    "type": "string"
+                },
+                "timeoutInterval": {
+                    "description": "If there is no data for these many seconds, a notification will be raised",
+                    "format": "int64",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "name",
+                "dataFormat"
+            ]
+        },
+        "WriteStreamActionValues": {
+            "properties": {
+                "name": {
+                    "description": "Stream name",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "Stream values at the given timestamps",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "value"
+            ]
+        },
+        "WriteStreamConfigValues": {
+            "properties": {
+                "name": {
+                    "description": "Stream name",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "Stream values at the given timestamps",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "value"
+            ]
+        },
+        "WriteStreamDataValues": {
+            "properties": {
+                "count": {
+                    "description": "Data Count",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "endTime": {
+                    "description": "The last timestamp of the returned data",
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Stream name",
+                    "type": "string"
+                },
+                "startTime": {
+                    "description": "The first timestamp of the returned data",
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "timestamps": {
+                    "description": "The timestamps at which data was reported",
+                    "type": "string"
+                },
+                "values": {
+                    "description": "Stream values at the given timestamps",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "count",
+                "values",
+                "timestamps"
+            ]
+        },
+        "WriteStreamSerializer": {
+            "properties": {
+                "name": {
+                    "description": "Name of the data stream, should be unique for this source",
+                    "type": "string"
+                },
+                "streamDataType": {
+                    "description": "Type of the data this stream reports",
+                    "enum": [
+                        "INTEGER",
+                        "BOOLEAN",
+                        "STRING",
+                        "FLOAT",
+                        "LONG",
+                        "MAC",
+                        "TIMESTAMP",
+                        "DATE",
+                        "TIME"
+                    ]
+                },
+                "streamPositionInCSV": {
+                    "description": "Applicable only if source dataFormat is CSV, should be unique",
+                    "format": "int64",
+                    "type": "integer"
+                },
+                "streamDataUnit": {
+                    "description": "Data Unit",
+                    "type": "string"
+                },
+                "streamDateTimeFormat": {
+                    "description": "DateTime field values should be reported in ISO 8601 formats. You can specify custom formats here.",
+                    "type": "string"
+                },
+                "multiplicationFactor": {
+                    "description": "Multiplication factor for this stream, applicable only for numerical streams. Defaults to one.",
+                    "format": "float",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "name",
+                "streamDataType"
+            ]
+        }
+    },
+    "info": {
+        "title": "DATAGLEN REST API",
+        "version": "2.0.0",
+        "description": "The APIs let you manage your data sources, streams and data records on the DataGlen platform. If you do not have a Token, please write us to contact@dataglen.com for an account. This page also documents DataGlen’s APIs for remote management of Solar Plants."
+    },
+    "paths": {
+        "/api/sources/": {
+            "get": {
+                "description": "<p>Manage your data sources on the DataGlen platform. </p>\n<p>Returns a list of sources that are owned by you.</p>",
+                "operationId": "Sources_list",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/SourceSerializer"
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Returns a list of sources that are owned by you",
+                "tags": [
+                    "Data Sources"
+                ]
+            },
+            "post": {
+                "description": "<p>Manage your data sources on the DataGlen platform.  </p>\n<p>Create a new data source.</p>",
+                "operationId": "Sources_create",
+                "parameters": [
+                    {
+                        "description": "Details of the new source to be created.",
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/WriteSourceSerializer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "$ref": "#/definitions/SourceSerializer"
+                        }
+                    },
+                    "201": {
+                        "description": "Success. Accompanied with details of the new source."
+                    },
+                    "400": {
+                        "description": "If any of the essential parameters are missing (BAD_REQUEST)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    },
+                    "409": {
+                        "description": "If a source with the mentioned name already exists (DUPLICATE_SOURCE)."
+                    }
+                },
+                "summary": "Create a new data source",
+                "tags": [
+                    "Data Sources"
+                ]
+            }
+        },
+        "/api/sources/{key}/": {
+            "delete": {
+                "description": "<p>Manage your data sources on the DataGlen platform.  </p>\n<p>Delete a data source.</p>",
+                "operationId": "Sources_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "204": {
+                        "description": "Success. The source has been deleted."
+                    },
+                    "400": {
+                        "description": "If the specified source key does not exist (INVALID_SOURCE_KEY)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Delete a data source",
+                "tags": [
+                    "Data Sources"
+                ]
+            },
+            "get": {
+                "description": "<p>Manage your data sources on the DataGlen platform.  </p>\n<p>Get a source with the mentioned key.</p>",
+                "operationId": "Sources_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/SourceSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "If the specified source key does not exist (INVALID_SOURCE_KEY)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a source with the mentioned key",
+                "tags": [
+                    "Data Sources"
+                ]
+            },
+            "patch": {
+                "description": "<p>Manage your data sources on the DataGlen platform.  </p>\n<p>Update an existing data source.</p>",
+                "operationId": "Sources_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Updated details of the source.",
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/WriteSourceSerializer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "$ref": "#/definitions/SourceSerializer"
+                        }
+                    },
+                    "201": {
+                        "description": "Success. Accompanied with updated details of the source."
+                    },
+                    "400": {
+                        "description": "If any of the essential parameters are missing or invalid (BAD_REQUEST) or If the specified source key does not exist (INVALID_SOURCE_KEY)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    },
+                    "409": {
+                        "description": "If a source with the mentioned name already exists (DUPLICATE_SOURCE)."
+                    }
+                },
+                "summary": "Update an existing data source",
+                "tags": [
+                    "Data Sources"
+                ]
+            }
+        },
+        "/api/sources/{source_key}/streams/": {
+            "get": {
+                "description": "<p>Manage your streams  </p>\n<p>Get a list of streams for a source.</p>",
+                "operationId": "Streams_list",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/StreamSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a list of streams for a source",
+                "tags": [
+                    "Data Streams"
+                ]
+            },
+            "post": {
+                "description": "<p>Manage your streams  </p>\n<p>Create a new data stream.</p>",
+                "operationId": "Streams_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Details of the new stream to be created.",
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/WriteStreamSerializer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "$ref": "#/definitions/StreamSerializer"
+                        }
+                    },
+                    "201": {
+                        "description": "Success. Accompanied with details of the new stream."
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY) or If any of the essential parameters are missing/invalid (BAD_REQUEST)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    },
+                    "409": {
+                        "description": "If a stream with the mentioned name OR position already exists (DUPLICATE_STREAM)."
+                    }
+                },
+                "summary": "Create a new data stream",
+                "tags": [
+                    "Data Streams"
+                ]
+            }
+        },
+        "/api/sources/{source_key}/streams/{stream_name}/": {
+            "get": {
+                "description": "<p>Manage your streams  </p>\n<p>Get a stream with the mentioned key.</p>",
+                "operationId": "Streams_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "stream_name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/StreamSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "If the specified source key does not exist (INVALID_SOURCE_KEY) or If the specified stream name does not exist (INVALID_DATA_STREAM)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a stream with the mentioned key",
+                "tags": [
+                    "Data Streams"
+                ]
+            },
+            "patch": {
+                "description": "<p>Manage your streams  </p>\n<p>Update an existing data stream.</p>",
+                "operationId": "Streams_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "stream_name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Updated details of the stream.",
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/WriteStreamSerializer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "$ref": "#/definitions/StreamSerializer"
+                        }
+                    },
+                    "201": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the specified key does not exist (INVALID_DATA_STREAM) or If the specified source key does not exist (INVALID_SOURCE_KEY)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Update an existing data stream",
+                "tags": [
+                    "Data Streams"
+                ]
+            },
+            "delete": {
+                "description": "<p>Manage your streams  </p>\n<p>Delete a data stream.</p>",
+                "operationId": "Streams_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "stream_name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "204": {
+                        "description": "Success. The source has been deleted."
+                    },
+                    "400": {
+                        "description": "If the specified source key does not exist (INVALID_SOURCE_KEY) or If the specified stream name does not exist (INVALID_DATA_STREAM)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Delete a data stream",
+                "tags": [
+                    "Data Streams"
+                ]
+            }
+        },
+        "/api/sources/{source_key}/data/": {
+            "get": {
+                "description": "<p>Manage your data records  </p>\n<p>Get a list of data records for a source and a set of streams. In a single call, 1000 latest records will be sent.</p>",
+                "operationId": "Data_Records_Set_list",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Start time of data lookup. It should be in ISO 8601 format. If there's no timezone mentioned, the default timezone will be of the source.",
+                        "in": "query",
+                        "name": "startTime",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "End time of data lookup. It should be in ISO 8601 format. If there's no timezone mentioned, the default timezone will be of the source.",
+                        "in": "query",
+                        "name": "endTime",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "A comma separated list of stream names that should be included in the data. If this parameter is not specified, all streams will be included.",
+                        "in": "query",
+                        "name": "streamNames",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/SourceDataValues"
+                        }
+                    },
+                    "400": {
+                        "description": "If essential parameters are not specified in the request or dates are not mentioned in the correct format (BAD_REQUEST) or If the source key mentioned is invalid (INVALID_SOURCE_KEY) or If there is an invalid stream present in streamsNames (INVALID_DATA_STREAM)"
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a list of data records for a source and a set of streams",
+                "tags": [
+                    "Data Management"
+                ]
+            },
+            "post": {
+                "description": "<p>Manage your data records  </p>\n<p>Write a new data record. Payload should be in the semantics as specified in the sensor configuration.</p>",
+                "operationId": "Data_Records_Set_create",
+                "consumes": [
+                    "text/plain",
+                    "application/json"
+                ],
+
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Actual body.",
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {}
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success. New record has been written into the database.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "If any of the essential parameters are missing (BAD_REQUEST ) or If the data provided in the request body is not proper as per the data units of streams (INVALID_DATA) or If the source key mentioned is invalid (INVALID_SOURCE_KEY) or If the source is inactive (SOURCE_INACTIVE) or If there is an error retrieving the payload (ERROR_RETRIEVING_PAYLOAD) or If there is an error splitting multiple records (ERROR_SPLITTING_RECORDS) or If there is an error in parsing multiple streams (ERROR_SPLITTING_STREAMS)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Write a new data record",
+                "tags": [
+                    "Data Management"
+                ]
+            }
+        },
+        "/api/sources/{source_key}/action_streams/": {
+            "get": {
+                "description": "<p>Manage your action streams  </p>\n<p>Get a list of action streams for a source.</p>",
+                "operationId": "Action_Streams_list",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/ActionFieldSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a list of action streams for a source",
+                "tags": [
+                    "Action Streams"
+                ]
+            },
+            "post": {
+                "description": "<p>Manage your action streams  </p>\n<p>Create a new action data stream.</p>",
+                "operationId": "Action_Streams_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Details of the new stream to be created.",
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/WriteActionFieldSerializer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "$ref": "#/definitions/ActionFieldSerializer"
+                        }
+                    },
+                    "201": {
+                        "description": "Success. Accompanied with details of the new stream."
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY) or If any of the essential parameters are missing/invalid (BAD_REQUEST)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    },
+                    "409": {
+                        "description": "If a stream with the mentioned name OR position already exists (DUPLICATE_ACTION_STREAM)."
+                    }
+                },
+                "summary": "Create a new action data stream",
+                "tags": [
+                    "Action Streams"
+                ]
+            }
+        },
+        "/api/sources/{source_key}/action_streams/{action_stream_name}/": {
+            "delete": {
+                "description": "<p>Manage your action streams  </p>\n<p>Delete an action data stream.</p>",
+                "operationId": "Action_Streams_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "action_stream_name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "204": {
+                        "description": "Success. The source has been deleted."
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY) or If the specified action stream does not exist (INVALID_ACTION_DATA_STREAM)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Delete an action data stream",
+                "tags": [
+                    "Action Streams"
+                ]
+            },
+            "get": {
+                "description": "<p>Manage your action streams  </p>\n<p>Get an action stream with the mentioned key.</p>",
+                "operationId": "Action_Streams_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "action_stream_name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/ActionFieldSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY) or If the specified action stream does not exist (INVALID_ACTION_DATA_STREAM)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get an action stream with the mentioned key",
+                "tags": [
+                    "Action Streams"
+                ]
+            }
+        },
+        "/api/sources/{source_key}/action/": {
+            "get": {
+                "description": "<p>Get a list of pending actions for a given source.</p>",
+                "operationId": "Action_Records_Set_list",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/SourceActionValues"
+                        }
+                    },
+                    "400": {
+                        "description": "If the source key mentioned in invalid (INVALID_SOURCE_KEY) or If essential parameters are not specified in the request or dates are not mentioned in the correct format.(BAD_REQUEST)"
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a list of pending actions for a given source",
+                "tags": [
+                    "Action Management"
+                ]
+            },
+            "post": {
+                "description": "<p>Write a new action record. Payload should be in the semantics as specified in the sensor configuration.</p>",
+                "operationId": "Action_Records_Set_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Actual body.",
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {}
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "201": {
+                        "description": "Success. New action has been written into the database."
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY) or If any of the essential parameters are missing/invalid (BAD_REQUEST) or If there is an error retrieving the payload (ERROR_RETRIEVING_PAYLOAD) or If there is an error splitting multiple records (ERROR_SPLITTING_RECORDS) or If there is an error in parsing multiple action streams (ERROR_SPLITTING_STREAMS) or If the data provided in the request body is not proper as per the data units of streams (INVALID_DATA)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Write a new action record",
+                "tags": [
+                    "Action Management"
+                ]
+            }
+        },
+        "/api/sources/{source_key}/config_streams/": {
+            "get": {
+                "description": "<p>Manage your config streams  </p>\n<p>Get a list of config streams for a source.</p>",
+                "operationId": "Config_Streams_list",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigFieldSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a list of config streams for a source",
+                "tags": [
+                    "Config Streams"
+                ]
+            },
+            "post": {
+                "description": "<p>Manage your config streams  </p>\n<p>Create a new config data stream.</p>",
+                "operationId": "Config_Streams_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Details of the new stream to be created.",
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/WriteConfigFieldSerializer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigFieldSerializer"
+                        }
+                    },
+                    "201": {
+                        "description": "Success. Accompanied with details of the new stream."
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY) or If any of the essential parameters are missing/invalid (BAD_REQUEST)"
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    },
+                    "409": {
+                        "description": "If a stream with the mentioned name OR position already exists (DUPLICATE_CONFIG_STREAM)."
+                    }
+                },
+                "summary": "Create a new config data stream",
+                "tags": [
+                    "Config Streams"
+                ]
+            }
+        },
+        "/api/sources/{source_key}/config_streams/{config_stream_name}/": {
+            "delete": {
+                "description": "<p>Manage your config streams  </p>\n<p>Delete a config data stream.</p>",
+                "operationId": "Config_Streams_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "config_stream_name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "204": {
+                        "description": "Success. The source has been deleted."
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY) or If the specified config stream does not exist (INVALID_CONFIG_DATA_STREAM)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Delete a config data stream",
+                "tags": [
+                    "Config Streams"
+                ]
+            },
+            "get": {
+                "description": "<p>Manage your config streams  </p>\n<p>Get a config stream with the mentioned key.</p>",
+                "operationId": "Config_Streams_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "config_stream_name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigFieldSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "If the source key mentioned is invalid (INVALID_SOURCE_KEY) or If the specified config stream does not exist (INVALID_CONFIG_DATA_STREAM)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a config stream with the mentioned key",
+                "tags": [
+                    "Config Streams"
+                ]
+            }
+        },
+        "/api/sources/{source_key}/config/": {
+            "get": {
+                "description": "<p>Get a list of pending configs for a given source.</p>",
+                "operationId": "Config_Records_Set_list",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/SourceConfigValues"
+                        }
+                    },
+                    "400": {
+                        "description": "If the source key mentioned in invalid.(INVALID_SOURCE_KEY) or If essential parameters are not specified in the request or dates are not mentioned in the correct format (BAD_REQUEST)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a list of pending configs for a given source",
+                "tags": [
+                    "Config Management"
+                ]
+            },
+            "post": {
+                "description": "<p>Write a new config record. Payload should be in the semantics as specified in the sensor configuration.</p>",
+                "operationId": "Config_Records_Set_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "source_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Actual body.",
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {}
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response was specified",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "201": {
+                        "description": "Success. New config has been written into the database."
+                    },
+                    "400": {
+                        "description": "If the specified key does not exist (INVALID_SOURCE_KEY) or If any of the essential parameters are missing/invalid (BAD_REQUEST) or If there is an error retrieving the payload (ERROR_RETRIEVING_PAYLOAD) or If there is an error splitting multiple records (ERROR_SPLITTING_RECORDS) or If there is an error in parsing multiple config streams (ERROR_SPLITTING_STREAMS) or If the data provided in the request body is not proper as per the data units of streams (INVALID_DATA)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Write a new config record",
+                "tags": [
+                    "Config Management"
+                ]
+            }
+        },
+        "/api/solar/plants/": {
+            "get": {
+                "description": "<p>Get a list of solar plants.</p>",
+                "operationId": "Plants_list",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/PlantSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a list of solar plants",
+                "tags": [
+                    "Solar Plants"
+                ]
+            }
+        },
+        "/api/solar/plants/{plant_slug}/energy/": {
+            "get": {
+                "description": "<p>Get energy generated by the specified plant.</p>",
+                "operationId": "Plants_Energy_Data_list",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "plant_slug",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Start time of data lookup. It should be in ISO 8601 format.",
+                        "in": "query",
+                        "name": "startTime",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "End time of data lookup. It should be in ISO 8601 format.",
+                        "in": "query",
+                        "name": "endTime",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "It should be HOUR/DAY/FIVE_MINUTES",
+                        "in": "query",
+                        "name": "aggregator",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/EnergyDataValues"
+                        }
+                    },
+                    "400": {
+                        "description": "If the plant slug mentioned is invalid (INVALID_PLANT_SLUG) or If essential parameters are not specified in the request or dates are not mentioned in the correct format (BAD_REQUEST)."
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    }
+                },
+                "summary": "Get energy generated by the specified plant",
+                "tags": [
+                    "Solar Plants"
+                ]
+            }
+        },
+        "/api/solar/plants/{plant_slug}/inverters/": {
+            "get": {
+                "description": "<p>Get a list of inverters for a plant.</p>",
+                "operationId": "Inverters_list",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "plant_slug",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/InverterSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "If the specified plant slug does not exist (INVALID_PLANT_SLUG)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a list of inverters for a plant",
+                "tags": [
+                    "Solar Inverters"
+                ]
+            }
+        },
+        "/api/solar/plants/{plant_slug}/inverters/{inverter_key}/": {
+            "get": {
+                "description": "<p>Get an inverter with the mentioned inverter key.</p>",
+                "operationId": "Inverters_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "plant_slug",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "inverter_key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/InverterSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "If the specified plant slug does not exist (INVALID_PLANT_SLUG) or If the specified inverter key does not exist (INVALID_INVERTER_KEY)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get an inverter with the mentioned inverter key",
+                "tags": [
+                    "Solar Inverters"
+                ]
+            }
+        },
+        "/api/solar/plants/{plant_slug}/inverters/{plant_inverter_key}/data/": {
+            "get": {
+                "description": "<p>Get inverter data for a plant slug and inverter key.</p>",
+                "operationId": "Inverters_Data_Set_list",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "plant_slug",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "plant_inverter_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Start time of data lookup. It should be in ISO 8601 format.",
+                        "in": "query",
+                        "name": "startTime",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "End time of data lookup. It should be in ISO 8601 format.",
+                        "in": "query",
+                        "name": "endTime",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "A comma separated list of stream names that should be included in the data. There has to be at least one stream mentioned.",
+                        "in": "query",
+                        "name": "streamNames",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/InverterDataValues"
+                        }
+                    },
+                    "400": {
+                        "description": "If the plant slug mentioned is invalid (INVALID_PLANT_SLUG) or If the inverter key mentioned is invalid (INVALID_INVERTER_KEY) or If there is an invalid stream present in streamsNames (INVALID_DATA_STREAM) or If essential parameters are not specified in the request or dates are not mentioned in the correct format (BAD_REQUEST)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get inverter data for a plant slug and inverter key",
+                "tags": [
+                    "Solar Inverters"
+                ]
+            }
+        },
+        "/api/solar/plants/{plant_slug}/inverters/{plant_inverter_key}/energy/": {
+            "get": {
+                "description": "<p>Get energy generated by the specified inverter aggregated over a time period.</p>",
+                "operationId": "Inverter_Energy_Data_list",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "plant_slug",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "plant_inverter_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Start time of data lookup. It should be in ISO 8601 format.",
+                        "in": "query",
+                        "name": "startTime",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "End time of data lookup. It should be in ISO 8601 format.",
+                        "in": "query",
+                        "name": "endTime",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "It should be HOUR/DAY/FIVE_MINUTES",
+                        "in": "query",
+                        "name": "aggregator",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/EnergyDataValues"
+                        }
+                    },
+                    "400": {
+                        "description": "If the plant slug mentioned is invalid (INVALID_PLANT_SLUG) or If the inverter key mentioned is invalid (INVALID_INVERTER_KEY) or If essential parameters are not specified in the request or dates are not mentioned in the correct format (BAD_REQUEST)."
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    }
+                },
+                "summary": "Get energy generated by the specified inverter aggregated over a time period",
+                "tags": [
+                    "Solar Inverters"
+                ]
+            }
+        },
+        "/api/solar/plants/{slug}/": {
+            "get": {
+                "description": "<p>Get a plant with the mentioned slug value.</p>",
+                "operationId": "Plants_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/PlantSerializer"
+                        }
+                    },
+                    "400": {
+                        "description": "If the specified plant slug does not exist (INVALID_PLANT_SLUG)."
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "summary": "Get a plant with the mentioned slug value",
+                "tags": [
+                    "Solar Plants"
+                ]
+            }
+        }
+    },
+    "schemes": [
+        "https"
+    ],
+    "swagger": "2.0",
+    "tags": [
+        {
+            "name": "Data Sources"
+        },
+        {
+            "name": "Data Streams"
+        },
+        {
+            "name": "Data Management"
+        },
+        {
+            "name": "Solar Plants"
+        },
+        {
+            "name": "Solar Inverters"
+        },
+        {
+            "name": "Action Streams"
+        },
+        {
+            "name": "Config Streams"
+        },
+        {
+            "name": "Action Management"
+        },
+        {
+            "name": "Config Management"
+        }
+
+    ]
+}

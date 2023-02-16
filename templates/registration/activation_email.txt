@@ -1,0 +1,13 @@
+{% load i18n %}
+
+Hi,
+
+Thank you for registering on our website. Here's your unique activation link, please click on it to activate the account.
+
+http://{{ site.domain }}{% url 'registration_activate' activation_key %}
+
+{% blocktrans %}Kindly note that the link is valid only for {{ expiration_days }} days.{% endblocktrans %}
+
+Thank you!
+
+Team DataGlen

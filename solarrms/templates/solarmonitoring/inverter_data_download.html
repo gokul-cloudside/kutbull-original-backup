@@ -1,0 +1,227 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+
+    <style>
+        
+    </style>
+
+{% endblock %}
+
+{% block body_block %}
+    
+    <div id="page-content">
+
+      <!-- <div class="row">
+
+        <div class="col-lg-12">
+
+          <div id="compareinverter-panel-network" class="panel">
+            <div class="panel-heading"> -->
+              <!-- <div class="panel-control">
+                  <button id="week-panel-network-refresh" data-toggle="panel-overlay" data-target="#week-panel-network" class="btn"><i class="fa fa-rotate-right"></i></button>
+              </div> -->
+              <!-- <div class="col-md-6">
+                <h3 class="panel-title">Single Inverter</h3>
+              </div>
+            </div>
+
+            <div class="ibox-content">
+              <div class="col-md-12">
+                <div class="mar-hor">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="inverters">Inverters</label>
+                        <select class="form-control" id="inverters_dropdown_compare">
+                          <option value="" disabled selected>--Choose Inverter--</option>
+                        </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="parameters">Parameters</label>
+                      <select class="form-control" id="singleStream_dropdown">
+                        <option value="" disabled selected>--Choose Parameters--</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label for="start">Start Date</label>
+                      <input type="text" class="form-control datetimepicker_inverters_start_time" id="inverters_start_time" placeholder="Choose Start Date" required="required" style="background-color: white;">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label for="end">End Date</label>
+                      <input type="text" class="form-control datetimepicker_inverters_end_time" id="inverters_end_time" onClick="limit_compare_inverter_date()" placeholder="Choose End Date" required="required" style="background-color: white;">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <iframe id="my_iframe" style="display:none;"></iframe>
+                    <button type="submit" onClick="inverters_chart_data()" class="btn btn-success" id="button_data_download" style="margin-top: 22px;">Download Data</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-12 ">
+                <div class="chart_plot" id="row_plot">
+
+                </div>
+              </div> -->
+
+              <!-- <div class="col-md-12" id="download_chart_image" hidden>
+                <button type="submit" onClick="download_chart_as_png_inv()" class="btn btn-danger pull-right" id="button_chart_as_png_download_inverter" disabled style="padding: 0px 9px; margin-top: -4px;">DOWNLOAD CHART</button>
+              </div> -->
+
+              <!-- <div id="inverter_comparison_data">
+                <div>
+                  <svg id="svg_chart_inverter_download" style="height: 280px;">
+
+                  </svg>
+                </div>
+              </div>
+
+            </div>
+          
+          </div> -->
+          
+          <!-- <div class="col-lg-12 ">
+            <div class="ibox-title">Mutiselect Inverter Graph
+            <button type="submit" onClick="download_chart_as_png_inv()" class="btn btn-danger pull-right" id="button_chart_as_png_download_inverter" disabled style="padding: 0px 9px; margin-top: -4px;">Download Chart As Png</button>
+            </div>
+            <div class="ibox-content" id="inverter_comparison_data">
+              <div>
+                <svg id="svg_chart_inverter_download" style="height: 280px;">
+
+                </svg>
+            </div>
+            </div>
+          </div> -->
+
+        <!-- </div>
+      </div> -->
+
+      <div class="row">
+
+        <div class="col-lg-12">
+
+        <div id="multipleinverter-panel-network" class="panel">
+          <div class="panel-heading">
+            <!-- <div class="panel-control">
+                <button id="week-panel-network-refresh" data-toggle="panel-overlay" data-target="#week-panel-network" class="btn"><i class="fa fa-rotate-right"></i></button>
+            </div> -->
+            <div class="col-md-6">
+              <h3 class="panel-title">Inverter Set</h3>
+            </div>
+          </div>
+
+          <div class="panel-body" style="padding-top: 0px;">
+            <div class="form-group">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="radio">
+
+                    <label class="form-normal"><strong>Choose An Orientation - </strong></label>
+
+                    <!-- Inline radio buttons -->
+                    <label class="form-radio form-normal" id="NORTH"><input type="radio" name="radios" value="NORTH">NORTH</label>
+                    <label class="form-radio form-normal" id="SOUTH"><input type="radio" name="radios" value="SOUTH">SOUTH</label>
+                    <label class="form-radio form-normal" id="EAST"><input type="radio" name="radios" value="EAST">EAST</label>
+                    <label class="form-radio form-normal" id="WEST"><input type="radio" name="radios" value="WEST">WEST</label>
+                    {% if plant.slug == 'uran' %}
+                      <label class="form-radio form-normal" id="SOUTH-WEST"><input type="radio" name="radios" value="SOUTH-WEST">SOUTH-WEST</label>
+                    {% endif %}
+                    <label class="form-radio form-normal" id="EAST-WEST"><input type="radio" name="radios" value="EAST-WEST">EAST-WEST</label>
+                    <label class="form-radio form-normal" id="ALL"><input type="radio" name="radios" value="ALL">ALL</label>
+                    <br/>
+                    <label class="form-normal"><strong>Choose Inverters - </strong></label>
+                    
+                    <label class="form-radio form-normal" id="SELECT_INVERTERS"><input type="radio" name="radios" value="SELECT_INVERTERS">SELECT INVERTERS</label>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ibox-content">
+              <div class="col-md-12">
+                <div class="mar-hor">
+                  <div class="col-md-3" id="multiple_dropdown" hidden>
+                    <div class="form-group">
+                      <label for="inverters">Inverters</label>
+                        <select class="form-control" id="multipleinverter_dropdown_compare" multiple="multiple">
+                          <option value="" disabled selected>--Choose Inverter--</option>
+                        </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="parameters">Parameters</label>
+                      <select class="form-control" id="multipleinverterStream_dropdown">
+                        <option value="" disabled selected>--Choose Parameter--</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label for="start">Start Date</label>
+                      <input type="text" class="form-control datetimepicker_multiple_inverters_start_time" id="multiple_inverters_start_date" placeholder="Pick Start Date" required="required" style="background-color: white;">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label for="end">End Date</label>
+                      <input type="text" class="form-control datetimepicker_multiple_inverters_end_time" id="multiple_inverters_end_date" onClick="limit_plant_future_inverters_end_day_date()" placeholder="Pick End Date" required="required" style="background-color: white;">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <iframe id="my_iframe_multiple" style="display:none;"></iframe>
+                    <button type="submit" onClick="multiple_stream_data_download()" class="btn btn-success" id="button_multiple_data_download" style="margin-top: 22px;">Download Data</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-12 ">
+                <div class="chart_plot" id="multiple_row_plot">
+
+                </div>
+              </div>
+
+              <!-- <div id="multiple_inverter_comparison_data">
+                <div>
+                  <svg id="svg_chart_inverter_download" style="height: 280px;">
+
+                  </svg>
+                </div>
+              </div> -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+{% endblock %}
+
+{% block js %}
+
+<script src="/static/dataglen/js/saveSvgAsPng.js"></script>
+
+  <script src="/static/dataglen/js/d3.v3.min.js"></script>
+  <script src="/static/dataglen/js/nv.d3.min.js"></script>
+
+  <script>
+    var live_chart = null;
+    var plant_slug = '{{ plant.slug }}';
+    var multipleinverter_dropdown_select = 0;
+
+  </script>
+
+  <script src="/static/solarrms/js/demo/visualisations-export_data-inverters-download.js"></script>
+
+{% endblock %}

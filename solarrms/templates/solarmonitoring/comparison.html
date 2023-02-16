@@ -1,0 +1,182 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+	
+	<style>
+		.nvd3 g.nv-groups path.nv-line {
+		  stroke-width: 5px;
+		}
+
+		.width-70 {
+			width: 70px;
+		}
+	</style>
+
+{% endblock %}
+
+{% block body_block %}
+
+    <div id="page-content">
+
+      	<div class="row">
+      
+            <div class="col-lg-12">
+
+            	<div id="plantlevel-panel-network" class="panel">
+                
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Context Analysis</h3>
+                    </div>
+
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="radio">
+
+                                        <label class="form-normal"><strong>Select Comparison Type - </strong></label>
+
+                                        <!-- Inline radio buttons -->
+                                        <label class="form-radio form-normal" id="Power"><input type="radio" name="radios" value="Power" >POWER</label>
+                                        <label class="form-radio form-normal" id="Energy"><input type="radio" name="radios" value="Energy">ENERGY</label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ibox-content">
+                            <div class="col-md-12">
+                                <div class="mar-hor">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="parameters">Parameters</label>
+                                            <select class="form-control" id="parameters_dropdown">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="start">Date</label>
+                                            <input type="text" class="form-control datetimepicker_plant_level_start_time" id="plant_level_start_time" placeholder="Pick a Date" required="required" style="background-color: white;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" id="plantlevel-comparison-plot" onClick="singlechart_plant_comparison_data();" data-toggle="panel-overlay" data-target="#plantlevel-comparison-plot" class="btn btn-success" style="margin-top: 22px;">Plot</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- <div class="panel-control pull-left">
+                                <ul class="nav nav-tabs pull-left">
+                                    <li class="active"><a href="#separate-charts-lft" data-toggle="tab" onClick="redraw_window();" id="separate_charttab">Separate Charts</a></li>
+                                    <li><a href="#single-chart-lft" data-toggle="tab" onClick="redraw_window();" id="single_charttab">Single Chart</a></li>
+                                </ul>
+                            </div> -->
+
+                            <!-- <div class="tab-content">
+                                <div class="tab-pane fade in active" id="separate-charts-lft"> 
+
+                                    <div class="ibox-content">
+                                        
+                                        <div class="col-lg-12" style="margin-top: 20px;">
+                                            <div class="chart" id="no_data_parameter_value">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12 ">
+                                            <div id="plantlevel_comparison_chart">
+                                                
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12 ">
+                                            <div class="chart_plot" id="no_data_power_value">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12 ">
+                                            <div class="chart_plot" id="power_data_id">
+                                                <svg>
+
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>-->
+                                <!-- <div class="tab-pane fade" id="single-chart-lft"> -->
+                            <div class="row">
+                                <div class="col-lg-12" style="margin-top: 20px;">
+                                    <div id="single_no_data_parameter_value">
+
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="chart_plot" id="single_no_data_power_value">
+
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div id="single_chart_dual_axis">
+
+                                    </div>
+                                </div>
+                            </div>
+                                <!-- </div> -->
+                        </div>
+
+                    </div>
+
+                </div>
+      	
+            </div>
+    
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="/static/dataglen/js/d3.v3.min.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/solarrms/js/papaparse.min.js"></script>
+
+    <script>
+        var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+
+        var streams = [];
+
+        var comparison_select = null;
+
+        /*{% for inverter in plant.independent_inverter_units.all %}
+		    <b> {{ plant.slug }} {{ inverter.name }}  {{ inverter.sourceKey }} </b> </br>
+		{% endfor %}*/
+
+		{% if plant.metadata %}
+		{% for stream in plant.metadata.fields.all %}
+			streams.push('{{ stream.name }}');
+		    /*<b> {{ stream.name }} </b>
+		    <br/>*/
+		{% endfor %}
+		var sourcekey = ('{{ plant.metadata.sourceKey }}');
+		{% endif %}
+
+    </script>
+
+    <script src="/static/solarrms/js/demo/inverter_parse.js"></script>
+    <script src="/static/solarrms/js/demo/plant_power_data.js"></script>
+    <script src="/static/solarrms/js/js_functions/dual_axis_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/demo/visualisations-comparison.js"></script>
+
+{% endblock %}

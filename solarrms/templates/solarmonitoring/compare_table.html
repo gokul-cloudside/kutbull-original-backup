@@ -1,0 +1,155 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+    
+    <link href="/static/solarrms/css/spinner.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/datepicker/0.5.0/datepicker.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block body_block %}
+
+                <!--Page Title-->
+                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                <!--End page title-->
+
+                <!--Page content-->
+                <!--===================================================-->
+                <div id="page-content">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="col-lg-12" style="padding-left: 0px;padding-right: 0px;">
+                                <div id="download_table-panel-network" class="panel">
+                                    <div class="panel-body">
+                                        <div class="pad-btm">
+                                            <p class="text-lg text-semibold text-uppercase text-thin text-info">Detailed Reports</p>
+                                            <p class="text-sm text-thin text-semibold"> Export data as an excel sheet for the selected date and set of devices categories. </p>
+                                        </div>
+                                        <div class="row" id="options">
+                                            <div class="col-lg-4 col-md-4 col-sm-4 pad-no mar-no">
+                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-mint dropdown-toggle" data-toggle="dropdown" type="button" style="width: 14vw;">
+                                                            <span class="dropdown_report_period" id="dropdown_report_period">Report Type</span>
+                                                            <i class="dropdown-caret"></i>
+                                                        </button>
+
+                                                        <ul class="dropdown-menu dropdown-menu-left report_period-list" id="report_period-list">
+                                                            <li value="yearly"><a>Yearly</a></li>
+                                                            <li value="monthly"><a>Monthly</a></li>
+                                                            <li value="daily"><a>Daily</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-6" id="download_report_date" style="padding-left: 0px;height: 33px;">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control datepicker_start" placeholder="Pick a Date" style="height: 33px;">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                                    <div class="pad-top text-thin text-sm text-semibold">
+
+                                                        <i>You can download daily, monthly or yearly reports. <br> <br>
+                                                            Devices data can also be downloaded with daily reports, you can select a category on the right. </i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-1 col-md-1 col-sm-1 pad-no mar-no">
+                                                <ul class="pager mar-no">
+                                                    <iframe id="my_iframe_download_report" style="display:none;"></iframe>
+                                                    <li class="next"><a class="btn btn-default" id="download_report-download" style="float: left;">Download <i class="fa fa-download" aria-hidden="true"></i></a></li>
+                                                    <!-- <li id="report_summary-li-next" class="next disabled"><a class="btn btn-default" id="report_summary-next" style="float: right;">Next <i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>
+                                                    <li id="report_summary-li" class="previous disabled"><a class="btn btn-default" id="report_summary-before" style="float: right;"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Previous</a></li> -->
+                                                    <!-- li class="next"><a class="btn btn-default" id="download_report-pdf" style="float: left;">Download PDF <i class="fa fa-download" aria-hidden="true"></i></a></li-->
+                                                </ul>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4 pad-no mar-no pull-right">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                                        <div class="btn-group">
+                                                            <button class="btn btn-mint dropdown-toggle" id="device_type_button_div" data-toggle="dropdown" type="button" style="width: 14vw;">
+                                                                <span class="device_type" id="device_type">Device Type</span>
+                                                                <i class="dropdown-caret"></i>
+                                                            </button>
+
+                                                            <ul class="dropdown-menu dropdown-menu-left devices_present" id="devices_present">
+                                                                
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-6 pad-no mar-no">
+                                                        <div class="btn-group">
+                                                            <button class="btn btn-mint dropdown-toggle" id="excel_worksheet_button_div" data-toggle="dropdown" type="button" style="width: 14vw;">
+                                                                <span class="dropdown_parameter" id="dropdown_parameter">Excel Worksheets</span>
+                                                                <i class="dropdown-caret"></i>
+                                                            </button>
+
+                                                            <ul class="dropdown-menu dropdown-menu-left excel_parameter" id="excel_parameter">
+                                                                <li onclick="devices_data()" value="devices"><a>Devices Data</a></li>
+                                                                <li onclick="streams_data()" value="streams"><a>Parameters Data</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="pad-top text-thin text-semibold text-sm"><i id="description"></i></div>
+                                            </div>
+                                        </div>
+                                        <div id="download_panel">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-5 col-md-5 col-sm-5"></div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                                <div class="loader text-center" hidden></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--===================================================-->
+                <!--End page content-->
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/solarrms/js/papaparse.min.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
+
+    <script>
+        var plant_slug = '{{ plant.slug }}';
+        var source_key = '{{ plant_meta.sourceKey }}';
+
+        var user_email = '{{ user.email }}'
+        console.log(user_email);
+        
+        var plant_metadata_calculate_hourly_pr = null;
+        var selected = null;
+        
+        function devices_data(){
+            $("#description").empty();
+            $("#description").text("Each worksheet will consist data of a single device with all parameters.");
+            selected = "devices";
+        }
+
+        function streams_data(){
+            $("#description").empty();
+            $("#description").text("Each worksheet will consist data of a single parameter from all devices.");
+            selected = "streams";
+        }
+
+    </script>
+
+    <script src="/static/solarrms/js/demo/visualisations-compare_table.js"></script>
+
+{% endblock %}

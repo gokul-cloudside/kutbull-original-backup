@@ -1,0 +1,134 @@
+<html>
+{% block body_block %}
+<head>
+<style>
+    @page {
+        size: a4 portrait;
+        @frame header_frame {           /* Static Frame */
+            -pdf-frame-content: header_content;
+            left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+        }
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+        }
+        @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+        }
+    }
+</style>
+</head>
+
+<body>
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content"><h1>Data Report on {{ source.sourceKey }}</h1></div>
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">DataGlen Inc (c) - page <pdf:pagenumber>
+        of <pdf:pagecount>
+    </div>
+
+</body>
+  <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h3>Total number of valid data points in the specified interval: Start Time = {{startTime}} and End Time = {{endTime}}</h3>
+                  <h1>{{ valid_records_size }}</h1>
+                  <h2>Below are the details</h2>
+                </div>
+                <div class="ibox-content">
+                    <table class="table">
+                      <span class="pull-left">
+                        <thead>
+                            <tr>
+                                <th>Source Key</th>
+                                <th>Stream Name</th>
+                                <th>Insertion Time</th>
+                                <th>Stream Value</th>
+                            </tr>
+                        </thead>
+                      </span>
+                        {% for valid_record in valid_records %}
+                            <tbody>
+                                <td> {{ valid_record.source_key }} </td>
+                                <td>{{ valid_record.stream_name}}</td>
+                                <td>{{ valid_record.insertion_time}}</td>
+                                <td>{{ valid_record.stream_value}}</td>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h3>Total number of Invalid data points in the specified interval: Start Time = {{startTime}} and End Time = {{endTime}}</h3>
+                  <h1>{{ invalid_records_size }}</h1>
+                  <h2>Below are the details</h2>
+                </div>
+                <div class="ibox-content">
+                    <table class="table">
+                      <span class="pull-left">
+                        <thead>
+                            <tr>
+                                <th>Source Key</th>
+                                <th>Time</th>
+                                <th>Error</th>
+                            </tr>
+                        </thead>
+                      </span>
+                        {% for invalid_record in invalid_records %}
+                            <tbody>
+                                <td> {{ invalid_record.source_key }} </td>
+                                <td>{{ invalid_record.insertion_time}}</td>
+                                <td>{{ invalid_record.error}}</td>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h3>Total number of alerts sent in the specified interval: Start Time = {{startTime}} and End Time = {{endTime}}</h3>
+                  <h1>{{ alerts_size }}</h1>
+                  <h2>Below are the details</h2>
+                </div>
+                <div class="ibox-content">
+                    <table class="table">
+                      <span class="pull-left">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Alert Time</th>
+                                <th>Email Id</th>
+                            </tr>
+                        </thead>
+                      </span>
+                        {% for alert in alerts %}
+                            <tbody>
+                                <td> {{ alert.event.event_name }} </td>
+                                <td>{{ alert.alert_time}}</td>
+                                <td>{{ alert.email_id}}</td>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+{% endblock %}
+</html>

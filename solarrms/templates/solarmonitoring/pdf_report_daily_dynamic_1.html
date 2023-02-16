@@ -1,0 +1,703 @@
+{% load screamshot %}
+<!DOCTYPE html>
+<!-- saved from url=(0065)http://dataglen.com/solar/plant/ranergy/pdf_report/?st=11-11-2017 -->
+<html lang="en" class="gr__dataglen_com">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <title>Daily Generation Report by {{ client_name }}</title>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <meta name="description" content="">
+      <meta name="viewport" content="initial-scale = 1.0, maximum-scale=1.0">
+      <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+      <!--<link rel="icon" href="http://dataglen.com/solar/plant/ranergy/pdf_report/favicon.ico" type="image/x-icon">-->
+      <script src="https://code.highcharts.com/highcharts.js"></script>
+      <script>
+         var runOnLoad = (function() {
+             var tasksRun = false;
+             var tasks = [];
+
+             function add(task) { if (tasksRun) { window.setTimeout(task, 0) } else { tasks.push(task) } }
+
+             function runTasks() { tasksRun = true; while (tasks.length) { tasks.shift()() } }
+             if (window.addEventListener) {
+                 document.addEventListener('DOMContentLoaded', runTasks, false);
+                 window.addEventListener('load', runTasks, false)
+             } else { window.attachEvent('onload', runTasks) }
+             return add
+         })();
+      </script>
+      <style>
+         #main {
+         display: flex;
+         flex-direction: column;
+         }
+      </style>
+      <style>
+         /*css reset*/
+         html,
+         body,
+         div,
+         span,
+         applet,
+         object,
+         iframe,
+         h1,
+         h2,
+         h3,
+         h4,
+         h5,
+         h6,
+         p,
+         blockquote,
+         pre,
+         a,
+         abbr,
+         acronym,
+         address,
+         big,
+         cite,
+         code,
+         del,
+         dfn,
+         em,
+         img,
+         ins,
+         kbd,
+         q,
+         s,
+         samp,
+         small,
+         strike,
+         strong,
+         sub,
+         sup,
+         tt,
+         var,
+         b,
+         u,
+         i,
+         center,
+         dl,
+         dt,
+         dd,
+         ol,
+         ul,
+         li,
+         fieldset,
+         form,
+         label,
+         legend,
+         table,
+         caption,
+         tbody,
+         tfoot,
+         thead,
+         tr,
+         th,
+         td,
+         article,
+         aside,
+         canvas,
+         details,
+         embed,
+         figure,
+         figcaption,
+         footer,
+         header,
+         hgroup,
+         menu,
+         nav,
+         output,
+         ruby,
+         section,
+         summary,
+         time,
+         mark,
+         audio,
+         video {
+         margin: 0;
+         padding: 0;
+         border: 0;
+         font-size: 100%;
+         font: inherit;
+         vertical-align: baseline;
+         }
+         /* HTML5 display-role reset for older browsers */
+         article,
+         aside,
+         details,
+         figcaption,
+         figure,
+         footer,
+         header,
+         hgroup,
+         menu,
+         nav,
+         section {
+         display: block;
+         }
+         body {
+         line-height: 1;
+         }
+         ol,
+         ul {
+         list-style: none;
+         }
+         blockquote,
+         q {
+         quotes: none;
+         }
+         blockquote:before,
+         blockquote:after,
+         q:before,
+         q:after {
+         content: '';
+         content: none;
+         }
+         table {
+         border-collapse: collapse;
+         border-spacing: 0;
+         }
+         html {
+         box-sizing: border-box;
+         }
+         *,
+         *:before,
+         *:after {
+         box-sizing: inherit;
+         }
+         /*font family*/
+         @import url('https://fonts.googleapis.com/css?family=Montserrat:400,600,800');
+         @media print,
+         screen {
+         body {
+         font-family: arial, sans-serif;
+         height: 752px;
+         width: 595px;
+         margin-left: auto;
+         margin-right: auto
+         }
+         .clearfix {
+         overflow: auto;
+         }
+         .clearfix::after {
+         content: "";
+         clear: both;
+         display: table;
+         }
+         .header {
+         display: flex;
+         align-items: center;
+         }
+         .header-logo-left,
+         .header-logo-right {
+         width: 20%;
+         max-height: 100px;
+         }
+         .header-logo-left img,
+         .header-logo-right img {
+         width: 100px;
+         }
+         .header-logo-left {
+         float: left;
+         }
+         .header-logo-right {
+         float: right;
+         }
+         .header-site--name {
+         text-align: center;
+         width: 50%;
+         float: left;
+         font-size: 10px;
+         line-height: 20px;
+         font-weight: 600;
+         padding: 0 10px;
+         }
+         .header-name-center {
+         text-align: center;
+         width: 80%;
+         font-size: 10px;
+         line-height: 20px;
+         font-weight: 600;
+         padding: 0 10px;
+         }
+         .block-title {
+         font-weight: 500;
+         font-size: 8px;
+         letter-spacing: 0.6px;
+         margin: 10px 0px;
+         font-weight: bold;
+         }
+         .address_wrapper {
+         display: -webkit-flex;
+         display: flex;
+         -webkit-flex-flow: row wrap;
+         flex-flow: row wrap;
+         margin-top: 10px;
+         }
+         .address_item {
+         -webkit-flex: 1 auto;
+         flex: 1 auto;
+         font-size: 10px;
+         margin: 5px 0px;
+         }
+         .address_item span {
+         font-weight: 800;
+         margin-right: 5px;
+         }
+         h3 {
+         margin-bottom: 15px;
+         margin-top: 10px;
+         font-weight: bold;
+         font-size: 14px;
+         }
+         .light {
+         color: #909090;
+         margin-top: 5px;
+         font-size: 8px;
+         font-weight: 400;
+         }
+         table.blueTable {
+         border: 1px solid #1C6EA4;
+         background: #4ab19a;
+         width: 100%;
+         text-align: right;
+         border-collapse: collapse;
+         border-right: none;
+         border-left: none;
+         table-layout: fixed;
+         }
+         table.blueTable td,
+         table.blueTable th {
+         padding: 6px 10px;
+         word-wrap: break-word;
+         }
+         table.blueTable tbody td {
+         font-size: 8px;
+         font-weight: 500;
+         }
+         table.blueTable tbody tr {
+         background: #fff
+         }
+         table.blueTable thead th {
+         font-size: 7px;
+         font-weight: 600;
+         color: white;
+         word-wrap: break-word;
+         }
+         table.blueTable thead th:first-child {
+         width: 120px;
+         max-width: 120px;
+         min-width: 120px;
+         }
+         table.blueTable tfoot td {
+         font-size: 8px;
+         background-color: #f2f2f2;
+         font-weight: bold;
+         }
+         section {
+         margin: 10px 0px;
+         }
+         .inline-block {
+         display: inline-block;
+         }
+         }
+         @import 'https://code.highcharts.com/css/highcharts.css';
+         #container {
+         margin: 0 auto;
+         }
+         .highcharts-yaxis-grid .highcharts-grid-line {
+         stroke-width: 1px;
+         stroke: #d8d8d8;
+         }
+         .highcharts-yaxis .highcharts-tick {
+         stroke-width: 1px;
+         stroke: #d8d8d8;
+         }
+         .highcharts-minor-grid-line {
+         stroke-dasharray: 2, 2;
+         }
+      </style>
+   </head>
+   <body data-gr-c-s-loaded="true">
+      <div >
+         <hr>
+         <table style="width:100%; margin-top: 10px;line-height: 1.2; font-size: 10px; border-spacing: 10px 10px;">
+            <tr style="vertical-align: middle; ">
+               <td width="50%" align="left"><img style="display: block;
+                  max-width:100px;
+                  max-height:45px;
+                  object-fit: contain; margin-bottom: 5px;" src="{{ plant_client_logo }}">
+               </td>
+               <td width="50%" align="right"> <img style="display: block;
+                  max-width:100px;
+                  max-height:45px;
+                  object-fit: contain;margin-bottom: 5px;" src="{{ plant_group_client_logo }}"></td>
+            </tr>
+            <tr>
+               <td  align="left" valign="top" >Generation Report
+                  From {{ client_name }}</br>
+                  Date: {{ endtime_formatted }}
+               </td>
+               <td  align="right" valign="top">Plant: {{ plant_name }}</br>
+                  Capacity: {{ plant_capacity }}kWp</br>
+                  Address: {{ plant_address }}
+               </td>
+            </tr>
+         </table>
+         <hr>
+      </div>
+
+      <!--<p class="light"><sup>*</sup> The values present are as per availability of data. Average of PR values for Roof and Plant will differ if energy meter is not installed on Roofs. </p>-->
+
+      <script>
+      <!--var list1 = [1,2,3,4,5,6]-->
+      var list1 = {{order|safe}};
+function gen_vs_irr_feature_order() {
+code = "<div id='section1'>{% if gen_vs_irr_feature_order <= 100 %}<section>{% else %}<section style='display: none'>{% endif %}<div class='block-title'>{{ gen_vs_irr_feature_order }} - {{ gen_vs_irr_feature_title }} (Daily - for last 30 days from {{ starttime }} to {{ endtime }})</div><div id='genIsolation'></div></section></div>"
+    document.write(code);
+}
+
+function prod_statement_for_a_day_order() {
+    code="<div id='section2'>{% if prod_statement_for_a_day_order <= 100 %}<section>{% else %}<section style='display: none'>{% endif %}<div class='block-title'>{{ prod_statement_for_a_day_order }} - {{ prod_statement_for_a_day_title }} ({{ endtime_formatted }})</div><table class='blueTable'><thead><tr><th>Generation (kWh)</th><th>Insolation (kW/m<sup>2</sup>)</th><th>PR (%)</th><th>Yield (kWh/kWp)</th><th>Forecast (kWh)</th></tr></thead><tfoot><tr><td>{{ inv_prod_kwh }}</td><td>{{ one_day_insolation }}</td><td>{{ one_day_pr }}</td><td>{{ inv_prod_yield }}</td><td>{{ forecasted_value }}</td></tr></tfoot></table></section></div>"
+    document.write(code);
+}
+
+function inverter_prduction_order() {
+    document.write("<div id='section3'>{% if inverter_prduction_order <= 100 %}<section>{% else %}<section style='display: none'>{% endif %}<div class='block-title'>{{ inverter_prduction_order }} - {{ inverter_prduction_title }} (Last 7 days from {{ weekdaystart }} to {{ endtime }})</div><table class='blueTable'><thead><tr><th>Date</th><th>{{ list_of_days0 }}</th><th>{{ list_of_days1 }}</th><th>{{ list_of_days2 }}</th><th>{{ list_of_days3 }}</th><th>{{ list_of_days4 }}</th><th>{{ list_of_days5 }}</th><th>{{ list_of_days6 }}</th></tr></thead><tbody>{% for group_data in groups_weeks_inverter_gen %}<tr><td>{{ group_data.group_name }}</td><td>{{ group_data.0 }}</td><td>{{ group_data.1 }}</td><td>{{ group_data.2 }}</td><td>{{ group_data.3 }}</td><td>{{ group_data.4 }}</td><td>{{ group_data.5 }}</td><td>{{ group_data.6 }}</td></tr>{% endfor %}</tbody><tfoot><tr><td>Inverters Total Production </td><td>{{ list_of_inv_gen0 }}</td><td>{{ list_of_inv_gen1 }}</td><td>{{ list_of_inv_gen2 }}</td><td>{{ list_of_inv_gen3 }}</td><td>{{ list_of_inv_gen4 }}</td><td>{{ list_of_inv_gen5 }}</td><td>{{ list_of_inv_gen6 }}</td></tr></tfoot></table></section></div>");
+}
+
+function meter_production_order() {
+    document.write("<div id='section4'>\
+            {% if energy_meter_available == 1 and meter_production_order <= 100%}\
+            <section>\
+            {% else %}\
+            <section style='display: none'>\
+               {% endif %}\
+               <div class='block-title'>{{ meter_production_order}} - {{ meter_production_title}} (Last 7 days from {{ weekdaystart }} to {{ endtime }})</div>\
+               <table class='blueTable'>\
+                  <thead>\
+                     <tr>\
+                        <th>Date</th>\
+                        <th>{{ list_of_days0 }}</th>\
+                        <th>{{ list_of_days1 }}</th>\
+                        <th>{{ list_of_days2 }}</th>\
+                        <th>{{ list_of_days3 }}</th>\
+                        <th>{{ list_of_days4 }}</th>\
+                        <th>{{ list_of_days5 }}</th>\
+                        <th>{{ list_of_days6 }}</th>\
+                     </tr>\
+                  </thead>\
+                  <tfoot>\
+                     <tr>\
+                        <td>Meters Total Production</td>\
+                        <td>{{ list_of_meter_val0 }}</td>\
+                        <td>{{ list_of_meter_val1 }}</td>\
+                        <td>{{ list_of_meter_val2 }}</td>\
+                        <td>{{ list_of_meter_val3 }}</td>\
+                        <td>{{ list_of_meter_val4 }}</td>\
+                        <td>{{ list_of_meter_val5 }}</td>\
+                        <td>{{ list_of_meter_val6 }}</td>\
+                     </tr>\
+                  </tfoot>\
+               </table>\
+            </section>\
+         </div>");
+}
+function pr_vals_order() {
+    document.write("<div id='section5'>\
+         {% if pr_vals_order <= 100 %}\
+         <section>\
+         {% else %}\
+         <section style='display: none'>\
+            {% endif %}\
+            <div class='block-title'>{{ pr_vals_order }} - {{ pr_vals_title }} (Last 7 days from {{ weekdaystart }} to {{ endtime }})</div>\
+            <table class='blueTable'>\
+               <thead>\
+                  <tr>\
+                     <th>Date</th>\
+                     <th>{{ list_of_days0 }}</th>\
+                     <th>{{ list_of_days1 }}</th>\
+                     <th>{{ list_of_days2 }}</th>\
+                     <th>{{ list_of_days3 }}</th>\
+                     <th>{{ list_of_days4 }}</th>\
+                     <th>{{ list_of_days5 }}</th>\
+                     <th>{{ list_of_days6 }}</th>\
+                  </tr>\
+               </thead>\
+               <tbody>\
+                  {% for group_pr_data in groups_weeks_pr %}\
+                  <tr>\
+                     <td>{{ group_pr_data.group_name }}</td>\
+                     <td>{{ group_pr_data.0 }}</td>\
+                     <td>{{ group_pr_data.1 }}</td>\
+                     <td>{{ group_pr_data.2 }}</td>\
+                     <td>{{ group_pr_data.3 }}</td>\
+                     <td>{{ group_pr_data.4 }}</td>\
+                     <td>{{ group_pr_data.5 }}</td>\
+                     <td>{{ group_pr_data.6 }}</td>\
+                  </tr>\
+                  {% endfor %}\
+               </tbody>\
+               <tfoot>\
+                  <tr>\
+                     <td>Performance Ratio (%)</td>\
+                     <td>{{ list_of_pr0 }}</td>\
+                     <td>{{ list_of_pr1 }}</td>\
+                     <td>{{ list_of_pr2 }}</td>\
+                     <td>{{ list_of_pr3 }}</td>\
+                     <td>{{ list_of_pr4 }}</td>\
+                     <td>{{ list_of_pr5 }}</td>\
+                     <td>{{ list_of_pr6 }}</td>\
+                  </tr>\
+               </tfoot>\
+            </table>\
+         </section>\
+      </div>");
+}
+function plant_desc_order() {
+    document.write("<div id='section6'>\
+    {% if plant_desc_order <= 100 %}\
+         <section>\
+         {% else %}\
+         <section style='display: none'>\
+            {% endif %}\
+            <div class='block-title'>{{ plant_desc_order }} - {{ plant_desc_title }}</div>\
+            <table class='blueTable'>\
+               <thead>\
+                  <tr>\
+                     <th>Site</th>\
+                     <th>Capacity (kWp)</th>\
+                     <th>Connection Date</th>\
+                     <th>Inverters</th>\
+                      <th>Sensors Data</th>\
+                     <th>Solar Modules</th>\
+                  </tr>\
+               </thead>\
+               <tbody>\
+                  <tr>\
+                     <td>{{ plant_name }}</td>\
+                     <td>{{ plant_capacity }}</td>\
+                     <td>{{ plant_commissioned_date }}</td>\
+                     <td>{{ group_inv_info }}</td>\
+                      <td> {{ sensor_data }}</td>\
+                     <td>{{ solar_modules }}</td>\
+                  </tr>\
+               </tbody>\
+               <tfoot>\
+                  <tr>\
+                     <td>Total</td>\
+                     <td>{{ plant_capacity }}</td>\
+                     <td></td>\
+                     <td>{{ no_of_inverters }}</td>\
+                     <td>{{ total_sensors }}</td>\
+                     <td>{{ total_solar_modules }}</td>\
+                  </tr>\
+               </tfoot>\
+            </table>\
+         </section>\
+      </div>");
+}
+
+for (i = 0; i < list1.length; i++) {
+var val = list1[i]
+<!--document.write(val+"-&#45;&#45;")-->
+
+switch (val) {
+    case 'gen_vs_irr_feature_order':
+        gen_vs_irr_feature_order();
+        break;
+    case 'prod_statement_for_a_day_order':
+        prod_statement_for_a_day_order()
+        break;
+    case 'inverter_prduction_order':
+        inverter_prduction_order();
+        break;
+    case 'meter_production_order':
+        meter_production_order()
+        break;
+    case 'pr_vals_order':
+        pr_vals_order()
+        break;
+    case 'plant_desc_order':
+        plant_desc_order()
+        break;
+
+    default:
+        document.write("Default is hit in the switch case");
+}
+
+}
+
+         var dateSuperScript = function(day) {
+             if (day === 1) {
+                 return 'st'.sup();
+             } else if (day === 2) {
+                 return 'nd'.sup();
+             } else if (day === 3) {
+                 return 'st'.sup();
+             }
+             return 'th'.sup();
+         }
+
+         var dateSuper = dateSuperScript(1);
+
+         var runOnLoad = (
+             function() {
+                 var tasksRun = false;
+                 var tasks = [];
+
+                 function add(task) {
+                     if (tasksRun) {
+                         window.setTimeout(task, 0)
+                     } else {
+                         tasks.push(task)
+                     }
+                 }
+
+                 function runTasks() {
+                     tasksRun = true;
+                     while (tasks.length) {
+                         tasks.shift()();
+                     }
+                 }
+                 if (window.addEventListener) {
+                     document.addEventListener('DOMContentLoaded', runTasks, false);
+                     window.addEventListener('load', runTasks, false);
+                 } else {
+                     window.attachEvent('onload', runTasks);
+                 }
+                 return add;
+             })();
+
+         var daily_monthly_generation_str = '{{ list_gen_irr|safe }}'
+
+         var daily_monthly_generation = "";
+
+         if (daily_monthly_generation_str.length > 1) {
+             daily_monthly_generation = JSON.parse(daily_monthly_generation_str);
+         }
+         //debugger;
+         var gi_1 = new Array();
+         var gi_2 = new Array();
+         var gi_3 = new Array();
+
+         for (i = 0; i < daily_monthly_generation.length; i++) {
+
+             gi_1[i] = daily_monthly_generation[i].generation;
+             gi_2[i] = daily_monthly_generation[i].timestamp;
+             var dt = new Date(gi_2[i])
+             if (dt !== undefined) {
+                 gi_2[i] = dt.getDate() + "/" + (dt.getMonth() + 1);
+             }
+             gi_3[i] = daily_monthly_generation[i].insolation;
+         }
+
+         runOnLoad(function() {
+             //debugger;
+             Highcharts.setOptions({
+                 colors: ['#488A99', '#124E78', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4'],
+                 plotOptions: { series: { animation: false } },
+                 credits: { enabled: false }
+             });
+
+
+
+             Highcharts.chart('genIsolation', {
+                 chart: {
+                     height: 145,
+                     zoomType: 'xy',
+                     events: {
+                         load: function() {
+                             setTimeout(function() { document.getElementById("footer_content").innerHTML = "<div id='jscompleted'>"; }, 2000);
+                         }
+                     }
+
+                 },
+                 title: {
+                     text: ''
+                 },
+
+                 xAxis: [{
+                     categories: gi_2,
+                     crosshair: true,
+                     labels: {
+                         style: {
+                             fontSize: '8px',
+                         }
+                     }
+                 }],
+                 yAxis: [{ // Secondary yAxis
+                     //gridLineWidth: 0,
+                     title: {
+                         text: '',
+                         style: {
+                             color: Highcharts.getOptions().colors[0]
+                         }
+                     },
+                     labels: {
+                         format: '{value} kWh',
+                         style: {
+                             <!--color: Highcharts.getOptions().colors[0]-->
+                             fontSize: '8px'
+                         }
+                     }
+
+                 }, { // Tertiary yAxis
+                     //gridLineWidth: 0,
+                     title: {
+                         text: '',
+                         style: {
+                             color: Highcharts.getOptions().colors[1]
+                         }
+                     },
+                     labels: {
+                         format: '{value} kWh/m^2',
+                         style: {
+                             <!--color: Highcharts.getOptions().colors[1]-->
+                             fontSize: '8px'
+                         }
+                     },
+                     opposite: true
+                 }],
+                 legend: {
+                     align: 'center',
+                     verticalAlign: 'top',
+                     itemStyle: { color: '#000000', fontWeight: 'light', fontSize: '8px' },
+                     backgroundColor: 'rgba(255, 255, 255, 0.0)',
+                     floating: true,
+                     x: 0,
+                     y: -17
+                 },
+                 plotOptions: {
+                     column: {
+                         pointWidth: 12
+                     },
+                     series: {
+                         lineWidth: 1,
+                         marker: {
+                             radius: 2
+                         }
+                     }
+                 },
+                 series: [{
+                     name: 'Generation (kWh)',
+                     type: 'column',
+                     data: gi_1,
+                     color: '#0c61ae'
+
+                 }, {
+                     name: 'Insolation (kWh/m^2)',
+                     type: 'spline',
+                     yAxis: 1,
+                     data: gi_3,
+                     color: '#000',
+                 }]
+             });
+         });
+      </script>
+
+
+      <div id="footer_content"></div>
+   </body>
+</html>

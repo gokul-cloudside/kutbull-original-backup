@@ -1,0 +1,120 @@
+{% extends "admin/base_site.html" %}
+{% load staticfiles %}
+{% block extrahead %}
+
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css"/>
+<style>
+    #id_source_key { height:250px; }
+</style>
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+<script type="text/javascript" src="/static/admin/js/SelectBox.js"></script>
+<script type="text/javascript" src="/static/admin/js/SelectFilter2.js"></script>
+
+{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+› Add Solar Field
+</div>
+
+{% endblock %}
+
+{% block content %}
+    <h1>Add Solar Field</h1>
+    <fieldset class="module aligned wide">
+    <form id="add_solar_field" action="" method="post">
+        {% csrf_token %}
+        <table>
+        {{ form }}
+        </table>
+
+        <div class="submit-row">
+            <input value="Add" class="default" id="submit" name="_setmf" type="submit" />
+        </div>
+    </form>
+    </fieldset>
+
+<script>
+(function($){
+$("#id_solar_plant").prepend("<option value='' selected='selected'>--------------</option>");
+$("#id_solar_group").prepend("<option value='' selected='selected'>--------------</option>");
+
+$("#id_solar_plant").on("change", function(){
+    $("#id_solar_group").empty()
+    var id_solar_plant = $("#id_solar_plant").val();
+    if (id_solar_plant) {
+        $.ajax ({
+            type: "POST",
+            url: "/admin/solarrms/utility/get-solar-group-for-plant/",
+            data: {"plant_id":id_solar_plant, "csrfmiddlewaretoken":"{{ csrf_token }}" },
+            cache: false,
+            success: function(json) {
+                if (json) {
+                    for (var gateway in json) {
+                       $("#id_solar_group").prepend("<option value='"+json[gateway].id+"'>"+json[gateway].name+"</option>");
+                    }
+                }
+            }
+        });
+    }
+    $("#id_solar_group").prepend("<option value='' selected='selected'>--------------</option>");
+    get_source_keys();
+});
+
+
+function get_source_keys(){
+    $("#id_source_key_to").empty();
+        $.ajax ({
+            type: "POST",
+            url: "/admin/solarrms/utility/get-source-key/",
+            data: { "plant_id": $("#id_solar_plant").val(),
+                    "group_id": $("#id_solar_group").val(),
+                    "devices": "inverter meter abj mppt plantmeta gateway virtual",
+                    "csrfmiddlewaretoken": "{{ csrf_token }}" },
+            cache: false,
+            success: function(json) {
+                if (json) {
+                    for (var source in json) {
+                       $("#id_source_key").prepend("<option value='"+json[source].sourceKey+"'>"+json[source].name+"</option>");
+                    }
+
+                }
+            }
+        });
+}
+
+//get all plants
+function get_all_plants(){
+    $("#id_solar_plant").empty();
+        $.ajax ({
+            type: "POST",
+            url: "/admin/solarrms/utility/get-solar-plant/",
+            data: { "csrfmiddlewaretoken": "{{ csrf_token }}" },
+            cache: false,
+            success: function(json) {
+                if (json) {
+                    for (var source in json) {
+                       $("#id_solar_plant").prepend("<option value='"+json[source].id+"'>"+json[source].name+"</option>");
+                    }
+
+                }
+            }
+        });
+    $("#id_solar_plant").prepend("<option value='' selected='selected'>--------------</option>");
+}
+get_all_plants();
+
+}(django.jQuery));
+</script>
+
+{% endblock %}

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Solar Dashboard</title>
+
+    <link href="/static/dataglen/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/dataglen/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/static/dataglen/css/animate.css" rel="stylesheet">
+    <link href="/static/dataglen/css/style.css" rel="stylesheet">
+
+    <style>
+      rect.bordered {
+        stroke: #E6E6E6;
+        stroke-width:2px;
+      }
+
+      text.mono {
+        font-size: 9pt;
+        font-family: Consolas, courier;
+        fill: #aaa;
+      }
+
+      text.axis-workweek {
+        fill: #000;
+      }
+
+      text.axis-worktime {
+        fill: #000;
+      }
+    </style>
+
+    {% block extrahead %}
+
+    {% endblock %}
+</head>
+
+<body class="top-navigation">
+    <div id="wrapper">
+        <nav class="navbar navbar-static-top navbar-fixed-top white-bg" role="navigation">
+            <div class="navbar-header">
+                <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                    <i class="fa fa-reorder"></i>
+                </button>
+                <a href="{% url 'dashboards:post_successful_login' %}" class="navbar-brand" style="background: #FEFFFF; color: black">
+                    <img src='{{ dataglenclient.clientLogo }}' alt="DATAGLEN" style="height: 26px">
+                </a>
+            </div>
+            <div class="navbar-collapse collapse" id="navbar">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="{% url 'dashboards:post_successful_login' %}"><i class="fa fa-th-large"></i>
+                            <span class="nav-label">Home</span>
+                        </a>
+                    </li>
+
+
+                    {% if dataglenclient.canCreateGroups == True %}
+                        <li class="dropdown">
+                            <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Customers and Employees <span class="caret"></span></a>
+                            <ul role="menu" class="dropdown-menu">
+                                <li><a href={% url 'solar:employee-add' %}>Manage Employees</a></li>
+                                <li><a href={% url 'solar:group-add' %}>Manage Customers</a></li>
+                                <li><a href={% url 'solar:customer-add' %}>Invite Customers</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    <!--<li class="dropdown">
+                        <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Data Export <span class="caret"></span></a>
+                        <ul role="menu" class="dropdown-menu">
+                            <li><a href="">Inverter Data</a></li>
+                            <li class="disabled"><a href="">SMU Data</a></li>
+                            <li class="disabled"><a href="">Weather/Feeder Data</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Status reports <span class="caret"></span></a>
+                        <ul role="menu" class="dropdown-menu">
+                            <li class="disabled"><a href="">Power generation</a></li>
+                            <li class="disabled"><a href="">Data communication</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Analytics <span class="caret"></span></a>
+                        <ul role="menu" class="dropdown-menu">
+                            <li class="disabled"><a href="">Tomorrow's prediction</a></li>
+                            <li class="disabled"><a href="">Potential problems</a></li>
+                            <li class="disabled"><a href="">Improvements</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Profile <span class="caret"></span></a>
+                        <ul role="menu" class="dropdown-menu">
+                            <li><a href="">Site Details</a></li>
+                            <li><a href="">Alerts Configuration</a></li>
+                            <li><a href="">Account Details</a></li>
+                        </ul>
+                    </li>-->
+
+                </ul>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                        <a href="{% url 'account_logout' %}">
+                            <i class="fa fa-sign-out"></i> Log out
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="gray-bg" style="margin-top: 50px;">
+            <!--<div class="sidebard-panel">
+                <div>
+                    <h4>Messages <span class="badge badge-info pull-right">16</span></h4>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="New Message" required="">
+                        </div>
+                    <div class="feed-element">
+                        <a href="#" class="pull-left">
+                            <img alt="image" class="img-circle" src="/static/dataglen/img/a1.jpg">
+                        </a>
+                        <div class="media-body">
+                            The problem has been fixed, all the inverters are up.
+                            <br>
+                            <small class="text-muted">Today 4:21 pm</small>
+                        </div>
+                    </div>
+                    <div class="feed-element">
+                        <a href="#" class="pull-left">
+                            <img alt="image" class="img-circle" src="/static/dataglen/img/a2.jpg">
+                        </a>
+                        <div class="media-body">
+                            We have reported the issue to DataGlen.
+                            <br>
+                            <small class="text-muted">Yesterday 2:45 pm</small>
+                        </div>
+                    </div>
+                    <div class="feed-element">
+                        <a href="#" class="pull-left">
+                            <img alt="image" class="img-circle" src="/static/dataglen/img/a3.jpg">
+                        </a>
+                        <div class="media-body">
+                            Probably caused by a network issue.
+                            <br>
+                            <small class="text-muted">Yesterday 1:10 pm</small>
+                        </div>
+                    </div>
+                    <div class="feed-element">
+                        <a href="#" class="pull-left">
+                            <img alt="image" class="img-circle" src="/static/dataglen/img/a4.jpg">
+                        </a>
+                        <div class="media-body">
+                            There has been a problem in the inverter number 42. We're not getting data.
+                            <br>
+                            <small class="text-muted">Monday 8:37 pm</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-t-md">
+                    <hr>
+                    <h4>Generation Statistics</h4>
+                    <p>
+                        A quick summary on last 7 days generation.
+                    </p>
+                    <div class="row m-t-sm">
+                        <div class="col-md-6">
+                            <span class="bar">120000,80000,50000,100000,75000,25000,111000</span>
+                            <h5><strong>561023</strong> units</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="line">5,3,9,6,5,9,7,3,5,2</span>
+                            <h5><strong>59</strong> Faults</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+
+    <!-- Mainly scripts -->
+    <script src="/static/dataglen/js/jquery-2.1.1.js"></script>
+    <script src="/static/dataglen/js/bootstrap.min.js"></script>
+    <script src="/static/dataglen/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/static/dataglen/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="/static/dataglen/js/plugins/jqueryCookie/jquery.cookie.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+    <script src="/static/dataglen/js/underscore.js"></script>
+    
+    <!-- Peity -->
+    <script src="/static/dataglen/js/plugins/peity/jquery.peity.min.js"></script>
+    <script src="/static/dataglen/js/demo/peity-demo.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="/static/dataglen/js/inspinia.js"></script>
+    <script src="/static/dataglen/js/plugins/pace/pace.min.js"></script>
+
+    <!-- jQuery UI -->
+    <script src="/static/dataglen/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+
+    <!-- Jvectormap -->
+    <script src="/static/dataglen/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/static/dataglen/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+
+            {% block body_block %}
+
+            {% endblock %}
+
+        <div class="footer">
+            <div class="pull-right">
+            </div>
+            <div>
+                <strong>Copyright</strong> 2015-2016 Dataglen Technologies Private Limited
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

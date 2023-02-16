@@ -1,0 +1,337 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+    
+    <link href="/static/solarrms/css/spinner.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+    <link href="/static/solarrms/plugins/jquery-modal/jquery.modal.min.css" rel="stylesheet">
+
+    <style>
+
+        * { box-sizing: border-box; }
+
+        .btn.btn-default.is-checked {
+          background-color: #00b3ca;
+          color: white;
+        }
+
+        .grid {
+          border: 0px solid #333;
+        }
+
+        /* clear fix */
+        .grid:after {
+          content: '';
+          display: block;
+          clear: both;
+        }
+
+        /* ---- .element-item ---- */
+        
+        .element-item {
+          /*position: relative;*/
+          float: left;
+          border: 5px solid #ecf0f1;
+        }
+
+        /*.element-item > * {
+          margin: 0;
+          padding: 0;
+        }*/
+
+        .element-item .name {
+          /*position: absolute;*/
+
+          /*left: 10px;
+          top: 60px;*/
+          text-transform: none;
+          letter-spacing: 0;
+          /*font-size: 12px;
+          font-weight: normal;*/
+        }
+
+        .element-item .group_name {
+          /*position: absolute;*/
+
+          /*left: 62px;
+          top: 60px;*/
+          text-transform: none;
+          letter-spacing: 0;
+          /*font-size: 12px;
+          font-weight: normal;*/
+        }
+
+        .element-item .energy {
+          /*position: absolute;*/
+          /*left: 10px;
+          top: 0px;*/
+          /*font-size: 42px;
+          color: white;*/
+        }
+
+        .element-item .energy_text {
+          /*position: absolute;*/
+          /*left: 16px;
+          top: 44px;*/
+        }
+
+        .element-item .current {
+          /*position: absolute;*/
+          /*left: 10px;
+          top: 0px;*/
+          /*font-size: 42px;
+          font-weight: bold;*/
+          /*color: white;*/
+        }
+
+        .element-item .power {
+          /*position: absolute;*/
+          /*right: 35px;
+          top: 17px;*/
+          /*font-size: 42px;*/
+        }
+
+        .element-item .power_unit {
+          /*position: absolute;*/
+          /*right: 10px;
+          top: 29px;*/
+        }
+
+        .element-item .power_text {
+          /*position: absolute;*/
+          /*right: 10px;
+          top: 44px;*/
+        }
+
+        .element-item .inside_temperature {
+          /*position: absolute;*/
+          /*right: 30px;
+          top: 75px;*/
+          /*font-weight: bold;
+          font-size: 20px;*/
+        }
+
+        .element-item .inside_temperature_unit {
+          /*position: absolute;*/
+          /*right: 10px;
+          top: 75px;*/
+        }
+
+        .element-item .inside_temperature_text {
+          /*position: absolute;*/
+          /*right: 10px;
+          top: 91px;*/
+        }
+
+        .element-item .connection {
+          /*position: absolute;*/
+          /*left: 10px;
+          top: 76px;*/
+          /*font-size: 12px;*/
+        }
+
+        .element-item .total_ajbs_down {
+          /*position: absolute;*/
+          /*right: 26px;
+          top: 60px;*/
+          /*font-weight: bold;
+          font-size: 20px;*/
+        }
+
+        .element-item .total_ajbs_down_text {
+          /*position: absolute;*/
+          /*right: 10px;
+          top: 85px;*/
+        }
+
+        /*.element-item.connected { 
+            background: #86c042;
+        }
+        .element-item.disconnected { 
+            background: #ee4a47;
+        }
+        .element-item.unknown { 
+            background: #00b3ca;2
+        }*/
+
+        .fa.fa-blink.fa-bolt {
+            /*position: absolute;*/
+            /*right: 8px;
+            top: 7px;*/
+        }
+
+        .grey_panel {
+          background-color: #ecf0f1;
+        }
+
+        .text-dark {
+          color: #2b425b;
+        }
+
+        @keyframes fa-blink {
+             0% { opacity: 1; }
+             25% { opacity: 0.25; }
+             50% { opacity: 0.5; }
+             75% { opacity: 0.75; }
+             100% { opacity: 0; }
+         }
+        .fa-blink {
+           -webkit-animation: fa-blink 1.75s linear infinite;
+           -moz-animation: fa-blink 1.75s linear infinite;
+           -ms-animation: fa-blink 1.75s linear infinite;
+           -o-animation: fa-blink 1.75s linear infinite;
+           animation: fa-blink 1.75s linear infinite;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block body_block %}
+
+    <div id="page-content">
+        
+        <div class="row">
+            <div id="inverters_ajbs-panel-network grey_panel" class="panel" style="background-color: #ecf0f1;">
+                <div class="panel-body">
+                    <div class="row pad-btm">
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <p class="text-lg text-semibold text-uppercase text-thin text-info">Inverter & AJBs Second</p>
+                            <p class="text-sm text-thin text-semibold">Grid View of Inverters and AJBs. </p>
+                        </div>
+                        <!--Nav Tabs-->
+                        <ul class="nav nav-tabs pull-right" id="device_list" hidden>
+                            <li class="active">
+                                <a onClick="redraw_window()" data-toggle="tab" href="#inverters">Inverters</a>
+                            </li>
+                            <li>
+                                <a onClick="redraw_window()" data-toggle="tab" hidden href="#ajbs">Ajbs</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="tab-base">
+                      <div class="tab-content pad-no mar-no">
+                        <div id="inverters" class="tab-pane fade active in">
+                          <div class="row mar-no pad-lft" style="background-color: #ecf0f1;">
+                            <div id="inverters_filters_and_sorts">
+                              <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                  <h3 class="text-info">Filter</h3>
+                                  <div id="filters" class="btn-group">
+                                    <button class="btn btn-default is-checked" data-filter="*">Show All</button>
+                                    <button class="btn btn-default" data-filter=".connected_no_alarms_no_ajbs_down">Generating</button>
+                                    <button class="btn btn-default" data-filter=".connected_alarms_ajbs_down">Alarms</button>
+                                    <button class="btn btn-default" data-filter=".disconnected">Disconnected</button>
+                                    <button class="btn btn-default" data-filter=".unknown">Invalid</button>
+                                  </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-3"><h3 class="text-info">Sort</h3>
+                                  <div id="sorts" class="btn-group">
+                                    <button class="btn btn-default is-checked" data-sort-by="original-order">Inverter Name</button>
+                                    <button class="btn btn-default" data-sort-by="energy">Energy</button>
+                                    <button class="btn btn-default" data-sort-by="power">Power</button>
+                                  </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-3">
+                                  <h3 class="text-info">Selection</h3>
+                                  <div id="selection" class="btn-group">
+                                    <button class="btn btn-default selection_button is-checked" data-filter=".ajbs_down">Ajbs Down</button>
+                                    <button class="btn btn-default selection_button" data-filter=".inside_temperature">Inside Temp.</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div class="row">
+                              <div class="panel-body" style="background-color: #ecf0f1;">
+                                  <div class="grid">
+                                    <div class="row">
+                                      <div id="inverters_grid">
+
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-5 col-md-5 col-sm-5"></div>
+                                        <div class="col-lg-5 col-md-5 col-sm-5">
+                                            <div class="loader text-center" hidden></div>
+                                        </div>
+                                    </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div id="ajbs" class="tab-pane fade">
+                          <div class="row mar-no pad-lft">
+                            <div id="ajbs_filters_and_sorts">
+                              <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">  <h3 class="text-info">Filter</h3>
+                                  <div id="ajbs_filters" class="btn-group">
+                                    <button class="btn btn-default is-checked" data-filter="*">Show All</button>
+                                    <button class="btn btn-default" data-filter=".connected">Operational</button>
+                                    <button class="btn btn-default" data-filter=".unknown">Alarms/Errors</button>
+                                    <button class="btn btn-default" data-filter=".disconnected">Disconnected</button>
+                                </div>
+                              </div>
+                              <div class="col-lg-6 col-md-6 col-sm-6">
+                                <h3 class="text-info">Sort</h3>
+                                <div id="ajbs_sorts" class="btn-group">
+                                  <button class="btn btn-default is-checked" data-sort-by="original-order">Original Order</button>
+                                  <button class="btn btn-default" data-sort-by="current">Current</button>
+                                  <button class="btn btn-default" data-sort-by="ajb_power">Ajb Power</button>
+                                  <button class="btn btn-default" data-sort-by="voltage_value">Voltage</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="panel-body">
+                              <div class="">
+                                <div class="row">
+                                  <div id="ajbs_grid">
+
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-lg-5 col-md-5 col-sm-5"></div>
+                                  <div class="col-lg-5 col-md-5 col-sm-5">
+                                    <div class="loader text-center" hidden></div>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div id="info_modal" style="display:none;">
+              <div id="modal_info"></div>
+            </div>
+
+        </div>
+        
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    
+    <script src="/static/solarrms/plugins/jquery-modal/jquery.modal.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.2/isotope.pkgd.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+    <script src="/static/solarrms/plugins/jquery-modal/jquery.modal.min.js"></script>
+
+    <script>
+        var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+        
+    </script>
+
+    <script src="/static/solarrms/js/demo/inverters_ajbs_second.js"></script>
+    
+{% endblock %}

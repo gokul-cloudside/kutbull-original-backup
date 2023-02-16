@@ -1,0 +1,49 @@
+<link href="/static/solarrms/widgets/meta/meta.css" rel="stylesheet">
+
+<div class="row">
+    <div class="col-sm-12 col-lg-12">
+
+        <div class="panel panel-purple panel-colorful">
+            <div class="pad-all">
+                <div class="row">
+                    <a href={% url 'solar:plant-energy-generation' plant.slug%}>
+                        <div class="col-lg-6" style="color: white;">
+                            <p class="mar-no">
+                                <span class="pull-right text-lg text-semibold" >
+                                    <h3 class=""><span id="generation_today"> </span>
+                                    </h3>
+                                </span>
+                                <p class="text-lg text-semibold">Generation Today</p>
+                            </p>
+                        </div>
+                    </a>
+                    <div  class="col-lg-6">
+                        <p class="mar-no">
+                            <span class="pull-right text-bold">
+                                <h3 class=""><span id="performance_ratio"> </span>
+                                </h3>
+                            </span>
+                            <p class="text-lg text-semibold">Performance Ratio</p>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="mar-no">
+                            <div id="uran_meta">
+                            </div>
+                            <div id="rrkabel_meta">
+                            </div>
+                            <div id="all_meta">
+                            </div>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div id="sparkline_all">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/solarrms/widgets/meta/meta.js"></script>

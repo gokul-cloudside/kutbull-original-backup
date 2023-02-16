@@ -1,0 +1,63 @@
+{% extends 'dataglen/dataglenbase.html' %}
+{% load bootstrap3 %}
+
+
+{% block body_block %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2> Your Profile </h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{% url 'dataglen:dashboard' %}">Add a new Client</a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Create a new Client group</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <form method="post" class="form-" role="form" action="{% url 'dataglen:group-add' %}">
+                            {% csrf_token %}
+                                {% bootstrap_form form %}
+                                <button type="submit" class="btn btn-primary">Create a new group</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Your client groups</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Group Page</th>
+                                    <th>Owner Employee</th>
+                                    <th>Owner Email</th>
+                                    <th>Active</th>
+                                </tr>
+                            </thead>
+                            {% for group in groups %}
+                                <tbody>
+                                <td> <a href="{% url 'dataglen:group-sensor-update' group.slug %}"> {{ group.slug}}</a>  </td>
+                                <td> {{ group.owner.organization_user.user.first_name}}, {{group.owner.organization_user.user.last_name }} </td>
+                                <td> {{ group.owner.organization_user.user.email}} </td>
+                                <td> {{ group.is_active }}</td>
+                                </tbody>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

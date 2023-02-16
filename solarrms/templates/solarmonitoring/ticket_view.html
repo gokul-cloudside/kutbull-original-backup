@@ -1,0 +1,151 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<link rel="stylesheet" type="text/css" href="/static/solarrms/plugins/Viima-jquery-comments/css/jquery-comments.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+{% endblock %}
+
+{% block body_block %}
+				<!--Page Title-->
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<div id="page-title">
+					<h1 class="page-header text-overflow"></h1>
+				</div>
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<!--End page title-->
+
+				<!--Page content-->
+				<!--===================================================-->
+				<div id="page-content">
+
+					<div class="row">
+
+				    	<div class="col-lg-6">
+
+							<div class="panel">
+								<div class="panel-heading">
+									<h3 class="panel-title">
+										<span>Ticket Details</span>
+										<button type="submit" id="assign_me" class="btn btn-success pull-right" onClick="assign_me()" style="margin-top:10px;">Assign To Me</button>
+									</h3>
+								</div>
+					
+								<div class="panel-body">
+										
+									<div id="ticket_details">
+										
+									</div>
+
+									<span id="associations_heading">
+										
+									</span>
+
+									<div id="associations_div">
+									
+									</div>
+
+								</div>
+								<!--===================================================-->
+								<!-- End Foo Table - Pagination -->
+					
+							</div>
+						</div>
+
+				        <div class="col-lg-6">
+							
+							<div class="panel">
+								<div class="panel-heading">
+									<h3 class="panel-title">
+										<span>Ticket History</span>
+										<div class="col-md-5 pull-right">
+											<select class="form-control" id="status_dropdown" onchange="new_status()" style="margin-top: 10px;">
+												<option value="" disabled selected>-- Change Status --</option>
+								                <option value="3">Resolved</option>
+								                <option value="5">Duplicate</option>
+								                <option value="2">Reopened</option>
+								                <option value="4">Closed</option>
+								          	</select>
+										</div>
+									</h3>
+								</div>
+								<div class="panel-body">
+									<!-- Timeline -->
+									<!--===================================================-->
+									<div class="timeline" id="timeline_history">
+					
+										<!-- Timeline header -->
+										
+									</div>
+									<!--===================================================-->
+									<!-- End Timeline -->
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+					<!-- <div class="row">
+
+						<div class="col-lg-12">	
+
+							<div class="panel">
+								<div class="panel-heading">
+									<div class="col-lg-6">
+										<h3 class="panel-title">Comment</h3>
+									</div>
+									<div class="col-lg-6"> -->
+										<!-- <div class="col-lg-3"></div>
+										<div class="col-lg-3 pull-right">
+											<button class="btn btn-block btn-success mar-top" onClick>Add Comment</button>
+										</div> -->
+									<!-- </div>
+								</div>
+								<div class="panel-body">
+									<div id="comments-container">
+
+									</div>
+								</div> -->
+								<!-- <div class="panel-body">
+				
+									
+									<div id="demo-summernote"></div>
+									
+				
+								</div> -->
+							<!-- </div>
+
+						</div>
+
+					</div> -->
+
+				</div>
+				<!--===================================================-->
+				<!--End page content-->
+
+{% endblock %}
+
+{% block js %}
+	
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/solarrms/plugins/Viima-jquery-comments/js/jquery-comments.js"></script>
+
+    <script>
+
+    </script>
+
+    <script src="/static/dataglen/js/d3.v3.min.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+
+    <script>
+    	var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+
+    </script>
+
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.min.js"></script>
+    <script src="/static/solarrms/js/demo/ticketview.js"></script>
+
+{% endblock %}

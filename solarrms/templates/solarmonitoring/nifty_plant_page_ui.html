@@ -1,0 +1,577 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
+	<style>
+		.nvd3 g.nv-groups path.nv-line {
+		  stroke-width: 3px;
+		}
+
+		.width-70 {
+			width: 70px;
+		}
+
+		@media (min-width: 768px){
+		  .seven-cols .col-md-1,
+		  .seven-cols .col-sm-1,
+		  .seven-cols .col-lg-1  {
+		    width: 100%;
+		    *width: 100%;
+		  }
+		}
+
+		@media (min-width: 992px) {
+		  .seven-cols .col-md-1,
+		  .seven-cols .col-sm-1,
+		  .seven-cols .col-lg-1 {
+		    width: 14.285714285714285714285714285714%;
+		    *width: 14.285714285714285714285714285714%;
+		  }
+		}
+
+		/**
+		 *  The following is not really needed in this case
+		 *  Only to demonstrate the usage of @media for large screens
+		 */    
+		@media (min-width: 1200px) {
+		  .seven-cols .col-md-1,
+		  .seven-cols .col-sm-1,
+		  .seven-cols .col-lg-1 {
+		    width: 14.285714285714285714285714285714%;
+		    *width: 14.285714285714285714285714285714%;
+		  }
+		}
+
+		.chart-border {
+			border-style: solid;
+    		border-width: 2px;
+    		border-color: cadetblue;
+		}
+
+	</style>
+
+{% endblock %}
+
+{% block body_block %}
+
+				<!--Page Title-->
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<!--End page title-->
+
+				<!--Page content-->
+				<!--===================================================-->
+				<div id="page-content">
+
+					<div class="row">
+						<div class="col-md-3">
+					
+							<!--Primary Panel-->
+							<!--===================================================-->
+							<!-- <div class="panel panel-bordered-primary">
+								<div class="panel-body"> -->
+									<div class="row">
+										<div class="col-md-6">
+											<div style="height: 15vh;background-color:#272f9f;">
+												<div class="col-md-12 text-center">
+													<i class="ion-ios-sunny-outline fa-3x" aria-hidden="true" style="color: #ffffff;"></i>
+												</div>
+												<div class="col-md-12 text-center">
+													<span class="text-x text-bold" id="ambient_temp" style="color: #ffffff;"></span>
+												</div>
+												<div class="col-md-12 text-center">
+													<p class="text-uppercase">
+														<small style="color: #ffffff;font-weight: 700;font-size: 11px;">Ambient Temp.</small>
+                                                	</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div style="height: 15vh;background-color:#272f9f;">
+												<div class="col-md-12 text-center">
+													<i class="ion-thermometer fa-3x" aria-hidden="true" style="color: #ffffff;"></i>
+												</div>
+												<div class="col-md-12 text-center">
+													<span class="text-x text-bold" id="module_temp" style="color: #ffffff;"></span>
+												</div>
+												<div class="col-md-12 text-center">
+													<p class="text-uppercase">
+														<small style="color: #ffffff;font-weight: 700;font-size: 11px;">Module Temp.</small>
+                                                	</p>
+												</div>	
+											</div>
+										</div>
+									</div>
+									<div class="row pad-top">
+										<div class="col-md-6">
+											<div style="height: 15vh;background-color:#272f9f;">
+												<div class="col-md-12 text-center">
+													<i class="ion-ios-nutrition-outline fa-3x" aria-hidden="true" style="color: #ffffff;"></i>
+												</div>
+												<div class="col-md-12 text-center">
+													<span class="text-x text-bold" id="irradiation" style="color: #ffffff;"></span>
+												</div>
+												<div class="col-md-12 text-center">
+													<p class="text-uppercase">
+														<small style="color: #ffffff;font-weight: 700;font-size: 11px;">Irradiation</small>
+                                                	</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div style="height: 15vh;background-color:#272f9f;">
+												<div class="col-md-12 text-center">
+													<i class="ion-android-bulb fa-3x" aria-hidden="true" style="color: #ffffff;"></i>
+												</div>
+												<div class="col-md-12 text-center">
+													<span class="text-x text-bold" id="co2_value" style="color: #ffffff;"></span>
+												</div>
+												<div class="col-md-12 text-center">
+													<p class="text-uppercase">
+														<small style="color: #ffffff;font-weight: 700;font-size: 11px;">CO2 Savings</small>
+                                                	</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								<!-- </div>
+							</div> -->
+							<!--===================================================-->
+							<!--End Primary Panel-->
+					
+						</div>
+						<div class="col-md-3">
+					
+							<!--Primary Panel-->
+							<!--===================================================-->
+							<!-- <div class="panel panel-bordered-primary">
+								<div class="panel-body"> -->
+									<div class="row">
+										<div class="col-md-12">
+											<div style="height: 10vh;background-color:#00a9ea;">
+												<div class="col-md-4 text-center" style="padding-top: 10px;">
+													<i class="ion-ios-bolt fa-3x" aria-hidden="true" style="color: #f5f5f5;"></i>
+												</div>
+												<div class="col-md-8" style="padding-top: 15px;">
+													<div class="col-md-12 text-center">
+														<span class="text-x text-bold" id="todays_generation" style="color: #f5f5f5;"></span>
+													</div>
+													<div class="col-md-12 text-center">
+														<p class="text-uppercase">
+															<small style="color: #f5f5f5;font-weight: 700;font-size: 11px;">Today's Generation</small>
+	                                                	</p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row pad-top">
+										<div class="col-md-12">
+											<div style="height: 20vh;background-color:#00a9ea;">
+												<div class="row text-center">
+													<span class="panel-title" style="color: #f5f5f5;">Inverter Status</span>
+												</div>
+												<div style="margin-top: -9px;">
+													<div class="col-md-6 text-center">
+														<div id="inverters_status_connection" class="box-inline "></div>
+													</div>
+													<div class="col-md-6">
+														<div class="row" id="inverters_connected">
+															
+														</div>
+														<div class="row" id="inverters_disconnected">
+															
+														</div>
+														<div class="row" id="inverters_invalid">
+															
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- <div class="row">
+										<div class="col-md-12">
+											<div id="financial_chart" style="height: 20vh;">
+											</div>
+										</div>
+									</div> -->
+								<!-- </div>
+							</div> -->
+							<!--===================================================-->
+							<!--End Primary Panel-->
+					
+						</div>
+						<div class="col-md-3">
+					
+							<!--Primary Panel-->
+							<!--===================================================-->
+							<!-- <div class="panel panel-bordered-primary" style="height: 42vh;">
+								<div class="panel-body"> -->
+									<div class="row">
+										<div class="col-md-12">
+											<div style="height: 20vh;background-color:#303c0e;">
+												<div class="col-md-6">
+													<canvas id="current_power_chart" height="180" class="canvas-responsive" style="padding-top: 15px;"></canvas>
+												</div>
+												<div class="col-md-6" style="padding-top: 15px;">
+													<div class="row">
+														<div class="col-md-12 text-center">
+															<span class="text-x text-bold" id="current_power_value" style="color: #ffff00;"></span>
+														</div>
+														<div class="col-md-12 text-center">
+															<p class="text-uppercase">
+																<small style="color: #ffff00;font-weight: 700;font-size: 11px;">Current Power</small>
+		                                                	</p>
+														</div>
+													</div>
+													<div class="row pad-top">
+														<div class="col-md-12 text-center">
+															<span class="text-x text-bold" id="plant_capacity" style="color: #ffff00;"></span>
+														</div>
+														<div class="col-md-12 text-center">
+															<p class="text-uppercase">
+																<small style="color: #ffff00;font-weight: 700;font-size: 11px;">Plant Capacity</small>
+		                                                	</p>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row pad-top">
+										<div class="col-md-6 col-lg-6">
+											<div style="height: 10vh;background-color:#303c0e;">
+												<div class="col-md-3 text-center" style="padding-top: 10px;">
+													<i class="ion-alert-circled fa-3x" aria-hidden="true" style="color: #ffff00;"></i>
+												</div>
+												<div class="col-md-9" style="padding-top: 10px;padding-right: 0px;padding-left: 0px;">
+													<div class="col-md-12 text-center">
+														<span class="text-x text-bold" id="unacknowledged_tickets" style="color: #ffff00;"></span>
+													</div>
+													<div class="col-md-12 text-center">
+														<p class="text-uppercase">
+															<small style="color: #ffff00;font-weight: 700;font-size: 11px;">Unacknowledged Tickets</small>
+	                                                	</p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6 col-lg-6">
+											<div style="height: 10vh;background-color:#303c0e;">
+												<div class="col-md-3 text-center" style="padding-top: 10px;">
+													<i class="ion-close-circled fa-3x" aria-hidden="true" style="color: #ffff00;"></i>
+												</div>
+												<div class="col-md-9" style="padding-top: 15px;">
+													<div class="col-md-12 text-center">
+														<span class="text-x text-bold" id="open_tickets" style="color: #ffff00;"></span>
+													</div>
+													<div class="col-md-12 text-center">
+														<p class="text-uppercase">
+															<small style="color: #ffff00;font-weight: 700;font-size: 11px;">Open Tickets</small>
+	                                                	</p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- <div class="row">
+										<div class="col-md-12">
+											<div id="inverters_energy_charts" style="height: 20vh;">
+											</div>
+										</div>
+									</div> -->
+								<!-- </div>
+							</div> -->
+							<!--===================================================-->
+							<!--End Primary Panel-->
+					
+						</div>
+						<div class="col-md-3">
+					
+							<!--Primary Panel-->
+							<!--===================================================-->
+							<!-- <div class="panel panel-bordered-primary" style="height: 42vh;">
+								<div class="panel-body"> -->
+									<div class="row">
+										<div class="col-md-12">
+											<div style="height: 20vh;background-color:#4a605e;">
+												<div class="row">
+													<div id="top_left_info"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row pad-top">
+										<div class="col-md-6">
+											<div style="height: 10vh;background-color:#4a605e;">
+												<div class="col-md-6 text-center" style="padding-top: 10px;">
+													<i class="ion-ios-pulse fa-3x" aria-hidden="true" style="color: #000000;"></i>
+												</div>
+												<div class="col-md-6" style="padding-top: 15px;">
+													<div class="col-md-12 text-center">
+														<span class="text-x text-bold" id="pr" style="color: #000000;"></span>
+													</div>
+													<div class="col-md-12 text-center">
+														<p class="text-uppercase">
+															<small style="color: #000000;font-weight: 700;font-size: 11px;">PR</small>
+	                                                	</p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div style="height: 10vh;background-color:#4a605e;">
+												<div class="col-md-6 text-center" style="padding-top: 10px;">
+													<i class="ion-ios-infinite fa-3x" aria-hidden="true" style="color: #000000;"></i>
+												</div>
+												<div class="col-md-6" style="padding-top: 15px;">
+													<div class="col-md-12 text-center">
+														<span class="text-x text-bold" id="cuf" style="color: #000000;"></span>
+													</div>
+													<div class="col-md-12 text-center">
+														<p class="text-uppercase">
+															<small style="color: #000000;font-weight: 700;font-size: 11px;">CUF</small>
+	                                                	</p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- <div class="row">
+										<div class="col-md-12">
+											<div id="performance_ratio_chart" style="height: 20vh;">
+											</div>
+										</div>
+									</div> -->
+								<!-- </div>
+							</div> -->
+							<!--===================================================-->
+							<!--End Primary Panel-->
+					
+						</div>
+					</div>
+
+					<div class="row pad-top">
+
+						<div class="col-md-12">
+					
+							<!--Primary Panel-->
+							<!--===================================================-->
+							<div class="panel chart-border">
+								<!-- <div class="panel-heading">
+									<div class="col-md-6">
+										<h3 class="panel-title">Power & Irradiation</h3>
+									</div>
+								</div> -->
+								<div>
+									<div class="row">
+
+										<div class="col-md-6" style="border-right: thin solid cadetblue;">
+											<div id="power_irradiation" style="height: 50vh;">
+											</div>
+										</div>
+										<div class="col-md-3" style="border-right: thin solid cadetblue;">
+											<div>
+												<div class="row">
+													<div class="col-md-6">
+														<div id="today_grid_availability" style="height:24vh;"></div>
+													</div>
+													<div class="col-md-6">
+														<div id="today_equipment_availability" style="height:24vh;"></div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-12">
+														<div id="last_seven_days_grid_and_equipment_availability" style="height: 26vh;">
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div>
+												<div class="row">
+													<div class="col-md-12">
+														<div id="last_seven_days_performance_ratio" style="height: 24vh;">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div>
+												<div class="row">
+													<div class="col-md-12">
+														<div id="last_seven_days_energy_generation" style="height: 25vh;">
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--===================================================-->
+							<!--End Primary Panel-->
+					
+						</div>
+
+						<div class="col-md-3">
+					
+							<!--Primary Panel-->
+							<!--===================================================-->
+							<div class="panel chart-border">
+								<div class="panel-heading">
+									<div class="col-md-12">
+										<span class="panel-title" style="padding-right: 0px;">Unavailability</span>
+						    		</div>
+								</div>
+
+								<div>
+									<div class="row">
+										<div class="col-md-6">
+											<div id="today_grid_availability" style="height:138px"></div>
+										</div>
+										<div class="col-md-6">
+											<div id="today_equipment_availability" style="height:138px"></div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div id="last_seven_days_grid_and_equipment_availability" style="height: 23vh;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--===================================================-->
+							<!--End Primary Panel-->
+					
+						</div>
+
+						<div class="col-md-3">
+					
+							<!--Primary Panel-->
+							<!--===================================================-->
+							<div class="panel chart-border">
+								<div>
+									<div class="row">
+										<div class="col-md-12">
+											<div id="last_seven_days_performance_ratio" style="height: 24vh;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--===================================================-->
+							<!--End Primary Panel-->
+					
+						</div>
+
+						<div class="col-md-3">
+					
+							<!--Primary Panel-->
+							<!--===================================================-->
+							<div class="panel chart-border">
+								<div>
+									<div class="row">
+										<div class="col-md-12">
+											<div id="last_seven_days_energy_generation" style="height: 25vh;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--===================================================-->
+							<!--End Primary Panel-->
+					
+						</div>
+
+					</div>
+
+					<div class="row">
+						<div class="col-md-3">
+							<div class="panel chart-border">
+								<div>
+									<div class="row">
+										<div class="col-md-12">
+											<div id="seven_energy1" style="height: 30vh;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-3">
+							<div class="panel chart-border">
+								<div>
+									<div class="row">
+										<div class="col-md-12">
+											<div id="seven_energy2" style="height: 30vh;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-3">
+							<div class="panel chart-border">
+								<div>
+									<div class="row">
+										<div class="col-md-12">
+											<div id="seven_energy3" style="height: 30vh;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-3">
+							<div class="panel chart-border">
+								<div>
+									<div class="row">
+										<div class="col-md-12">
+											<div id="seven_energy4" style="height: 30vh;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+                </div><!-- /.modal -->
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/dataglen/js/d3.v3.min.js" charset="utf-8"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/solarrms/js/papaparse.min.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+    <script>
+    	var live_chart = null;
+
+        var plant_capacity = {{ plant.capacity }};
+        var current_power = {{ current_power }};
+        var plant_location = '{{ plant.openweather }}';
+        var plant_slug = '{{ plant.slug }}';
+        var sourcekey = '{{ plant.metadata.plantmetasource.sourceKey }}';
+
+    </script>
+
+    <script src="/static/solarrms/js/js_functions/basic_bar_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/js_functions/dual_axis_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/js_functions/relative_bar_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/js_files/nifty_summary.js"></script>
+{% endblock %}

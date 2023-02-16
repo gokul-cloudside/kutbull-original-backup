@@ -1,0 +1,76 @@
+{
+ "name": "generation",
+ "children": [
+  {
+   "name": "south block",
+   "children": [
+    {
+     "name": "inverter 23",
+     "children": [
+      {"name": "ajb 20", "size": 3938},
+      {"name": "ajb 21", "size": 3812},
+      {"name": "ajb 22", "size": 6714},
+      {"name": "ajb 23", "size": 743}
+     ]
+    },
+    {
+     "name": "inverter 22",
+     "children": [
+      {"name": "ajb 11", "size": 3534},
+      {"name": "ajb 12", "size": 5731},
+      {"name": "ajb 13", "size": 7840},
+      {"name": "ajb 14", "size": 5914},
+      {"name": "ajb 15", "size": 3416}
+     ]
+    },
+    {
+     "name": "inverter 23",
+     "children": [
+      {"name": "ajb 16", "size": 7074}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "north block",
+   "children": [
+    {"name": "inverter 11", "size": 17010},
+    {"name": "inverter 12", "size": 5842},
+    {
+     "name": "inverter 13",
+     "children": [
+      {"name": "ajb 11", "size": 1983},
+      {"name": "ajb 12", "size": 2047},
+      {"name": "ajb 13", "size": 1375},
+      {"name": "ajb 14", "size": 8746},
+      {"name": "ajb 15", "size": 2202}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "west block",
+   "children": [
+    {
+     "name": "inverter 31",
+     "children": [
+      {"name": "ajb 31", "size": 721},
+      {"name": "ajb 32", "size": 4294},
+      {"name": "ajb 33", "size": 9800},
+      {"name": "ajb 34", "size": 1314},
+      {"name": "ajb 35", "size": 2220}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "east block",
+   "children": [
+    {"name": "inverter 55", "size": 8833},
+    {"name": "inverter 56", "size": 1732},
+    {"name": "inverter 57", "size": 3623},
+    {"name": "inverter 59", "size": 10066}
+   ]
+  }
+ ]
+}

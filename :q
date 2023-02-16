@@ -1,0 +1,74 @@
+[1mdiff --git a/solarrms/cron_mppt_comparison.py b/solarrms/cron_mppt_comparison.py[m
+[1mindex 56342c8..cceed8e 100644[m
+[1m--- a/solarrms/cron_mppt_comparison.py[m
+[1m+++ b/solarrms/cron_mppt_comparison.py[m
+[36m@@ -4,11 +4,10 @@[m [mfrom django.utils import timezone[m
+ import datetime[m
+ import numpy as np[m
+ from helpdesk.dg_functions import create_ticket[m
+[31m-from solarrms.settings import MPPTS_COMPARISION_STANDARD_DEVIATION[m
+[32m+[m[32mfrom solarrms.settings import MPPTS_COMPARISON_STANDARD_DEVIATION, MPPTS_COMPARISON_PERCENTAGE[m
+ from helpdesk.models import Ticket, Queue[m
+ from solarrms.cron_new_tickets import close_ticket[m
+ [m
+[31m-MPPTS_COMPARISION_PERCENTAGE = 10[m
+ COMPARISON_METHOD = 'PERCENT'[m
+ [m
+ [m
+[36m@@ -30,9 +29,9 @@[m [mdef compare_mppts():[m
+     try:[m
+         current_time = timezone.now()[m
+         end_time = current_time[m
+[31m-        start_time = end_time - datetime.timedelta(hours=12)[m
+[31m-        #plants = SolarPlant.objects.all()[m
+[31m-        plants = SolarPlant.objects.filter(slug='yerangiligi')[m
+[32m+[m[32m        start_time = end_time - datetime.timedelta(hours=1)[m
+[32m+[m[32m        plants = SolarPlant.objects.all()[m
+[32m+[m[32m        #plants = SolarPlant.objects.filter(slug='yerangiligi')[m
+         for plant in plants:[m
+             print ("MPPT comparision for plant : " + str(plant.slug))[m
+             try:[m
+[36m@@ -77,24 +76,24 @@[m [mdef compare_mppts():[m
+                         under_performing_dict_temp = {}[m
+ [m
+                         if COMPARISON_METHOD == 'STANDARD_DEVIATION':[m
+[31m-                            if normalized_mppt_values_dict[key] < normalized_current_mean_of_all_mppts - MPPTS_COMPARISION_STANDARD_DEVIATION*normalized_current_std_deviation_of_all_mppts:[m
+[32m+[m[32m                            if normalized_mppt_values_dict[key] < normalized_current_mean_of_all_mppts - MPPTS_COMPARISON_STANDARD_DEVIATION*normalized_current_std_deviation_of_all_mppts:[m
+                                 under_performing_dict_temp['st'] = start_time[m
+                                 under_performing_dict_temp['et'] = end_time[m
+                                 under_performing_dict_temp['identifier'] = key[m
+[31m-                                under_performing_dict_temp['actual_current'] = normalized_mppt_values_dict[key][m
+[31m-                                under_performing_dict_temp['mean_current'] = normalized_current_mean_of_all_mppts[m
+[31m-                                under_performing_dict_temp['delta_current'] = float(normalized_current_mean_of_all_mppts) - float(normalized_mppt_values_dict[key])[m
+[32m+[m[32m                                under_performing_dict_temp['actual_power'] = normalized_mppt_values_dict[key][m
+[32m+[m[32m                                under_performing_dict_temp['mean_power'] = normalized_current_mean_of_all_mppts[m
+[32m+[m[32m                                under_performing_dict_temp['delta_power'] = float(normalized_current_mean_of_all_mppts) - float(normalized_mppt_values_dict[key])[m
+                                 under_performing_mppt_inverters_dict_list.append(under_performing_dict_temp)[m
+                                 under_performing_mppt_inverters_list.append(inverter.sourceKey)[m
+ [m
+                         elif COMPARISON_METHOD == 'PERCENT':[m
+[31m-                            if (100.0 - (normalized_mppt_values_dict[key]/normalized_current_mean_of_all_mppts)*100.0) > MPPTS_COMPARISION_PERCENTAGE:[m
+[32m+[m[32m                            if (100.0 - (normalized_mppt_values_dict[key]/normalized_current_mean_of_all_mppts)*100.0) > MPPTS_COMPARISON_PERCENTAGE:[m
+                                 under_performing_dict_temp['st'] = start_time[m
+                                 under_performing_dict_temp['et'] = end_time[m
+                                 under_performing_dict_temp['identifier'] = key[m
+[31m-                                under_performing_dict_temp['actual_current'] = normalized_mppt_values_dict[key][m
+[31m-                                under_performing_dict_temp['mean_current'] = normalized_current_mean_of_all_mppts[m
+[31m-                                under_performing_dict_temp['delta_current'] = float(normalized_current_mean_of_all_mppts) - float(normalized_mppt_values_dict[key])[m
+[32m+[m[32m                                under_performing_dict_temp['actual_power'] = normalized_mppt_values_dict[key][m
+[32m+[m[32m                                under_performing_dict_temp['mean_power'] = normalized_current_mean_of_all_mppts[m
+[32m+[m[32m                                under_performing_dict_temp['delta_power'] = float(normalized_current_mean_of_all_mppts) - float(normalized_mppt_values_dict[key])[m
+                                 under_performing_mppt_inverters_dict_list.append(under_performing_dict_temp)[m
+                                 under_performing_mppt_inverters_list.append(inverter.sourceKey)[m
+ [m
+[36m@@ -104,8 +103,8 @@[m [mdef compare_mppts():[m
+                     if len(under_performing_mppt_inverters_dict_list) >0:[m
+                         final_under_performing_mppt_inverters_dict[str(inverter.sourceKey)] = under_performing_mppt_inverters_dict_list[m
+ [m
+[31m-            #under_performing_mppt_inverters_list = ['ECNQxl5BlY9vUR0'][m
+[31m-            #final_under_performing_mppt_inverters_dict = {'ECNQxl5BlY9vUR0': [{'actual_current': 13.58191489361702, 'st': datetime.datetime.now()-datetime.timedelta(hours=1), 'delta_current': 8.588297872340425, 'mean_current': 22.170212765957444, 'et': datetime.datetime.now(), 'identifier': 'CGO_Complex_Inverter_5_MPPT2'}]}[m
+[32m+[m[32m            # under_performing_mppt_inverters_list = ['ECNQxl5BlY9vUR0'][m
+[32m+[m[32m            # final_under_performing_mppt_inverters_dict = {'ECNQxl5BlY9vUR0': [{'actual_power': 13.58191489361702, 'st': datetime.datetime.now()-datetime.timedelta(hours=1), 'delta_power': 8.588297872340425, 'mean_power': 22.170212765957444, 'et': datetime.datetime.now(), 'identifier': 'CGO_Complex_Inverter_5_MPPT2'}]}[m
+ [m
+             under_performing_mppt_inverters_list = list(set(under_performing_mppt_inverters_list))[m
+             # create ticket for the under performing mppts.[m

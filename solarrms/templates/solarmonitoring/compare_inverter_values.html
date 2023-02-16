@@ -1,0 +1,764 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+{% load bootstrap3 %}
+
+{% block extrahead %}
+<style>
+
+  .font-weight-800 {
+    font-weight: 800;
+  }
+
+  .margin-bottom-46 {
+    margin-bottom: 46px;
+  }
+
+  input[type="checkbox"] {
+    display:none;
+  }
+  input[type="checkbox"] {
+    display:inline-block;
+    width:15px;
+    height:15px;
+    margin:-1px 4px 0 0;
+    vertical-align:middle;
+    font-size: 46px;
+    background       : rgb(224,224,224);
+    background-image :    -moz-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+    background-image :     -ms-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+    background-image :      -o-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+    background-image : -webkit-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+    background-image :         linear-gradient(rgb(240,240,240),rgb(224,224,224));
+    cursor:pointer;
+  }
+  input[type="checkbox"]:checked {
+    content     : '✓';
+    background       : rgb(224,224,224);
+    background-image :    -moz-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+    background-image :     -ms-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+    background-image :      -o-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+    background-image : -webkit-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+    background-image :         linear-gradient(rgb(240,240,240),rgb(224,224,224));
+  }
+
+</style>
+  <link href="/static/dataglen/css/spinkit.css" rel="stylesheet">
+    <!-- D3 and NVD3 -->
+    <link href="/static/dataglen/css/metricsgraphics.css" rel="stylesheet">
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+    <link href="/static/dataglen/css/jquery.datetimepicker.css" rel="stylesheet">
+
+    <style>
+        .nav-tabs > li, .nav-pills > li {
+            float:none;
+            display:inline-block;
+            *display:inline; /* ie7 fix */
+             zoom:1; /* hasLayout ie7 trigger */
+        }
+
+        .nav-tabs, .nav-pills {
+            text-align:center;
+        }
+
+        /*Plant Table Styling*/
+
+        .margin-bottom-0 {
+          margin-bottom: 0px !important
+        }
+
+        .margin-left-10 {
+          margin-left: 10px;
+        }
+
+        rect.bordered {
+          stroke: #E6E6E6;
+          stroke-width:2px;   
+        }
+
+        text.mono {
+          font-size: 9pt;
+          font-family: Consolas, courier;
+          fill: #aaa;
+        }
+
+        text.axis-workweek {
+          fill: #000;
+        }
+
+        text.axis-worktime {
+          fill: #000;
+        }
+    </style>
+
+    
+{% endblock %}
+
+{% block body_block %}
+
+    <ul class="nav nav-tabs">
+      <li><a href={% url 'solar:inverter-detail' plant_slug inverter_key %}>Inverter Profile Page</a></li>
+      <li><a href={% url 'solar:inverter-data-download' plant_slug inverter_key %}>Download Historical Data</a></li>
+      <!-- <li class="active"><a href="#">Compare Inverter Values</a></li> -->
+    </ul>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+      
+      <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="start_date">Start Date</label>
+            <input type="text" class="form-control datetimepicker_start" id="start" placeholder="Choose Start Date" required="required" style="background-color: white;">
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="end_date">End Date</label>
+            <input type="text" class="form-control datetimepicker_end" id="end" onClick="limit_end()" placeholder="Choose End Date" required="required" style="background-color: white;">
+          </div>
+        </div>
+      </div>
+
+      <h2 class="text-center font-weight-800">Choose Maximum 6 Parameters</h2>
+
+      <div class="row margin-bottom-46">
+        <div class="col-lg-12 stream_list">
+
+        </div>
+      </div>
+
+      <div class="row">
+        
+        <div class="col-lg-12 ">
+          <div class="ibox-title">Metricsgraph Comparison</div>
+            <div class="ibox-content metricsgraphics-ibox" style="height: 560px;">
+              
+            </div>  
+        </div>
+
+      </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+      
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox float-e-margins">
+            <div class="ibox-content form-group margin-bottom-0" style="    padding: 15px 20px 10px 20px;">
+              <div class="row">
+                <div class="form-group">
+                  <div class="col-lg-6">
+                    <h3>Heatmap Chart</h3>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="col-lg-2" style="float: right;">
+                      <button type="submit" class="btn btn-info">Update</button>
+                    </div>
+                    <div class="col-lg-7" style="float: right;">
+                      <input type="text" class="form-control datetimepicker_end_time" id="end_t" placeholder="Pick a Date">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ibox-content" style="height: 470px;">
+              <div id="heatmap_chart">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="/static/dataglen/js/d3.js"></script>
+    <script src="/static/dataglen/js/jquery.datetimepicker.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/dataglen/js/saveSvgAsPng.js"></script>
+    <script src="/static/dataglen/js/metricsgraphics.js"></script>
+
+    <script type="text/javascript">
+
+        var inverter_name = null;
+        $(document).ready(function(){
+            stream_metricsgraphics();
+            data_hour_week();
+            /*hour_week_heatmap();*/
+            setTimeout(function(){
+               plant_slug = '{{ plant_slug }}';
+               inverter_name = '{{ inverter.name }}';
+               load_inverter_data();
+             }, 500); // milliseconds
+        });
+
+        function csrfSafeMethod(method) {
+            return (/^(HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        function load_inverter_data(){
+            var csrftoken = $.cookie('csrftoken');
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                url: "/solar/plant/".concat('{{ plant_slug }}').concat('/inverter/').concat('{{ inverter_key }}'),
+                success: function(data){
+                    $('#valid_records').empty().html('Valid Records ' + data['valid_records']);
+                    $('#invalid_records').empty().html('Invalid Records ' + data['invalid_records']);
+                },
+                error: function(data){
+                    data = null;
+                }
+            });
+
+            setTimeout(function(){
+               load_inverter_data ();
+             }, 20000);
+        }
+    </script>
+
+    <script>
+  $(function() {
+        $(".datetimepicker_start").datetimepicker();
+        $(".datetimepicker_end").datetimepicker();
+        $(".datetimepicker_end_time").datetimepicker({
+          timepicker: false,
+          format: 'Y/m/d',
+          scrollMonth:false,
+          scrollTime:false,
+          scrollInput:false
+        });
+      });
+      function limit_end() {
+        var dat = new Date($('#start').val());
+        var d = dat;
+
+        $(function() {
+          $("#end").datetimepicker({
+            onShow:function( ct ) {
+              this.setOptions({
+                minDate: new Date($("#start").val()),
+                maxDate: (new Date(d.setHours(d.getHours()+168)))
+              })
+            },
+          });
+        });
+      }
+    </script>
+
+    <script>
+      var data = {};
+      var streams = {};
+      var stream_data = {};
+      var fields = [];
+      var stream = null;
+
+      function stream_metricsgraphics() { 
+
+        $.ajax({
+          type: "GET",
+          url: "/api/sources/".concat("{{ inverter_key }}").concat('/streams/'),
+          success: function(data){
+            /*stream_chart(data);*/
+            streams = data;
+            $(".stream_list").html('');
+            $(".stream_list").append("<div class='form-group stream_metricsgraphics_list'></div>");
+            $(".stream_metricsgraphics_list").append("<label for='stream'>Streams</label>")
+            $(".stream_metricsgraphics_list").append("<form id='stream_form'></form>");
+            if (data.length == 0) {
+              $("#stream_form").append("<option>No Streams are present! </option>");
+            } else {
+              for (var i = 0 ; i <= data.length-1 ; i++) {
+                $('#stream_form').append("<div class='col-lg-3 check-limit font-weight-800' id='stream_all'><input type='checkbox' onchange='comparison_metricsgraphics()' value=" + data[i].name + ">" + data[i].name + "</div>");
+              }
+            }
+          },
+          error: function(data){
+            data = null;
+          }
+        });
+      }
+
+      function comparison_metricsgraphics() {
+
+        var s = $('#start').val();
+        var e = $('#end').val();
+
+        if(s == '') {
+          alert("Select the start date");
+          return;
+        }
+
+        if(e == '') {
+          alert("Select the end date");
+          return;
+        }
+
+        var newst = new Date(s).getTime();
+        var newet = new Date(e).getTime();
+
+        if(newet < newst) {
+          alert("Start Date should be lesser than End Date. Cannot complete the desired tasks.");
+          return;
+        }
+
+        fields = [];  
+
+        var triggeronceforalert = true;
+
+        $('#stream_all > input:checked').each(function() {
+          if(fields.length < 6) {
+            fields.push($(this).val());  
+          } else if(fields.length == 6){
+              $('input').prop('disabled', true);
+              if(triggeronceforalert) {
+                triggeronceforalert = false;
+                alert("Cannot select more than 6");
+              }
+          }
+        });
+
+        $.ajax({
+          type: "GET",
+          url: "/api/solar/plants/".concat('{{ plant_slug }}').concat('/inverters/').concat("{{ inverter_key }}").concat('/data/'),
+          data: {streamNames: fields.join(","), startTime: s, endTime: e},
+          success: function(data) {
+            if(data.streams.length > 0) {
+              new_chart(data);  
+            } else {
+              $(".metricsgraphics-ibox").append("<h3>Choose a checkbox</h3>");
+            }
+          },
+          error: function(data) {
+            console.log("error_streams_data");
+            data = null;
+          }
+        }); 
+        
+      }
+
+      function new_chart(data) {
+
+        $(".metricsgraphics-ibox").empty();
+        
+        var limit = 6;
+        $('.check-limit').on('change', function(evt) {
+           if($(this).siblings(':checked').length > limit) {
+              this.checked = false;
+           }
+        });
+
+        var k = fields.length;
+        streamNames = [];
+        packagedData = [];
+
+        for(var n= 0; n < k; n++) {
+          arrayValue = [];
+          for (var j = 0; j < data.streams[n].timestamps.length; j++) {
+            var date = data.streams[n].timestamps[j];
+            var dat = new Date(date);
+            arrayValue.push({"date": dat, "value": parseFloat(data.streams[n].values[j])});
+          }
+          if(arrayValue.length) {
+            packagedData.push(arrayValue);  
+            streamNames.push(data.streams[n].name);
+          }
+        }
+
+        for(var i= 0; i < packagedData.length; i++) {
+          $(".metricsgraphics-ibox").append('<div class="col-lg-6" id="metricsgraphics'+i+'"> </div>');
+          MG.data_graphic({
+            title: streamNames[i],
+            description: "Stream from the inverter",
+            data: packagedData[i],
+            linked: true,
+            width: 600,
+            height: 200,
+            target: '#metricsgraphics'+i,
+            x_accessor: "date",
+            y_accessor: "value",
+            bottom: 70,
+            left: 70,
+            x_label: "Date",
+            y_label: streamNames[i]
+          });
+        }
+      }
+
+      /*function plant_inverters() {
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: "/api/solar/plants/".concat('{{ plant_slug }}').concat('/inverters/'),
+            success: function(inverters) {
+              get_inverters_data(inverters);
+            },
+            error: function(data) {
+              console.log("error_streams_data");
+              data = null;
+            }
+        });
+      }
+
+      function get_dates(){
+        // get the start date
+        var st = new Date();
+        st = new Date(st);
+        // prepare an end date
+        var e = new Date(st.getTime());
+        e = new Date(e.setDate(st.getDate() + 1));
+        // convert them into strings
+        st = dateFormat(st, "yyyy/mm/dd");
+        e = dateFormat(e, "yyyy/mm/dd");
+
+        return [st, e]
+      }
+
+      function get_three_days_back(s){
+        // get the start date
+        var e = new Date();
+        e = new Date(s);
+        // prepare an end date
+        var st = new Date(e.getTime());
+        st = new Date(st.setDate(e.getDate() - 2));
+        // convert them into strings
+        st = dateFormat(st, "yyyy/mm/dd");
+
+        return st;
+      }
+
+      function get_inverters_data(inverters) {
+        var dates = get_dates();
+        var st = dates[0];
+        var e = dates[1];
+
+        var three_day_back_date = get_three_days_back(st);
+
+        $(".heading").empty();
+
+        var parameters = [];
+        var parameters_to_show = ["ACTIVE_POWER", "DC_POWER", "HEAT_SINK_TEMPERATURE"];
+        var row_count = 1;
+
+        $(".heading").append("<th rowspan='2' class='white-space-nowrap text-center padding-top-25'>No.</th>");
+        $(".heading").append("<th rowspan='2' class='white-space-nowrap padding-top-25 text-center inverter_name'>Inverter Name</th>");
+        $(".heading").append("<th colspan='"+parameters_to_show.length+"' class='white-space-nowrap text-center'>Parameters</th>");
+        $(".heading").append("<th rowspan='2' class='white-space-nowrap text-center padding-top-25'>Today's Energy</th>");
+        $(".heading").append("<th rowspan='2' class='white-space-nowrap text-center padding-top-25'>Last 3 Days Energy</th>");
+        $(".heading").append("<th rowspan='2' class='white-space-nowrap text-center padding-top-25'>Last Updated</th>");
+
+        $(".stream_names").empty();
+
+        for(var i = 0; i < parameters_to_show.length; i++) {
+          $(".stream_names").append("<th class='text-center'>"+parameters_to_show[i]+"</th>");
+        }
+
+        $(".tr_elements").empty();
+        for(var j = 0; j < inverters.length; j++) {
+          $.ajax({
+            type: "GET",
+            async: false,
+            url: "/api/sources/".concat(inverters[j].sourceKey).concat('/streams/'),
+            success: function(streams) {
+              for(var k = 0; k < streams.length; k++) {
+                parameters[k] = streams[k].name;
+              }
+            },
+            error: function(data) {
+              console.log("error_getting_inverter_data");
+            }
+          });
+
+          var streams_data = 0;
+          $.ajax({
+            type: "GET",
+            async: false,
+            url: "/api/solar/plants/".concat('{{ plant_slug }}').concat('/inverters/').concat(inverters[j].sourceKey).concat('/data/'),
+            data: {streamNames: parameters.join(","), startTime: (st), endTime: (e)},
+            success: function(data) {
+              streams_data = data;
+            },
+            error: function(data) {
+              console.log("error_getting_inverter_data");
+            }
+          });
+
+          $.ajax({
+              type: "GET",
+              async: false,
+              url: "/api/solar/plants/".concat('{{ plant_slug }}').concat('/inverters/').concat(inverters[j].sourceKey).concat('/energy/'),
+              data: {startTime: (st), endTime: (e), aggregator: "DAY"},
+              success: function(inverter_day_energy) {
+                if(inverter_day_energy.length !== 0) {
+                  inverter_day_energy[0].energy = inverter_day_energy[0].energy.toFixed(2);
+                  $(".tr_elements").append("<tr class='new_row"+row_count+"'></tr>");
+                  $(".new_row"+row_count).append("<td class='text-center'>"+row_count+"</td><td class='text-center'>"+inverters[j].name+"</td>");
+                  for(var n = 0; n < parameters.length; n++) {
+                    for(var p = 0; p < parameters_to_show.length; p++) {
+                      if(parameters_to_show[p] == parameters[n]) {
+                        $(".new_row"+row_count).append("<td class='text-center value"+ p +"'>"+streams_data.streams[n].values[0]+"</td>");
+                      }
+                    }
+                  }
+                  $(".new_row"+row_count).append("<td class='text-center'>"+inverter_day_energy[0].energy+"</td>");
+
+                  $.ajax({
+                    type: "GET",
+                    async: false,
+                    url: "/api/solar/plants/".concat('{{ plant_slug }}').concat('/inverters/').concat(inverters[j].sourceKey).concat('/energy/'),
+                    data: {startTime: three_day_back_date, endTime: (e), aggregator: "DAY"},
+                    success: function(inverter_three_day_energy) {
+                      console.log(inverter_three_day_energy);
+                      var inverter_total_three_day_energy = 0;
+                      if(inverter_three_day_energy.length > 0) {
+                        for(var index = 0; index < inverter_three_day_energy.length; index++) {
+                            inverter_total_three_day_energy = inverter_total_three_day_energy + inverter_three_day_energy[index].energy;
+                        }
+                        inverter_total_three_day_energy = inverter_total_three_day_energy.toFixed(2);
+                        $(".new_row"+row_count).append("<td class='text-center'>"+inverter_total_three_day_energy+"</td>");
+                      }
+                    },
+                    error: function(data) {
+                      console.log("error_getting_inverter_data");
+                    }
+                  });
+
+                  var last_updated = new Date(streams_data.streams[1].timestamps[0]);
+                  $(".new_row"+row_count).append("<td class='text-center'>"+last_updated+"</td>");
+                  row_count++;
+                } 
+              },
+              error: function(data) {
+                  console.log("error_getting_inverter_data");
+              }
+          });
+        }
+      }*/
+
+      function get_dates_week(){
+        // get the end date as the selected/today's date
+        var etw = $('#end_t').val();
+        if (etw == '') {
+          etw = new Date();
+        } else {
+          etw = new Date(etw);
+        }
+        // add a day in etw
+        etw.setDate(etw.getDate() + 1);
+        // prepare a start date
+        var stw = new Date(etw.getTime());
+        stw = new Date(stw.setDate(etw.getDate() - 7));
+        // convert them into strings
+        stw = dateFormat(stw, "yyyy/mm/dd");
+        etw = dateFormat(etw, "yyyy/mm/dd");
+        return [stw, etw];
+      }
+
+      function isDate(dateArg) {
+          var t = (dateArg instanceof Date) ? dateArg : (new Date(dateArg));
+          return !isNaN(t.valueOf());
+      }
+
+      function isValidRange(minDate, maxDate) {
+          return (new Date(minDate) <= new Date(maxDate));
+      }
+
+      function betweenDate(startDt, endDt) {
+          var error = ((isDate(endDt)) && (isDate(startDt)) && isValidRange(startDt, endDt)) ? false : true;
+          var between = [];
+          if (error) console.log('error occured!!!... Please Enter Valid Dates');
+          else {
+              var currentDate = new Date(startDt),
+                  end = new Date(endDt);
+              while (currentDate <= end) {
+                  var date = dateFormat(new Date(currentDate), "dd/mm/yyyy");
+                  between.push(date);
+                  currentDate.setDate(currentDate.getDate() + 1);
+              }
+          }
+          return between;
+      }
+
+      function data_hour_week() {
+        var dates = get_dates_week();
+        var st = dates[0];
+        var et = dates[1];
+        console.log(st);
+        console.log(et);
+
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: "/api/solar/plants/".concat('{{ plant_slug }}').concat('/energy/'),
+            data: {startTime: (st), endTime: (et), aggregator: "HOUR"},
+            success: function(plant_energy_week_data) {
+              plant_energy_week_data.reverse();
+              console.log(plant_energy_week_data);
+
+              var day_index = 1;
+              var start = new Date(st).getDate();
+              var end = new Date(et).getDate();
+              console.log(start);
+              console.log(end);
+              var week_data = [];
+              for(var j = start; j < end; j++) {
+                var hour_index = 1;
+                for(var i = 0; i < plant_energy_week_data.length; i++) {
+                  var week_date = new Date(plant_energy_week_data[i].timestamp).getDate();
+                  if(j == week_date) {
+                    var hour_of_day = (new Date(plant_energy_week_data[i].timestamp)).getHours();
+                    if(hour_of_day >= 7 && hour_of_day <= 19) {
+                      var plant_energy_value = plant_energy_week_data[i].energy.toFixed(2);
+                      week_data.push({"day": day_index, "hour": hour_index, "value": plant_energy_value});
+                      hour_index++;
+                    }
+                  }
+                  
+                }
+                day_index++;
+              }
+              console.log(week_data);
+                if(data == '') {
+                    $("#energy_week_chart").empty();
+                    $("#energy_week_chart").append("<div class='alert alert-warning'>No data for the week</div>");
+                    return;
+                } else {
+                    $("#energy_week_chart").empty();
+                    $("#energy_week_chart").append("<svg></svg>");
+                }
+
+                // plot the chart
+                hour_week_heatmap(st, et, week_data);
+            },
+            error: function(data) {
+                console.log("error_streams_data");
+                data = null;  
+            }
+        });
+      }
+
+      function hour_week_heatmap(st, et, week_data) {
+        var margin = { top: 20, right: 0, bottom: 70, left: 90 },
+          width = 960 - margin.left - margin.right,
+          height = 430 - margin.top - margin.bottom,
+          gridSize = Math.floor(width / 24),
+          legendElementWidth = gridSize*2,
+          buckets = 9,
+          colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
+          days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+          times = ["7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p"];
+
+        var etw = new Date(et);
+        etw = new Date(etw.setDate(etw.getDate() - 1));
+
+        var between_date = betweenDate(st, etw);
+
+        var svg = d3.select("#heatmap_chart").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var dayLabels = svg.selectAll(".dayLabel")
+            .data(between_date)
+            .enter().append("text")
+              .text(function (d) { return d; })
+              .attr("x", 0)
+              .attr("y", function (d, i) { return i * gridSize; })
+              .style("text-anchor", "end")
+              .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+              .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+        var timeLabels = svg.selectAll(".timeLabel")
+            .data(times)
+            .enter().append("text")
+              .text(function(d) { return d; })
+              .attr("x", function(d, i) { return i * gridSize; })
+              .attr("y", 0)
+              .style("text-anchor", "middle")
+              .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+              .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+          var data = week_data;
+          d3.map(week_data,
+          /*function(d) {
+            return {
+              day: +d.day,
+              hour: +d.hour,
+              value: +d.value
+            };
+          },*/
+          function(error, week_data) {
+            var colorScale = d3.scale.quantile()
+                .domain([0, buckets - 1, d3.max(week_data, function (d) { return d.value; })])
+                .range(colors);
+
+            var cards = svg.selectAll(".hour")
+                .data(data, function(d) {return d.day+':'+d.hour;});
+
+            cards.append("title");
+
+            cards.enter().append("rect")
+                .attr("x", function(d) { return (d.hour - 1) * gridSize; })
+                .attr("y", function(d) { return (d.day - 1) * gridSize; })
+                .attr("rx", 4)
+                .attr("ry", 4)
+                .attr("class", "hour bordered")
+                .attr("width", gridSize)
+                .attr("height", gridSize)
+                .style("fill", colors[0]);
+
+            cards.transition().duration(1000)
+                .style("fill", function(d) { return colorScale(d.value); });
+
+            cards.select("title").text(function(d) { return d.value; });
+            
+            cards.exit().remove();
+
+            var legend = svg.selectAll(".legend")
+                .data([0].concat(colorScale.quantiles()), function(d) { return d; });
+
+            legend.enter().append("g")
+                .attr("class", "legend");
+
+            legend.append("rect")
+              .attr("x", function(d, i) { return legendElementWidth * i; })
+              .attr("y", height)
+              .attr("width", legendElementWidth)
+              .attr("height", gridSize / 2)
+              .style("fill", function(d, i) { return colors[i]; });
+
+            legend.append("text")
+              .attr("class", "mono")
+              .text(function(d) { return "≥ " + Math.round(d); })
+              .attr("x", function(d, i) { return legendElementWidth * i; })
+              .attr("y", height + gridSize);
+
+            legend.exit().remove();
+
+          });
+
+        /*heatmapChart(week_data);*/
+        
+        var datasetpicker = d3.select("#dataset-picker").selectAll(".dataset-button")
+          .data(week_data);
+
+        datasetpicker.enter()
+          .append("input")
+          .attr("value", function(d){ return "Dataset " + d })
+          .attr("type", "button")
+          .attr("class", "dataset-button")
+          .on("click", function(d) {
+            heatmapChart(d);
+          });
+        }
+    </script>
+
+{% endblock %}

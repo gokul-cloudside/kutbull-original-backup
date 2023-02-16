@@ -1,0 +1,236 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+	
+	<style>
+		.nvd3 g.nv-groups path.nv-line {
+		  stroke-width: 5px;
+		}
+
+		.width-70 {
+			width: 70px;
+		}
+	</style>
+
+{% endblock %}
+
+{% block body_block %}
+
+				<!--Page Title-->
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<div id="page-title">
+					<h1 class="page-header text-overflow"></h1>
+				</div>
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<!--End page title-->
+
+				<!--Page content-->
+				<!--===================================================-->
+				<div id="page-content">
+
+					<div class="row">
+					    <div class="col-lg-12">					    	
+
+					    	<div id="parameters_selected" >
+				            </div>
+					    	<div id="compare_inverters_table-panel-network" class="panel">
+					            <div class="panel-heading">
+					            	<!-- <div class="panel-control">
+					                    <button id="demo-panel-network-refresh" data-toggle="panel-overlay" data-target="#demo-panel-network" class="btn"><i class="fa fa-rotate-right"></i></button>
+					                </div> -->
+
+					                <div class="col-lg-6"> 
+					                	<h3 class="panel-title">Compare Plant Parameters</h3>
+					                </div>
+
+					                <div class="col-lg-6" style="margin-top: 9px;">
+					                	<div class="col-md-4"></div>
+					                	<div class="col-md-6">
+						                	<input type="text" class="form-control datetimepicker_start_compare_plant_table_day" id="start_compare_parameters_day" placeholder="Pick a Date" required="required">
+						                </div>
+						                <div class="col-md-2">
+					                		<!-- <button type="submit" id="dayenergy-panel-network-update" data-toggle="panel-overlay" data-target="#dayenergy-panel-network-update" class="btn btn-success width-70">Update</button> -->
+					                		<button type="submit" onclick="inverter_parameters()" class="btn btn-success width-70">Update</button>
+					                	</div>
+					                </div>
+
+						        </div>
+						    </div>
+
+						</div>
+
+						<div class="col-lg-12">					    	
+
+						    <div class="col-lg-4" style="padding-left: 0px;">
+
+						    	<div id="compare_parameters_list-panel-network" class="panel">
+						            <div class="panel-heading">
+						            	<!-- <div class="panel-control">
+						                    <button id="demo-panel-network-refresh" data-toggle="panel-overlay" data-target="#demo-panel-network" class="btn"><i class="fa fa-rotate-right"></i></button>
+						                </div> -->
+						                
+						                <h3 class="panel-title">All Parameters</h3>
+
+						            </div>
+
+						            <div class="panel-body">
+
+						            	<div class="ibox-content">
+
+						            		<div class="" id="accordion" role="tablist" aria-multiselectable="true">
+											 	<div class="panel panel-default">
+												    <div class="panel-heading" role="tab" id="headingOne">
+												      <h4 class="panel-title">
+												        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+												        	Plant Parameters
+												        </a>
+												      </h4>
+												    </div>
+												    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+														<div class="panel-body" id="plant_parameters">
+													   		
+														</div>
+												    </div>
+											  	</div>
+
+											</div>
+
+											<div class="panel panel-default">
+											    <div class="panel-heading" role="tab" id="headingTwo">
+											      	<h4 class="panel-title">
+												        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+												        	Inverters
+												        </a>
+											      	</h4>
+											    </div>
+											    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+											      	<div class="panel-body" id="inverter_names">
+											        	
+											      	</div>
+											    </div>
+											</div>
+						            		
+							         	</div>
+
+								    </div>
+
+							    </div>
+
+							</div>
+
+							<div class="col-lg-8" style="padding-left: 0px;padding-right: 0px;">
+
+								<div id="compare_plant_table-panel-network" class="panel">
+						            <div class="panel-heading">
+						            	<!-- <div class="panel-control">
+						                    <button id="demo-panel-network-refresh" data-toggle="panel-overlay" data-target="#demo-panel-network" class="btn"><i class="fa fa-rotate-right"></i></button>
+						                </div> -->
+
+						                <h3 class="panel-title">Plant Parameters Table
+						                	<div class="col-md-2 pull-right">
+					                			<button type="submit" class="btn btn-success width-70" style="width: 100px;">Download</button>
+					                		</div>
+						                </h3>
+
+						            </div>
+
+						            <div class="panel-body">
+
+						            	<div class="ibox-content" id="table_plant_parameters">
+						            		
+					<!-- <div class="row">
+						<div class="col-sm-12">
+							<div class="panel">
+					
+								<div class="panel-body">
+									<div class="table-responsive">
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th class="text-center">#</th>
+													<th>User</th>
+													<th>Plan</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td class="text-center">1</td>
+													<td><a href="#" class="btn-link">Scott S. Calabrese</a></td>
+													<td><span class="label label-purple">Bussines</span></td>
+												</tr>
+												<tr>
+													<td class="text-center">2</td>
+													<td><a href="#" class="btn-link">Teresa L. Doe</a></td>
+													<td><span class="label label-info">Personal</span></td>
+												</tr>
+												<tr>
+													<td class="text-center">3</td>
+													<td><a href="#" class="btn-link">Steve N. Horton</a></td>
+													<td><span class="label label-warning">Trial</span></td>
+												</tr>
+												<tr>
+													<td class="text-center">4</td>
+													<td><a href="#" class="btn-link">Charles S Boyle</a></td>
+													<td><span class="label label-purple">Bussines</span></td>
+												</tr>
+												<tr>
+													<td class="text-center">5</td>
+													<td><a href="#" class="btn-link">Lucy Doe</a></td>
+													<td><span class="label label-warning">Trial</span></td>
+												</tr>
+												<tr>
+													<td class="text-center">6</td>
+													<td><a href="#" class="btn-link">Michael Bunr</a></td>
+													<td><span class="label label-info">Personal</span></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+					
+							</div>
+						</div>
+					</div> -->
+
+							         	</div>
+
+								    </div>
+
+							    </div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+				<!--===================================================-->
+				<!--End page content-->
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/dataglen/js/d3.v3.min.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/solarrms/js/papaparse.min.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+
+    <script>
+    	var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+        var source_key = '{{ plant_meta.sourceKey }}';
+
+        var plant_metadata_calculate_hourly_pr = null;
+
+        {% if plant.metadata.calculate_hourly_pr %}
+        	plant_metadata_calculate_hourly_pr = '{{ plant.metadata.calculate_hourly_pr }}';
+        {% endif %}
+
+    </script>
+
+    <script src="/static/solarrms/js/demo/visualisations-compare_plant_table.js"></script>
+{% endblock %}

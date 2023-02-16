@@ -1,0 +1,24 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+{% load bootstrap3 %}
+
+{% block body_block %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2> Edit Inverter</h2>
+    </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-6  col-lg-offset-3">
+                <div class="ibox-content">
+                <form method="post" class="m-t" role="form" action=".">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <button type="submit" class="btn btn-primary block m-b">Update</button>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+<link href="/static/solarrms/widgets/year-energy/year-energy.css" rel="stylesheet">
+
+<div id="yearenergy-panel-network-summary" class="panel">
+    <div class="panel-heading">
+        <div class="col-md-6">
+        	<h3 class="panel-title"><span id="energy_heading"></span> Energy Generation</h3>
+        </div>
+        <div class="col-md-6 pad-top pull-right col-md-6_year">
+        	<div class="col-md-2"></div>
+        	<div class="col-md-6 select-right">
+            	<select class="form-control" id="start_energy_year">
+                	<!-- <option value="" disabled selected>--Choose Year--</option> -->
+              	</select>
+            </div>
+            <div class="col-md-2">
+        		<button type="submit" id="yearenergy-panel-network-summary-update" data-toggle="panel-overlay" data-target="#yearenergy-panel-network-summary-update" class="btn btn-success width-70">Update</button>
+        	</div>
+        	<div class="col-md-2">
+        		<button type="submit" id="yearenergy-panel-network-summary-refresh" data-toggle="panel-overlay" data-target="#yearenergy-panel-network-summary-refresh" class="btn btn-info pad-no">Refresh</button>
+        	</div>
+        </div>
+    </div>
+
+    <!--Energy values for today-->
+    <div id="year_energy_chart_no_data">
+    </div>
+    <div class="ibox-content" style="height: 365px;">
+    	<div id="year_energy_chart" style="height: 270px;">
+    	</div>
+	</div>
+</div>
+
+<script src="/static/solarrms/widgets/year-energy/year-energy.js"></script>

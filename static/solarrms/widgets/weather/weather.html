@@ -1,0 +1,36 @@
+<link href="/static/solarrms/widgets/weather/weather.css" rel="stylesheet">
+
+<div id="demo-weather-widget-md" class="panel panel-primary panel-colorful" >
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="fa fa-map-marker fa-fw"></i> 
+            <span id="location"></span>
+        </h3>
+    </div>
+
+    <!--Weather widget body-->
+    <div class="panel-body" style="padding-bottom: 16px; padding-top: 4px;">
+
+        <div class="media">
+            <div class="media-left">
+                <p class="text-4x text-thin mar-no" id="temperature"></p>
+                <p class="mar-no" id="minmax"></p>
+                <p class="text-semibold text-nowrap text-uppercase" id="comments"></p>
+            </div>
+            <div class="media-body text-center">
+                <canvas id="demo-weather-md-icon-1" width="90" height="90"></canvas>
+            </div>
+        </div>
+        <ul class="list-inline" style="margin-bottom: 10px;">
+            <li><i class="fa fa-random fa-fw" > </i> <span id="windspeed"> </span></li>
+            <li><i class="fa fa-tint fa-fw" ></i> <span id="precipitation"></span></li>
+        </ul>
+        <ul class="list-inline" style="margin-bottom: 5px;">
+            <li class="text-semibold">Irradiation - <span id="irradiation"> </span></li>
+            <li class="text-semibold">Module Temp. - <span id="module_temperature"> </span></li>
+        </ul>
+    </div>
+
+</div>
+
+<script src="/static/solarrms/widgets/weather/weather.js"></script>

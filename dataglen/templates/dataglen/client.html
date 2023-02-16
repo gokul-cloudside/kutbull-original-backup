@@ -1,0 +1,58 @@
+{% extends 'dataglen/dataglenbase.html' %}
+
+{% block body_block %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2> Your Profile </h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{% url 'dataglen:dashboard' %}">Home</a>
+            </li>
+            <li>
+                <a>{{ client.name|capfirst }}</a>
+            </li>
+        </ol>
+    </div>
+    </div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Profile Information</h5>
+                </div>
+                <div class="ibox-content">
+                    Name: {{ dataglenclient.organization_ptr.name|capfirst }} <br/>
+                    Website: {{ dataglenclient.clientWebsite }} <br/>
+                    Contact Address: {{ dataglenclient.clientContactAddress|capfirst }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5> Employees </h5>
+                </div>
+                <div class="ibox-content">
+                    {% for employee in dataglenclient.get_employees %}
+                        {{ employee.user.username }}
+                        {{ employee.user.email }}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5> Clients </h5>
+                </div>
+                <div class="ibox-content">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

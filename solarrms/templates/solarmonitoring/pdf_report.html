@@ -1,0 +1,998 @@
+{% load screamshot %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Dataglen Daily/Monthly Reports</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale = 1.0, maximum-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script>
+    var runOnLoad=(function(){var tasksRun=false;var tasks=[];function add(task){if(tasksRun){window.setTimeout(task,0)}else{tasks.push(task)}}function runTasks(){tasksRun=true;while(tasks.length){tasks.shift()()}}if(window.addEventListener){document.addEventListener('DOMContentLoaded',runTasks,false);window.addEventListener('load',runTasks,false)}else{window.attachEvent('onload',runTasks)}return add})();  </script>
+    <!-- build:js js/app.min.js -->
+    <!-- endbuild -->
+
+<style>
+    @media print,
+    screen {
+        body {
+            font-family: 'Lato', sans-serif;
+            height: 1075px;
+            width: 740px;
+            margin-left: auto;
+            margin-right: auto
+        }
+        .header-wrapper {
+            border-bottom: 1px dashed #124E78 !important;
+            padding-bottom: 10px
+        }
+        .header-logo-wrapper {
+            width: 25%;
+            float: left
+        }
+        .header-client-logo {
+            height: 120px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            width: 160px
+        }
+        .header-client-logo img {
+            width: 100%
+        }
+        .header-client-info-wrapper {
+            margin-left: 58.33333333%
+        }
+        .header-client-info-wrapper .header-client-name {
+            font-weight: 700;
+            font-size: 18px;
+            color: #124E78 !important;
+            line-height: 35px
+        }
+        .header-client-info-wrapper .header-address {
+            font-size: 14px;
+            line-height: 24px
+        }
+        .header-client-info-wrapper .header-phone {
+            font-size: 14px;
+            line-height: 24px
+        }
+        .header-client-info-wrapper .header-email {
+            font-size: 14px;
+            line-height: 24px
+        }
+        .plant-static-info-section {
+            float: left;
+            width: 41.7%
+        }
+        .plant-static-info-section .title {
+            font-weight: 700;
+            font-size: 14px;
+            color: #124E78 !important;
+            margin-bottom: 10px
+        }
+        .plant-static-info-section .address {
+            font-size: 14px;
+            line-height: 24px;
+            margin: 5px 0
+        }
+        .plant-static-info-section .plant-capacity-info {
+            font-size: 12px
+        }
+        .plant-static-info-section .plant-capacity-info .location {
+            display: inline-block;
+            margin-right: 10px;
+            margin-top: 5px
+        }
+        .plant-static-info-section .plant-capacity-info .location .text {
+            margin-right: 10px
+        }
+        .plant-static-info-section .plant-capacity-info .location .value {
+            font-weight: 700
+        }
+        .plant-metrics-info-tile {
+            -webkit-print-color-adjust: exact;
+            color: #000 !important;
+            float: left;
+            width: 35%;
+            padding: 10px;
+            margin: 2px;
+            height: 45px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            border-radius: 5px;
+            border: 1px solid rgb(17, 114, 194);
+        }
+        .plant-metrics-info-tile .main-info {
+            display: inline-block;
+            vertical-align: top
+        }
+        .plant-metrics-info-tile .main-info .title {
+            color: #5a5a5a !important;
+            font-size: 14px;
+            text-align: center
+        }
+        .plant-metrics-info-tile .main-info .value {
+            font-size: 13px;
+            margin: 5px 0;
+            text-align: center
+        }
+    }
+
+    .plant-report-main-info {
+        font-size: 18px;
+        margin: 12px 0;
+        color: #124E78;
+    }
+
+    .plant-performance-tile {
+        /*background: #fff !important;*/
+        float: left;
+        padding: 10px;
+        width: 46%;
+        margin: 2px;
+        border-radius: 5px;
+        box-shadow: 1px 1px 6px #c0c0c0 !important;
+        height: 125px;
+        border: 1px solid rgb(17, 114, 194);
+    }
+
+    .plant-performance-tile .top {
+        display: table;
+        width: 100%;
+        margin-bottom: 15px
+    }
+
+    .plant-performance-tile .top .content-box {
+        display: table-cell;
+        width: 50%
+    }
+
+    .plant-performance-tile .top .content-box .title {
+        width: 100%;
+        margin: 10px 0;
+        color: #5a5a5a !important
+    }
+
+    .plant-performance-tile .bottom {
+        display: table;
+        width: 100%;
+        margin-top: 5%;
+    }
+
+    .plant-performance-tile .bottom .content-box {
+        display: table-cell;
+        width: 50%
+    }
+
+    .plant-performance-tile .bottom .content-box .title {
+        width: 100%;
+        margin: 10px 0;
+        color: #5a5a5a !important
+    }
+
+    .plant-metrics-section {
+        width: 58.3%;
+        float: left
+    }
+
+    .green{
+        color:#006400;
+    }
+    .yellow{
+        color:#ff8c00;
+    }
+    .yellow-box{
+        border:1px solid #ff8c00;
+    }
+    .clearfix:after,
+    .plant-savings-tile .bottom:after,
+    .plant-savings-tile .top:after {
+        display: table;
+        content: " ";
+        clear: both
+    }
+
+    .clearfix:before,
+    .plant-savings-tile .bottom:before,
+    .plant-savings-tile .top:before {
+        display: table;
+        content: " "
+    }
+
+    .plant-savings-tile {
+        width: 44.6%;
+        float: left;
+        position: relative;
+        padding: 15px;
+        margin: 0 2px;
+        height: 120px;
+        border: 1px solid #006400;
+        border-radius: 5px;
+    }
+
+    .plant-savings-tile object {
+        width: 30px
+    }
+
+    .plant-savings-tile object svg {
+        fill: #fff
+    }
+
+    .plant-savings-tile .top .img-wrp {
+        float: left
+    }
+
+    .plant-savings-tile .top .value-info {
+        float: right;
+        text-align: right
+    }
+
+    .plant-savings-tile .bottom {
+        margin-top: 20px;
+        position: absolute;
+        bottom: 10px;
+        width: 92%
+    }
+
+    .plant-savings-tile .bottom .value-info {
+        float: left;
+        width: 50%
+    }
+
+    .plant-savings-tile .bottom .value-info:nth-child(2) {
+        text-align: right
+    }
+
+    .value-info .title {
+        margin-top: 10px;
+        font-size: 14px;
+        line-height: 14px;
+        line-height: 0.9rem;
+        color: #5a5a5a;
+    }
+
+    .value-info .value {
+        font-size: 14px;
+        color: #000;
+        font-weight: bold
+    }
+
+    .value-info .unit {
+        padding: 0 5px;
+        color: #fff;
+        font-weight: 300;
+        font-size: 12px
+    }
+    .plant-banner-section{
+        background-image: url("{{ base64_for_icons.bannersolar }}");height:275px;
+        background-size:cover;background-repeat:no-repeat;background-position-y:-140px}
+        .plant-insolation-power-chart-section{margin:20px 0}.plant-insolation-power-chart-section
+         .chart-wrapper{height:275px}.plant-carbon-savings-section{margin-bottom:20px}
+         .text_align_right{text-align: right;
+    }
+</style>
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <section>
+            <div class="header-wrapper">
+                <div class="header-logo-wrapper">
+                    <div class="header-client-logo"><img id="logoimg" src="{{ splant_group_client_logo }}"></div>
+                </div>
+                <div class="header-client-info-wrapper">
+                    <div class="header-client-name">{{ splant_client_name }}</div>
+                    <div class="header-address">{{ splant_client_address }}</div>
+                    <div class="header-phone">Phone No: {{ splant_client_phoneno }}</div>
+                    <div class="header-email">Email ID: {{ splant_client_contact_address }}</div>
+                </div>
+            </div>
+        </section>
+        <div class="plant-report-main-info" style="text-transform: capitalize;">
+        {% if report_type == "daily" %}
+            {{ report_type }} Report {{ start_date }}
+        {% elif report_type == "monthly" %}
+            {{ report_type }} Report {{ start_date }} - {{ end_date }}
+        {% else %}
+            {{ report_type }} Report
+        {% endif %}
+        </div>
+        <section class="plant-static-section clearfix">
+            <div class="plant-metrics-section clearfix">
+                <div class="plant-metrics-info-tile clearfix" {% if splant_data.insolation <= 0 and splant_data.performance_ratio <= 0 %} style="width: 76%;" {% endif %}>
+                    <div class="main-info">
+                        <div class="title">Energy</div>
+                        <div class="value">{{ splant_data.generation }}</div>
+                    </div>
+                </div>
+                {% if splant_data.insolation > 0 and splant_data.performance_ratio > 0 %}
+                <div class="plant-metrics-info-tile clearfix">
+                    <div class="main-info">
+                        <div class="title">PR/Insolation</div>
+                        <div class="value">{{ splant_data.performance_ratio }}% | {{ splant_data.insolation }}kWh/m<sup>2</sup></div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="plant-metrics-info-tile clearfix">
+                    <div class="main-info">
+                        <div class="title">CUF</div>
+                        <div class="value">{{ splant_data.cuf }}%</div>
+                    </div>
+                </div>
+                <div class="plant-metrics-info-tile clearfix">
+                    <div class="main-info">
+                        <div class="title">Special Yield</div>
+                        <div class="value">{{ splant_data.specific_yield }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="plant-static-info-section clearfix">
+                <div class="title">{{ splant_name }}</div>
+                <div class="address">{{ splant_location }}</div>
+                <div class="plant-capacity-info">
+                    <div class="location"><span class="text">Latitude</span><span class="value">{{ splant_latitude }}</span></div>
+                    <div class="location"><span class="text">Longitude</span><span class="value">{{ splant_longitude }}</span></div>
+                </div>
+                <div class="plant-capacity-info">
+                    <div class="location"><span class="text">Elevation</span><span class="value">{{ splant_elevation }}</span></div>
+                    <div class="location"><span class="text">Capacity</span><span class="value">{{ splant_capacity }} kWh</span></div>
+                </div>
+            </div>
+        </section>
+        <div class="plant-report-main-info">Plant Performace Details</div>
+        <section class="plant-performance-section clearfix">
+            <div class="plant-performance-wrapper clearfix">
+                <div class="plant-performance-tile">
+                    <div class="top">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value"></span><span class="unit"></span>
+                                <div><img style="height: 50px;width: auto;margin-top: -10%;" src="{{ base64_for_icons.plantgeneration }}" /></div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value">{{ monthly_generation }}</span><span class="unit"></span>
+                                <div class="title">This Month Generation</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value">{{ yearly_generation }}</span><span class="unit"></span>
+                                <div class="title">This Year Generation</div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value">{{ till_date_generation }}</span><span class="unit"></span>
+                                <div class="title">Till Date Generation</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="plant-performance-tile">
+                       <div class="top">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value"></span><span class="unit"></span>
+                                <div><img style="height: 50px;width: auto;margin-top: -10%;" src="{{ base64_for_icons.plantgridavailibility }}" /></div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value"></span><span class="unit"></span>
+                                <div class="title"></div>
+                            </div>
+                        </div>
+                       </div>
+                       <div class="bottom">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value">{{ splant_data.grid_availability }}%</span><span class="unit"></span>
+                                <div class="title">Grid Availability</div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value">{{ splant_data.equipment_availability }}%</span><span class="unit"></span>
+                                <div class="title">Plant and Availibility</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="plant-performance-tile">
+                    <div class="top">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value"></span><span class="unit"></span>
+                                <div ><img style="height: 50px;width: 50px;margin-top: -10%;" src="{{ base64_for_icons.plantalarm }}" /></div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value"></span><span class="unit"></span>
+                                <div class="title"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value"></span><span class="unit"></span>
+                                <div class="title"></div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value"></span><span class="unit"></span>
+                                <div class="title"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="plant-performance-tile">
+                    <div class="top">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value"></span><span class="unit"></span>
+                                <div><img style="height: 50px;width: 50px;margin-top: -10%;" src="{{ base64_for_icons.plantlosses }}" /></div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value">{{ splant_data.conversion_loss }}</span><span class="unit"></span>
+                                <div class="title">Conversion Losses</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value">{{ splant_data.dc_loss }}</span><span class="unit"></span>
+                                <div class="title">DC Losses</div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value">{{ splant_data.ac_loss }}</span><span class="unit"></span>
+                                <div class="title">AC Losses</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="plant-report-main-info yellow">Plant Invertor / Meta Details</div>
+                <!--div class="plant-banner-section clearfix" align="middle" style="height:200px"-->
+                <div class="plant-performance-tile yellow-box">
+                    <div class="top">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value"></span><span class="unit"></span>
+                                <div><img style="height: 50px;width: 50px;margin-top: -10%;" src="{{ base64_for_icons.plantinverter }}" /></div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value">{{ inverter_data.manufacturer }}</span><span class="unit"></span>
+                                <div class="title">Manufacturer</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="content-box ">
+                            <div class="value-info"><span class="value">{{ inverter_data.model }}</span><span class="unit"></span>
+                                <div class="title">Model</div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value">{{ inverter_data.total_capacity }} kWh</span><span class="unit"></span>
+                                <div class="title">Total Capacity</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="plant-performance-tile yellow-box">
+                    <div class="top">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value"></span><span class="unit"></span>
+                                <div><img style="height: 50px;width: 50px;margin-top: -10%;" src="{{ base64_for_icons.plantpannel }}" /></div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value">{{ plant_meta_data.panel_technology }}</span><span class="unit"></span>
+                                <div class="title">Panel Technology</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="content-box">
+                            <div class="value-info"><span class="value">{{ plant_meta_data.panel_capacity }} WP</span><span class="unit"></span>
+                                <div class="title">Panel Capacity</div>
+                            </div>
+                        </div>
+                        <div class="content-box text_align_right">
+                            <div class="value-info"><span class="value">{{ plant_meta_data.no_of_panels }}</span><span class="unit"></span>
+                                <div class="title">Number of Panel</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <div class="plant-report-main-info green">Plant Carbon Savings </div>
+        <section class="plant-carbon-savings-section clearfix">
+            <div class="plant-savings-tile">
+                <div class="top">
+                    <div class="img-wrp">
+                        <img style="height: 50px;width: 50px" src="{{ base64_for_icons.plantco2saving }}" />
+                        <!--object type="image/svg+xml" data="../images/economy.svg" class="carbon-logo"></object-->
+                    </div>
+                    <div class="value-info"><span class="value">{{ splant_data.plant_co2 }}</span><span class="unit"></span>
+                        <div class="title">Total CO2 Saving</div>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="value-info"><span class="value">{{ month_co2_saving }}</span><span class="unit"></span>
+                        <div class="title">Montly CO2 Saving</div>
+                    </div>
+                    <div class="value-info"><span class="unit"></span><span class="value"></span>
+                        <div class="title"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="plant-savings-tile">
+                <div class="top">
+                    <div class="img-wrp">
+                        <img style="height: 50px;width: 50px" src="{{ base64_for_icons.plantsaving }}" />
+                        <!--object type="image/svg+xml" data="../images/moneyTree.svg" class="carbon-logo"></object-->
+                    </div>
+                    <div class="value-info"><span class="value"></span><span class="unit"></span>
+                        <div class="title"></div>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="value-info"><span class="value">{{ splant_data.plant_money_saving }}</span><span class="unit"></span>
+                        <div class="title">Plant Saving</div>
+                    </div>
+                    <div class="value-info"><span class="value"></span><span class="unit"></span>
+                        <div class="title"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <p style="page-break-before: always;"> </p>
+        <section class="plant-banner-section clearfix">
+        </section>
+        <div class="plant-report-main-info" style="margin-top: 5%;">Plant Power v/s Irradation </div>
+        <section class="plant-insolation-power-chart-section">
+            <div id="container" class="chart-wrapper"></div>
+        </section>
+        <div class="plant-report-main-info">Monthly Generation v/s Insolation </div>
+        <section class="plant-insolation-power-chart-section">
+            <div id="container2" class="chart-wrapper"></div>
+        </section>
+        {% if report_type == "monthly" %}
+            <p style="page-break-before: always;"> </p>
+            <div class="plant-report-main-info">CUF Chart </div>
+            <section class="plant-insolation-power-chart-section">
+                <div id="container3" class="chart-wrapper"></div>
+            </section>
+            <div class="plant-report-main-info">Losses Chart </div>
+            <section class="plant-insolation-power-chart-section">
+                <div id="container4" class="chart-wrapper"></div>
+            </section>
+            <div class="plant-report-main-info">Availability Chart </div>
+            <section class="plant-insolation-power-chart-section">
+                <div id="container5" class="chart-wrapper"></div>
+            </section>
+        {% endif %}
+
+ <script>
+var power_irradiation_str = '{{ power_irradiation|safe }}';
+var daily_monthly_generation_str = '{{ daily_monthly_generation|safe }}';
+var ac_dc_conversion_monthly_str = '{{ ac_dc_conversion_monthly|safe }}';
+var availability_monthly_str = '{{ availability_monthly|safe }}';
+var cuf_monthly_data_str = '{{ cuf_monthly_data|safe }}';
+var power_irradiation = "";
+var daily_monthly_generation = "";
+var ac_dc_conversion_monthly = "";
+var availability_monthly = "";
+var cuf_monthly_data = "";
+if(power_irradiation_str.length > 1){
+    power_irradiation = JSON.parse(power_irradiation_str);
+}
+if(daily_monthly_generation_str.length > 1){
+    daily_monthly_generation = JSON.parse(daily_monthly_generation_str);
+}
+if(ac_dc_conversion_monthly_str.length > 1){
+    ac_dc_conversion_monthly = JSON.parse(ac_dc_conversion_monthly_str);
+}
+if(availability_monthly_str.length > 1){
+    availability_monthly = JSON.parse(availability_monthly_str);
+}
+if(cuf_monthly_data_str.length > 1){
+    cuf_monthly_data = JSON.parse(cuf_monthly_data_str);
+}
+
+var pi_1 = new Array();
+var pi_2 = new Array();
+var pi_3 = new Array();
+for(i=0;i<power_irradiation.length;i++){
+   pi_1[i]=power_irradiation[i].power;
+   pi_2[i]=power_irradiation[i].timestamp;
+   var dt = new Date(pi_2[i])
+   if(dt !== undefined){
+     pi_2[i]= dt.getDate()+"/"+(dt.getMonth()+1);
+   }
+   pi_3[i]=power_irradiation[i].irradiation;
+}
+
+var gi_1 = new Array();
+var gi_2 = new Array();
+var gi_3 = new Array();
+for(i=0;i<daily_monthly_generation.length;i++){
+   gi_1[i]=daily_monthly_generation[i].generation;
+   gi_2[i]=daily_monthly_generation[i].timestamp;
+   var dt = new Date(gi_2[i])
+   if(dt !== undefined){
+     gi_2[i]= dt.getDate()+"/"+(dt.getMonth()+1);
+   }
+   gi_3[i]=daily_monthly_generation[i].insolation;
+}
+
+var ci_1 = new Array();
+var ci_2 = new Array();
+for(i=0;i<cuf_monthly_data.length;i++){
+   ci_1[i]=cuf_monthly_data[i].cuf;
+   ci_2[i]=cuf_monthly_data[i].timestamp;
+   var dt = new Date(ci_2[i])
+   if(dt !== undefined){
+     ci_2[i]= dt.getDate()+"/"+(dt.getMonth()+1);
+   }
+}
+
+var av_1 = new Array();
+var av_2 = new Array();
+var av_3 = new Array();
+for(i=0;i<availability_monthly.length;i++){
+   av_1[i]=availability_monthly[i].equipment_availability;
+   av_2[i]=availability_monthly[i].grid_availability;
+   av_3[i]=availability_monthly[i].avtimestamp;
+   var dt = new Date(av_3[i])
+   if(dt !== undefined){
+     av_3[i]= dt.getDate()+"/"+(dt.getMonth()+1);
+   }
+}
+
+var loss_1 = new Array();
+var loss_2 = new Array();
+var loss_3 = new Array();
+var loss_4 = new Array();
+for(i=0;i<ac_dc_conversion_monthly.length;i++){
+   loss_1[i]=ac_dc_conversion_monthly[i].ac_loss;
+   loss_2[i]=ac_dc_conversion_monthly[i].dc_loss;
+   loss_3[i]=ac_dc_conversion_monthly[i].conversion_loss;
+   loss_4[i]=ac_dc_conversion_monthly[i].timestamp;
+   var dt = new Date(loss_4[i])
+   if(dt !== undefined){
+     loss_4[i]= dt.getDate()+"/"+(dt.getMonth()+1);
+   }
+}
+
+
+runOnLoad(function(){
+  //debugger;
+  Highcharts.setOptions({
+      colors: ['#488A99', '#124E78', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4'],
+      plotOptions: { series: { animation: false } },
+      credits: { enabled: false }
+  });
+  Highcharts.chart('container', {
+      chart: {
+          zoomType: 'xy'
+      },
+      title: {
+          text: 'Power v/s Irradation'
+      },
+
+      xAxis: [{
+          categories: pi_2,
+          crosshair: true
+      }],
+      yAxis: [ { // Secondary yAxis
+          gridLineWidth: 0,
+          title: {
+              text: '',
+              style: {
+                  color: Highcharts.getOptions().colors[0]
+              }
+          },
+          labels: {
+              format: '{value} kWh',
+              style: {
+                  color: Highcharts.getOptions().colors[0]
+              }
+          }
+
+      }, { // Tertiary yAxis
+          gridLineWidth: 0,
+          title: {
+              text: '',
+              style: {
+                  color: Highcharts.getOptions().colors[1]
+              }
+          },
+          labels: {
+              format: '{value}',
+              style: {
+                  color: Highcharts.getOptions().colors[1]
+              }
+          },
+          opposite: true
+      }],
+      tooltip: {
+          shared: true
+      },
+      legend: {
+          layout: 'vertical',
+          align: 'left',
+          x: 80,
+          verticalAlign: 'top',
+          y: 55,
+          floating: true,
+          backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+      },
+      series: [{
+          name: 'Power',
+          type: 'areaspline',
+          data: pi_1,
+          tooltip: {
+              valueSuffix: ' kWh'
+          }
+
+      }, {
+          name: 'Insolation',
+          type: 'spline',
+          yAxis: 1,
+          data: pi_3,
+          dashStyle: 'shortdot',
+          tooltip: {
+              valueSuffix: ' kW/m^2'
+          }
+      }]
+  });
+
+  Highcharts.chart('container2', {
+      chart: {
+
+          zoomType: 'xy'
+      },
+      title: {
+          text: 'Generated v/s Isolation'
+      },
+
+      xAxis: [{
+          categories: gi_2,
+          crosshair: true
+      }],
+      yAxis: [ { // Secondary yAxis
+          gridLineWidth: 0,
+          title: {
+              text: '',
+              style: {
+                  color: Highcharts.getOptions().colors[0]
+              }
+          },
+          labels: {
+              format: '{value} kWh',
+              style: {
+                  color: Highcharts.getOptions().colors[0]
+              }
+          }
+
+      }, { // Tertiary yAxis
+          gridLineWidth: 0,
+          title: {
+              text: '',
+              style: {
+                  color: Highcharts.getOptions().colors[1]
+              }
+          },
+          labels: {
+              format: '{value}',
+              style: {
+                  color: Highcharts.getOptions().colors[1]
+              }
+          },
+          opposite: true
+      }],
+      tooltip: {
+          shared: true
+      },
+      legend: {
+          layout: 'vertical',
+          align: 'left',
+          x: 80,
+          verticalAlign: 'top',
+          y: 55,
+          floating: true,
+          backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+      },
+      series: [{
+          name: 'Generation',
+          type: 'column',
+          data: gi_1,
+          tooltip: {
+              valueSuffix: ' kWh'
+          }
+
+      }, {
+          name: 'Insolation',
+          type: 'spline',
+          yAxis: 1,
+          data: gi_3,
+          dashStyle: 'shortdot',
+          tooltip: {
+              valueSuffix: ' kW/m^2'
+          }
+      }]
+  });
+
+  Highcharts.chart('container3', {
+      chart: {
+
+          zoomType: 'xy'
+      },
+      title: {
+          text: 'CUF v/s Timestamp'
+      },
+
+      xAxis: [{
+          categories: ci_2,
+          crosshair: true
+      }],
+      yAxis: [ { // Secondary yAxis
+          gridLineWidth: 0,
+          title: {
+              text: '',
+              style: {
+                  color: Highcharts.getOptions().colors[0]
+              }
+          },
+          labels: {
+              format: '{value} %',
+              style: {
+                  color: Highcharts.getOptions().colors[0]
+              }
+          }
+
+      }],
+      tooltip: {
+          shared: true
+      },
+      legend: {
+          layout: 'vertical',
+          align: 'left',
+          x: 80,
+          verticalAlign: 'top',
+          y: 55,
+          floating: true,
+          backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+      },
+      series: [{
+          name: 'CUF',
+          type: 'column',
+          data: ci_1,
+          tooltip: {
+              valueSuffix: ' %'
+          }
+
+      }]
+  });
+
+  Highcharts.chart('container4', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Ac Loss v/s Dc Loss v/s Conversion Loss'
+    },
+    xAxis: {
+        categories: loss_4,
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: ''
+        }
+    },
+    legend: {
+        reversed: true
+    },
+    plotOptions: {
+        series: {
+            stacking: 'normal'
+        }
+    },
+    series: [{
+        name: 'Ac Loss',
+        data: loss_1
+    }, {
+        name: 'Dc Loss',
+        data: loss_2
+    }, {
+        name: 'Convension Loss',
+        data: loss_3
+    }]
+  });
+
+Highcharts.chart('container5', {
+
+   title: {
+        text: 'Plant v/s Grid'
+    },
+
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: av_3,
+        //crosshair: true
+    },
+    yAxis: {
+        title: {
+            text: ''
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            //pointStart: 2010
+        }
+    },
+
+    series: [{
+        name: 'Grid',
+        data: av_1
+    }, {
+        name: 'Plant',
+        data: av_2
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+
+});
+
+
+});
+
+</script>
+
+        <div id="footer_content"></div>
+        <script>
+        document.getElementById("footer_content").innerHTML = "<div id='jscompleted'>";
+        console.log("footer_content");
+        </script>
+
+    </div>
+</body>
+
+</html>

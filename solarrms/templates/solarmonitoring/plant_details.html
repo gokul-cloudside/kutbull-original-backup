@@ -1,0 +1,101 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+
+    <style>
+        
+    </style>
+
+{% endblock %}
+
+{% block body_block %}
+    
+    <div id="page-content">
+
+      <div class="row">
+
+        <div class="col-lg-12">
+
+          <div id="compareinverter-panel-network" class="panel">
+            <div class="panel-heading">
+              <div class="col-md-6">
+                <h3 class="panel-title">Plant Details</h3>
+              </div>
+            </div>
+
+            <div class="ibox-content">
+              <div class="col-md-12">
+                <div class="mar-hor">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="inverters">Source</label>
+                        <select class="form-control" id="source_dropdown">
+                          <option value="" disabled selected>--Choose Source--</option>
+                        </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="parameters">Parameters</label>
+                      <select class="form-control" id="streams_dropdown">
+                        <option value="" disabled selected>--Choose Parameters--</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label for="start">Date</label>
+                      <input type="text" class="form-control datetimepicker_source_time" id="source_time" placeholder="Choose Date" required="required" style="background-color: white;">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <button type="submit" onClick="inverters_chart_data()" class="btn btn-success" id="button_data_download" style="margin-top: 22px;">Plot</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-12 ">
+                <div class="chart_plot" id="row_plot">
+
+                </div>
+              </div>
+
+              <!-- <div class="col-md-12" id="download_chart_image" hidden>
+                <button type="submit" onClick="download_chart_as_png_inv()" class="btn btn-danger pull-right" id="button_chart_as_png_download_inverter" disabled style="padding: 0px 9px; margin-top: -4px;">DOWNLOAD CHART</button>
+              </div> -->
+
+              <div id="inverter_comparison_data">
+                <div>
+                  <svg id="svg_chart_inverter_download" style="height: 280px;">
+
+                  </svg>
+                </div>
+              </div>
+
+            </div>
+          
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="/static/dataglen/js/nv.d3.min.js"></script>
+
+  <script>
+    var live_chart = null;
+    var plant_slug = '{{ plant.slug }}';
+    var plant_meta = '{{ plant_meta }}'
+
+  </script>
+
+  <script src="/static/solarrms/js/demo/visualisations-export_data-inverters-download.js"></script>
+
+{% endblock %}

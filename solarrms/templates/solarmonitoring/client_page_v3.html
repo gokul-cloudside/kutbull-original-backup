@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataGlen Solar RMS</title>
+    <!--STYLESHEET-->
+    <!--=================================================-->
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="/static/solarrms/css/bootstrap.min.css" rel="stylesheet">
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link href="/static/solarrms/css/nifty.min.css" rel="stylesheet">
+    <!--Font Awesome [ OPTIONAL ]-->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!--FooTable [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/fooTable/css/footable.core.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet">
+    <!-- Leaflet js [ MAPS ] -->
+    <link href="/static/solarrms/plugins/leafletjs/leaflet.css" rel="stylesheet">
+    <!-- JQUERY MODAL CSS -->
+    <link href="/static/solarrms/plugins/jquery-modal/jquery.modal.min.css" rel="stylesheet">
+    <!-- MORRIS CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <!--SolarRMS CSS-->
+    <link href="/static/solarrms/css/dataglensolar.css" rel="stylesheet">
+
+    <style>
+
+        .gm-style {
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 400;
+            text-decoration: none;
+        }
+        .jvectormap-zoomin, .jvectormap-zoomout {
+            border-radius: 0px; !important;
+        }
+        
+        .text-xxs {
+            font-size: small;
+        }
+        .analytics-header {
+            padding: 15px 15px 50px 15px;
+            min-height: 55px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart {
+          position: relative;
+          display: inline-block;
+          width: 110px;
+          height: 110px;
+          margin-top: 5px;
+          margin-bottom: 0px;
+          text-align: center;
+        }
+
+        .chart canvas {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+        .percent {
+          display: inline-block;
+          line-height: 110px;
+          z-index: 2;
+        }
+        .percent:after {
+          content: '%';
+          margin-left: 0.1em;
+          font-size: .8em;
+        }
+
+        /*@media screen and (min-width: 1024px) {
+            .chart {
+              position: relative;
+              display: inline-block;
+              width: 170px;
+              height: 170px;
+              margin-top: 10px;
+              margin-bottom: 0px;
+              text-align: center;
+            }
+
+            .chart canvas {
+              position: absolute;
+              top: 0;
+              left: 0;
+            }
+
+            .percent {
+              display: inline-block;
+              line-height: 139px;
+              z-index: 2;
+              margin-right: 4.1em;
+            }
+            .percent:after {
+              content: '%';
+              margin-left: 0.1em;
+              font-size: 0.8em;
+            }
+        }*/
+
+        /*@media screen and (min-width: 1366px) {
+            .chart {
+              position: relative;
+              display: inline-block;
+              width: 185px;
+              height: 110px;
+              margin-top: 10px;
+              margin-bottom: 0px;
+              text-align: center;
+            }
+
+            .chart canvas {
+              position: absolute;
+              top: 0;
+              left: 0;
+            }
+
+            .percent {
+              display: inline-block;
+              line-height: 110px;
+              z-index: 2;
+              margin-right: 4.1em;
+            }
+            .percent:after {
+              content: '%';
+              margin-left: 0.1em;
+              font-size: 0.8em;
+            }
+        }*/
+
+        @media screen and (min-width: 1440px) {
+            .chart {
+              position: relative;
+              display: inline-block;
+              width: 185px;
+              height: 110px;
+              margin-top: 10px;
+              margin-bottom: 0px;
+              text-align: center;
+            }
+
+            .chart canvas {
+              position: absolute;
+              top: 0;
+              left: 0;
+            }
+
+            .percent {
+              display: inline-block;
+              line-height: 139px;
+              z-index: 2;
+              margin-right: 4.1em;
+            }
+            .percent:after {
+              content: '%';
+              margin-left: 0.1em;
+              font-size: 0.8em;
+            }
+        }
+
+        @media screen and (min-width: 1600px) {
+            .chart {
+              position: relative;
+              display: inline-block;
+              width: 205px;
+              height: 201px;
+              margin-top: 20px;
+              margin-bottom: 0px;
+              text-align: center;
+            }
+
+            .chart canvas {
+              position: absolute;
+              top: 0;
+              left: 0;
+            }
+
+            .percent {
+              display: inline-block;
+              line-height: 164px;
+              z-index: 2;
+              margin-right: 4.1em;
+            }
+            .percent:after {
+              content: '%';
+              margin-left: 0.1em;
+              font-size: 0.8em;
+            }
+        }
+
+        @media screen and (min-width: 1680px) {
+            .chart {
+              position: relative;
+              display: inline-block;
+              width: 210px;
+              height: 210px;
+              margin-top: 10px;
+              margin-bottom: 0px;
+              text-align: center;
+            }
+
+            .chart canvas {
+              position: absolute;
+              top: 0;
+              left: 0;
+            }
+
+            .percent {
+              display: inline-block;
+              line-height: 164px;
+              z-index: 2;
+              margin-right: 4.1em;
+            }
+            .percent:after {
+              content: '%';
+              margin-left: 0.1em;
+              font-size: 0.8em;
+            }
+        }
+
+        @media screen and (min-width: 1920px) {
+            .chart {
+              position: relative;
+              display: inline-block;
+              width: 310px;
+              height: 310px;
+              margin-top: 10px;
+              margin-bottom: 0px;
+              text-align: center;
+            }
+
+            .chart canvas {
+              position: absolute;
+              top: 0;
+              left: 0;
+            }
+
+            .percent {
+              display: inline-block;
+              line-height: 184px;
+              z-index: 2;
+              margin-right: 10.1em;
+            }
+            .percent:after {
+              content: '%';
+              margin-left: 0.1em;
+              font-size: 0.8em;
+            }
+
+            .text-3x {
+              font-size: 50px;
+            }
+
+            .text-lg {
+              font-size: 22px; 
+            }
+
+            .text-sm {
+              font-size: 20px; 
+            }
+        }
+
+        @media screen and (min-width: 2048px) {
+            .chart {
+              position: relative;
+              display: inline-block;
+              width: 370px;
+              height: 370px;
+              margin-top: 10px;
+              margin-bottom: 0px;
+              text-align: center;
+            }
+
+            .chart canvas {
+              position: absolute;
+              top: 0;
+              left: 0;
+            }
+
+            .percent {
+              display: inline-block;
+              line-height: 194px;
+              z-index: 2;
+              margin-right: 13.8em;
+            }
+            .percent:after {
+              content: '%';
+              margin-left: 0.1em;
+              font-size: 0.8em;
+            }
+        }
+
+        .table-row {
+            display: table-row !important
+        }
+
+        .dg-hide {
+            display: hidden !important;
+        }
+
+        .alert .close {
+            font-size: 21px;
+            top: 15px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .bottom-right {
+            bottom: 1px;
+            right: 10px;
+        }
+
+        .margin-bottom-0 {
+            margin-bottom: 0px;
+        }
+
+    </style>
+
+<!-- start Mixpanel -->
+    <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+mixpanel.init("1ddd19271a41ecc9d91aae03aab40458");
+    </script>
+    <!-- end Mixpanel -->
+</head>
+
+<body>
+    <div id="container" class="effect aside-float aside-bright mainnav-out">
+
+        <header id="navbar">
+            <div id="navbar-container" class="boxed">
+                <!--Navbar Dropdown-->
+                <!--================================-->
+                <div class="navbar-content clearfix">
+                    <ul class="nav navbar-top-links pull-left">
+                        <!--Notification dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <li>
+                            <ol class="breadcrumb mar-ver-5"> 
+                                <li class="text-center text-bold" > 
+                                    <a href="#">All Plants</a> 
+                                </li> 
+                            </ol>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-top-links pull-right">
+                        <!--User dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                        {% if webdyn_client == False and add_user == False and compare_plants == False %}
+                        {% else %}
+                            <li>
+                                <a href="#" class="aside-toggle navbar-aside-icon">
+                                    <i class="pci-ver-dots"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li class="dropdown">
+                            <span class="pull-right p-l-10 p-r-15 p-t-5 text-thin text-semibold last_updated_time" id="last_updated_time"></span>
+                        </li>
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!--End user dropdown-->
+
+                        <li>
+                            <a href="{% url 'account_logout' %}" class="btn text-thin text-center text-semibold text-white" style="background-color:#2672a6"> Logout </a>
+                        </li>
+                    </ul>
+                </div>
+                <!--================================-->
+                <!--End Navbar Dropdown-->
+            </div>
+        </header>
+
+        <div class="boxed">
+
+            <div id="content-container">
+
+                <!--Page content-->
+                <!--===================================================-->
+                <div id="page-content pad-no">
+
+                    <div class="alert alert-info margin-bottom-0" role="alert">
+                        New Dataglen Solar version is out, click <a target="_blank" href="https://solar.dataglen.com/">here</a> to get the experience.
+                    </div>
+
+                    <div class="row" id="loading_row">
+                        <div class="loading" id="client_spinner">
+                        </div>
+                    </div>
+
+                    <div class="row bord-no" id="client_content_page">
+                        <div>
+                            <!-- 2*2 Matrix and India Map -->
+                            <div class="col-lg-5 col-md-5 bord-no mar-no pad-no">
+                                <div class="row tiles-container">
+                                    <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6 dg-border" style="height: 27vh;background-color: white;">
+                                        <div class="row pad-no mar-no">
+                                            <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12"></div>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 pad-no" style="margin: auto; height: 10vh">
+                                                <div class="p-t-15 text-center" id="client_image" style="padding-top: 20px !important">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" style="padding-top: 0.0vh;">
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                <div class="pad-no mar-ver text-center" id="plants_div">
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                <div class="pad-no mar-ver text-center">
+                                                    <div class="row">
+                                                        <span class="text-2x text-thin text-live text-semibold" id="net_assets_value"></span>
+                                                    </div>
+                                                    <div class="row">
+                                                        <span class="text-xs" id="net_assets_value_unit" style="font-size: small"></span>
+                                                    </div>
+                                                    <div class="row">
+                                                        <p class="text-thin text-live text-xs"> DC Capacity</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                <div class="pad-no mar-ver text-center">
+                                                    <div class="row">
+                                                        <span class="pad-no mar-no text-2x text-thin text-live text-semibold" id="total_energy_generation"></span>
+                                                    </div>
+                                                    <div class="row" id="total_energy_generation_unit_div">
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <p class="text-thin text-live text-xs"> Generation </p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6 dg-border" style="height: 27vh; background-color: white;border-right: 0vw;border-left:0vw;">
+                                        <div class="overlayer top-right">
+                                            <div class="p-r-15 p-t-15 ">
+                                                <i class="fa fa-tachometer fa-3x text-live" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                        <div class="overlayer top-left">
+                                            <div class="p-l-10">
+                                              <div class="row">
+                                                <span class="text-3x pad-no mar-no text-thin text-bold text-live" id="current_power"></span>
+                                              </div>
+                                              <div class="row">
+                                                <span class="p-t-15 text-sm text-thin text-bold pad-btm text-live"> Current Power </span>
+                                              </div>
+                                            </div>
+                                        </div>
+                                        <div class="overlayer bottom-left">
+                                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                                <div class="row">
+                                                  <span class="text-3x pad-no mar-no text-thin text-bold text-live" id="today_energy"></span>
+                                                </div>
+                                                <div class="row">
+                                                  <span class="text-sm text-thin text-bold text-live" id="today_energy_unit"></span>
+                                                </div>
+                                                <div class="row">
+                                                  <span class="text-sm text-thin text-bold pad-btm text-live"> Generation Today </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="overlayer bottom-right" id="generation_prediction_div">
+                                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                              <div class="row">
+                                                <span class="text-thin text-bold text-live text-2x pull-right" id="value_predicted_today"></span>
+                                              </div>
+                                              <div class="row">
+                                                <span class="text-sm text-thin text-bold text-live pull-right">Predicted </span>
+                                              </div>
+                                              <div class="row">
+                                                <span class="text-sm text-thin text-summary text-semibold pull-right" id="prediction_accuracy"></span>
+                                              </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- CHARTS -->
+                                <div class="row tiles-container">
+                                    <!-- MAP-->
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 pad-lft">
+                                        <div class="row">
+                                            <div class="panel panel-mint panel-colorful" style="margin-top:11px; height: 15vh">
+                                                <div class="pad-no text-center mar-ver">
+                                                    <span class="pad-no mar-no text-3x text-semibold text-white pad-lft" id="average_pr"></span> <br>
+                                                    <span class="pad-no mar-no text-sm  text-white pad-lft" id="first_green_block"> </span>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-mint panel-colorful" style="height: 15vh;">
+                                                <div class="pad-no text-center mar-ver">
+                                                    <span class="pad-no mar-no text-3x text-semibold text-white pad-lft" id="average_cuf"></span><br>
+                                                    <span class="pad-no mar-no text-sm  text-white pad-lft" id="second_green_block"> </span>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-mint panel-colorful" style="height: 15vh;">
+                                                <div class="pad-no text-center mar-ver">
+                                                    <span class="pad-no mar-no text-3x text-semibold text-white pad-lft" id="total_specific_yield"></span><br>
+                                                    <span class="pad-no mar-no text-sm  text-white pad-lft"> Specific Yield </span>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-mint panel-colorful" style="height: 15vh;">
+                                                <div class="pad-no text-center mar-ver">
+                                                    <span class="pad-no mar-no text-3x text-semibold text-white pad-lft" id="open_tickets"></span><br>
+                                                    <span class="pad-no mar-no text-sm  text-white pad-lft"> Open Tickets </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-9 col-lg-9 col-sm-9 col-xs-9 pad-no" style="z-index: 1;">
+                                        <div class="tiles-chart">
+                                            <div class="leaflet-control-container">
+                                                <div class="leaflet-top leaflet-right" style="right: 0px;">
+                                                    <div class="leaflet-control">
+                                                        <div class="heading">
+                                                            <div class="mar-btm">
+                                                                <button class="btn btn-primary btn-icon icon-lg fa fa-check" id="all_status_button" value="option1" data-toggle="tooltip" data-placement="left" title="All Plants" style="background-color: #2980b9;border-color: #2980b9;"></button>
+                                                                <button class="btn btn-mint btn-icon icon-lg fa fa-thumbs-up" id="live_status_button" value="option2" data-toggle="tooltip" data-placement="top" title="Connected Plants" style="background-color: #26a69a;border-color: #26a69a;"></button>
+                                                                <button class="btn btn-danger btn-icon icon-lg fa fa-thumbs-down" id="down_status_button" value="option3" data-toggle="tooltip" data-placement="bottom" title="Disconnected Plants" style="background-color: rgb(231,76,60);border-color: rgb(231,76,60);"></button>
+                                                                <button class="btn btn-warning btn-icon icon-lg fa fa-question" id="unknown_status_button" value="option4" data-toggle="tooltip" data-placement="right" title="Unmonitored Plants" style="background-color: #f9b450;border-color: #f9b450;"></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <div id="leaflet_map" style="height: 68vh;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3 col-lg-3 col-sm-3 col-xs-3 pad-no" id="slider" hidden style="position: absolute; z-index: 1; height: 73vh;">
+                                        <div class="tiles black" style="height: 70vh;">
+                                            <div class="row pad-top pad-rgt">
+                                                <div class="close pull-right" id="close_slider">
+                                                    <i class="fa fa-times text-white" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
+                                            <div class="text-white pad-lft">
+                                                <p id="plant_name" class="pad-top pad-btm"> Plant Name </p>
+                                                <div class="pad-btm">
+                                                    <span class="text-2x text-semibold text-white mar-no" id="current_power_plant"></span><br>
+                                                    <span class="text-xxs text-semibold">Current Power</span>
+                                                </div>
+                                                <div class="pad-btm">
+                                                    <span class="text-2x text-semibold text-white mar-no" id="todays_generation_plant"></span><br>
+                                                    <span class="text-xxs text-semibold">Generation Today</span>
+                                                </div>
+                                                <div class="pad-btm">
+                                                    <span class="text-2x text-semibold text-white mar-no" id="pr_cuf_plant"> </span><br>
+                                                    <span class="text-xxs text-semibold">PR/CUF</span>
+                                                </div>
+                                                <div id="network_status" >
+                                                    <h4 class="text-white mar-no" id="status_plant"></h4>
+                                                </div>
+                                                <div class="pad-all">
+                                                    <p id="last_updated_plant" class="text-white small" ></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- SIDE BLOCK-->
+                                </div>
+                            </div>
+                            <div class="col-lg-7 col-md-7 panel" style="margin-left: 0; padding-left: 0px">
+                                <div class="row pad-no mar-no">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 pad-no mar-no" style="display:none" id="generation_and_infra">
+                                        <div class="row pad-no mar-no">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pad-no mar-no dg-border" style="border-right: 0vw !important;" id="weekly_generation">
+                                                <label class="label label-default text-capitalize" style="background-color: #e5e9ec">WEEKLY GENERATION</label>
+                                                <div class="" style="height: 22.5vh;">
+                                                    <div class="mar-no ">
+                                                        <div class="" id="generation_and_losses" style="height: 24vh;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pad-no mar-no dg-border" style="border-right: 0vw !important; border-top: 0vw !important" id="infra_availibility">
+                                                <div class="panel-heading" style="height: 5.1vh;">
+                                                    <div class="panel-control">
+                                                        <ul class="nav nav-tabs" style="margin-top: 2px;">
+                                                            <li class="active"><a href="#live_availability" data-toggle="tab">Today</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <label class="label mar-no label-default text-capitalize">INFRASTRUCTURE AVAILABILITY</label>
+                                                </div>
+                                                <!--Panel body-->
+                                                <div class="panel-body pad-no mar-no">
+                                                    <div class="tab-content pad-no mar-no">
+                                                        <div class="tab-pane fade in active pad-no mar-no" id="live_availability">
+                                                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 pad-no mar-no">
+        -                                                        <p class="text-bold text-center mar-hor pad-hor mar-ver pad-ver" style="writing-mode: tb-rl;">GRID</p>
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pad-no mar-no">
+                                                                <div class="pad-no mar-no" id="grid_availability" style="height: 19vh;" align="center">
+                                                                    <span id="grid_availability_chart" class="pad-no chart" data-percent="0">
+                                                                        <span class="percent"></span>
+                                                                    </span><br>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pad-no mar-no">
+                                                                <div class="pad-no mar-no" id="equipment_availability" style="height: 21vh;" align="center">
+                                                                    <span id="equipment_availability_chart" class="pad-no chart" data-percent="0">
+                                                                        <span class="percent">
+
+                                                                        </span>
+                                                                    </span> <br>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 pad-no mar-no">
+        -                                                        <p class="text-bold text-center mar-hor pad-hor mar-ver pad-ver" style="writing-mode: tb-rl;">DEVICES</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="availability" style="height: 21vh; width: 27vw">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 pad-no mar-no" style="display:none" id="alerts_and_analytics">
+                                        <div class="row pad-no mar-no">
+                                            <div id="devices_down_div" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 pad-no mar-no dg-border" style="display:none">
+                                                <div class="pad-no mar-no" style="height: 25.2vh; background-color: white !important;">
+                                                    <div class="overlayer top-right">
+                                                        <div class="p-r-15 p-t-15">
+                                                            <i class="fa fa-icon fa-power-off fa-3x" aria-hidden="true" style="color: #E74C3C"></i><br>
+                                                        </div>
+                                                    </div>
+                                                    <div class="overlayer bottom-left">
+                                                        <div class="p-l-15 p-b-5">
+                                                            <span class="text-thin text-semibold text-3x" id="devices_down" style="color:#E74C3C"></span><br>
+                                                            <span class="text-lg text-thin text-semibold" id="dd_keyname" style="color:#E74C3C">Disconnected Units</span><br>
+                                                            <span class="text-sm text-thin text-summary text-semibold" id="devices_down_details"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="gateways_down_div" style="display: none;">
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 pad-no mar-no dg-border" style="border-left: 0vw !important;">
+                                                <div class="pad-no mar-no active" style="height: 25.2vh; background-color: white !important;">
+                                                    <div class="overlayer top-right" style="z-index: 1;">
+                                                        <div class="p-r-15 p-t-15">
+                                                            <i class="fa fa-icon fa-gear fa-3x" aria-hidden="true" style="color: #00bcd4"></i><br>
+                                                        </div>
+                                                    </div>
+                                                    <div class="overlayer bottom-left">
+                                                        <div class="p-l-15 p-b-5">
+                                                            <span class="text-thin text-semibold text-3x" id="gateways_disconnected" style="color:#00bcd4"></span><br>
+                                                            <span class="text-lg text-thin text-semibold" style="color:#00bcd4">Gateways Down
+                                                            </span> <span class="text-thin text-semibold" style="color:#00bcd4; font-size: small !important;">
+                                                                <i class="fa fa-info-circle" id="info_button_gateways_powered_off" aria-hidden="true"><a class="text-bold " a href="#info_modal" rel="modal:open" ></a></i>
+                                                            </span>
+                                                            <br>
+                                                            <span class="text-sm text-thin text-summary text-semibold" id="gateways_powered_off"></span> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            <div id="alarms_raised_div" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 pad-no mar-no dg-border" style="border-top: 0vw !important;display:none">
+                                                <div class="pad-no mar-no active" style="height: 26.2vh; background-color: white !important;">
+                                                    <div class="overlayer top-right" style="z-index: 1;">
+                                                        <div class="p-r-15 p-t-15">
+                                                            <i class="fa fa-icon fa-exclamation-triangle fa-3x" aria-hidden="true" style="color: #E74C3C"></i><br>
+                                                        </div>
+                                                    </div>
+                                                    <div class="overlayer p-l-15 bottom-left">
+                                                        <div class="p-b-5">
+                                                            <span class="text-thin text-3x text-semibold" style="color:#E74C3C" id="alarms_raised"></span><br>
+                                                            <span class="text-lg text-thin text-semibold" style="color:#E74C3C">Active Alarms
+                                                                <span class="text-thin text-semibold" style="color:#E74C3C; font-size: small !important;">
+                                                                    <i class="fa fa-info-circle" id="info_button_alarms_raised" aria-hidden="true"><a class="text-bold " a href="#info_modal" rel="modal:open" ></a></i>
+                                                                </span>
+                                                             </span> <br>
+                                                            <span class="text-sm text-thin text-summary text-semibold" id="alarms_raised_details"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="predictive_issues_div" style="display: none;">
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 pad-no mar-no dg-border" style="border-left: 0vw !important;border-top: 0vw !important;">
+                                                <div class="pad-no mar-no active" style="height: 26.2vh; background-color: white !important;">
+                                                    {% if dataglenclient.name == 'Renew Power' %}
+                                                    <div class="overlayer top-right" style="z-index: 1;">
+                                                        <div class="p-r-15 p-t-15">
+                                                            <img class="" src="/static/solarrms/img/co2_blue.png" style="height:6vh">
+                                                        </div>
+                                                    </div>
+    <!--
+                                                    <div class="overlayer top-left text-white">
+                                                        <div class="p-l-5 p-b-15">
+                                                            <span class="text-thin text-semibold text-3x" id="smbs_high_current_strings" style="color:#26a69a"></span><br>
+                                                            <span class="text-lg text-thin text-semibold" style="color:#26a69a">High Current</span>
+                                                            <span class="text-thin text-semibold" style="color:#26a69a; font-size: small !important;">
+                                                                <i class="fa fa-info-circle" id="info_button_smb_high_current_strings" aria-hidden="true"><a class="text-bold "  a href="#info_modal" rel="modal:open" ></a></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>-->
+
+                                                            
+                                                    <div class="overlayer bottom-left">
+                                                      <div class="p-l-15 p-b-5">
+                                                        <div class="row">
+                                                          <span class="text-thin text-semibold text-3x" id="predictive_issues" style="color:#00bcd4"> <span class="text-xs" style="font-size: xx-small "></span></span><br>
+                                                          <span class="text-lg text-thin text-semibold" style="color:#00bcd4">CO<sub>2</sub></span>
+                                                          <!-- <span class="text-thin text-semibold" style="color:#00bcd4; font-size: small !important;">
+                                                              <i class="fa fa-info-circle" id="info_button_smb_low_current_strings" aria-hidden="true"><a class="text-bold "  a href="#info_modal" rel="modal:open" ></a></i>
+                                                          </span><br> -->
+                                                        </div>
+                                                        <div class="row">
+                                                          <span class="text-sm text-thin text-summary text-semibold" id="predictive_issues_details"></span>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    {% else %}
+                                                    <div class="overlayer top-right" style="z-index: 1;">
+                                                        <div class="p-r-15 p-t-15">
+                                                            <i class="fa fa-icon fa-exchange fa-rotate-90 fa-3x" aria-hidden="true" style="color: #00bcd4"></i><br>
+                                                        </div>
+                                                    </div>
+                                                    <div class="overlayer bottom-left">
+                                                      <div class="p-l-15 p-b-5">
+                                                        <div class="row">
+                                                          <span class="text-thin text-semibold text-3x" id="predictive_issues" style="color:#00bcd4"> <span class="text-xs" style="font-size: xx-small "></span></span><br>
+                                                          <span class="text-lg text-thin text-semibold" style="color:#00bcd4">Predicted Issues</span>
+                                                          <span class="text-thin text-semibold" style="color:#00bcd4; font-size: small !important;">
+                                                              <i class="fa fa-info-circle" id="info_button_smb_low_current_strings" aria-hidden="true"><a class="text-bold "  a href="#info_modal" rel="modal:open" ></a></i>
+                                                          </span><br>
+                                                        </div>
+                                                        <div class="row">
+                                                          <span class="text-sm text-thin text-summary text-semibold" id="predictive_issues_details"></span>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pad-no mar-no" style="border-left: 0.5vw solid #e5e9ec;">
+                                        <div id="plants_table" style="height:39.2vh;overflow-y: auto;" class="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="info_modal" style="display:none;">
+                <div id="modal_info"></div>
+            </div>
+
+            <!--ASIDE-->
+            <!--===================================================-->
+            <aside id="aside-container">
+                <div id="aside">
+                    <div class="nano">
+                        <div class="nano-content">
+                            
+                            <h3 class="text-center">Portfolio Management</h3>
+
+                            <div class="list-group">
+                                {% if webdyn_client == True %}
+                                    <!-- <a href="/solar/options/add_plant" class="list-group-item">
+                                        <i class="fa fa-industry" aria-hidden="true"></i>
+                                        <span> Add a Plant </span>
+                                    </a> -->
+                                {% endif %}
+                                {% if add_user == True %}
+                                    <a href="/solar/options/preferences" class="list-group-item">
+                                        <i class="fa fa-user-circle" aria-hidden="true"></i>
+                                        <span> Manager Users </span>
+                                    </a>
+                                {% endif %}
+                                {% if compare_plants == True %}
+                                    <a href="/solar/options/plant_parameters" class="list-group-item">
+                                        <i class="fa fa-area-chart" aria-hidden="true"></i>
+                                        <span> Compare Plants </span>
+                                    </a>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <!--===================================================-->
+            <!--END ASIDE-->
+
+        </div>
+
+        <button class="scroll-top btn">
+            <i class="pci-chevron chevron-up"></i>
+        </button>
+        <!--===================================================-->
+
+    </div>
+    <!--===================================================-->
+    <!-- END OF CONTAINER -->
+
+    <script>
+
+        var config_data = null;
+        var config_data = '{{ contents|safe }}';
+        var user_email = '{{ user.email }}'
+        console.log(user_email);
+
+        var client_name = '{{ dataglenclient.name }}'
+        console.log(client_name);
+        if (client_name == "Asun Solar") {
+            config_data = {
+              "metadata_text_color":"#2C3E50",
+              "metadata_border_color":"#f3c616",
+              "dd_keyname":"Inverters Down",
+              "show_green_block":"false",
+              "show_cuf":"False",
+              "table_order":[
+                "name",
+                "capacity",
+                "sy",
+                "etoday",
+                "alarms",
+                "inverters"
+              ]
+            };
+        }
+
+        var select_all = false;
+        if (client_name == "Chemtrols Solar") {
+            select_all = true;
+        }
+
+        /*var table_format = {
+            "Plant Name": "plant_name",
+            "Inverters" : "invalid_inverters" 
+        };*/
+
+    </script>
+    <!--JAVASCRIPT-->
+    <!--=================================================-->
+    <!--ALL [ REQUIRED ]-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.3/js.cookie.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+
+    <script src="/static/solarrms/js/nifty.min.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+    <script src="/static/solarrms/plugins/jquery.easing.min.js"></script>
+    <script src="/static/solarrms/js/jquery.easypiechart.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+    <script src="/static/solarrms/plugins/fooTable/dist/footable.all.min.js"></script>
+    <script src="/static/solarrms/js/demo/tables-footable.js"></script>
+    <script src="/static/solarrms/js/demo/slidereveal.js"></script>
+    <script src="/static/solarrms/plugins/jquery-modal/jquery.modal.min.js"></script>
+    <script src="/static/solarrms/plugins/sparkline/jquery.sparkline.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
+    <script src="/static/solarrms/js/demo/csrf_validation.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-noty/2.4.0/packaged/jquery.noty.packaged.min.js"></script>
+    <script src="/static/solarrms/js/demo/noty.js"></script>
+
+    <script src="/static/solarrms/js/demo/client_page_v3.js"></script>
+
+</body>
+</html>

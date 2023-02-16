@@ -1,0 +1,371 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+
+    <!-- <link href="/static/solarrms/css/dataglensolar.css" rel="stylesheet"> -->
+    <link href="/static/solarrms/plugins/jquery-sumoselect/sumoselect.css" rel="stylesheet">
+
+    <!--Nifty Premium Icon [ DEMONSTRATION ]-->
+    <link href="/static/solarrms/css/demo/nifty-demo-icons.min.css" rel="stylesheet">
+
+    <!--Font Awesome [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/magic-check/css/magic-check.min.css" rel="stylesheet">
+
+    <!--Bootstrap Validator [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/bootstrap-validator/bootstrapValidator.min.css" rel="stylesheet">
+
+
+{% endblock %}
+
+
+{% block body_block %}
+    
+    <div id="page-content" style="padding-top: 0px;">
+
+        <h3>Plant Data Details</h3>
+        
+        <div class="panel">
+            <div class="eq-height clearfix">
+                <!-- <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 eq-box-lg eq-box-md text-center box-vmiddle-wrap bord-hor">
+                    
+                    <div class="box-vmiddle pad-all">
+                        <h3 class="text-main">Register Today</h3>
+                        <div class="pad-ver">
+                            <i class="demo-pli-bag-coins icon-5x"></i>
+                        </div>
+                        <p class="pad-btn text-sm">Members get <span class="text-lg text-bold text-main">50%</span> more points, so register today and start earning points for savings on great rewards!</p>
+                        <br>
+                        <a class="btn btn-lg btn-primary" href="#">Learn More...</a>
+                    </div>
+                    
+                </div> -->
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    
+                    <div class="row" id="loading_row" hidden>
+                        <div class="loading" id="client_spinner">
+                        </div>
+                    </div>
+
+                    <!-- Main Form Wizard -->
+                    <!--===================================================-->
+                    <div id="all_details">
+        
+                        <!--nav-->
+                        <ul class="row wz-step wz-icon-bw wz-nav-off mar-top">
+                            <li class="col-lg-4 col-md-4 col-sm-4">
+                                <a data-toggle="tab" href="#webdyn_id-tab1">
+                                    <span class="text-danger"><i class="demo-pli-male icon-2x"></i></span>
+                                    <p class="text-semibold mar-no">Webdyn ID</p>
+                                </a>
+                            </li>
+                            <li class="col-lg-4 col-md-4 col-sm-4">
+                                <a data-toggle="tab" href="#modbus_devices-tab2">
+                                    <span class="text-danger"><i class="demo-pli-information icon-2x"></i></span>
+                                    <p class="text-semibold mar-no">Modbus Details</p>
+                                </a>
+                            </li>
+                            <!-- <li class="col-lg-2 col-md-2 col-sm-2">
+                                <a data-toggle="tab" href="#roof_details-tab3">
+                                    <span class="text-warning"><i class="demo-pli-male icon-2x"></i></span>
+                                    <p class="text-semibold mar-no">Roof Details</p>
+                                </a>
+                            </li> -->
+                            <li class="col-lg-4 col-md-4 col-sm-4">
+                                <a data-toggle="tab" href="#devices_io-tab3">
+                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                    <p class="text-semibold mar-no">Devices I / O</p>
+                                </a>
+                            </li>
+                            <!-- <li class="col-lg-2 col-md-2 col-sm-2">
+                                <a data-toggle="tab" href="#ws_em_details-tab3">
+                                    <span class="text-success"><i class="demo-pli-medal-2 icon-2x"></i></span>
+                                    <p class="text-semibold mar-no">WS / EM Details</p>
+                                </a>
+                            </li> -->
+                        </ul>
+        
+                        <!--progress bar-->
+                        <div class="progress progress-xs">
+                            <div class="progress-bar progress-bar-primary"></div>
+                        </div>
+        
+        
+                        <!--form-->
+                        <form class="form-horizontal" id="create_plant" name="add_plant_details">
+                            <div class="panel-body">
+                                <div class="tab-content">
+                                    <div id="plant_error_message_all"></div>
+                                    <div id="webdyn_id-tab1" class="tab-pane">
+                                        <h3 class="text-center">Enter Webdyn ID</h3>
+                                        <div class="row" id="webdyn_id">
+                                            <div class="col-lg-5 col-md-5 col-sm-5"></div>
+                                            <div class="mar-all col-lg-2 col-md-2" id="webdyn_id_div_0" style="margin-right: 2px;">
+                                                <div class="form-group">
+                                                    <input type="text" placeholder="Webdyn ID" type="text" class="form-control" id="webdyn_id_code" name="webdyn_id">
+                                                    <i>Enter the 8-digit WEBDYN ID. <br/>ex : WD008B94</i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--First tab-->
+                                    <div id="modbus_devices-tab2" class="tab-pane">
+                                        <div class="row">
+                                            <button type="button" class="btn btn-success pad-rgt pull-right" id="reload_button">Change Webdyn ID</button>
+                                        </div>
+                                        <div id="group_details">
+                                            <h3 class="text-center">Roof Details</h3>
+                                            <div class="row" id="group_details">
+                                                <div class="mar-all col-lg-2 col-md-2" id="group_name_div" style="margin-right: 2px;"> 
+                                                    <div class="form-group"> 
+                                                        <input type="text" placeholder="Group Name" type="text" class="form-control" id="group_name" name="group_name">
+                                                        <i>(Type a group name)</i>
+                                                    </div> 
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" id="device_id_div" style="margin-right: 2px;"> 
+                                                    <div class="form-group"> 
+                                                        <input type="text" placeholder="Device ID" type="text" class="form-control" id="device_id" name="device_id" readonly>
+                                                        <i>(Pre-filled Webdyn ID)</i>
+                                                    </div> 
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" id="panel_number_div" style="margin-right: 2px;"> 
+                                                    <div class="form-group"> 
+                                                        <input type="number" placeholder="Panel Number" type="text" class="form-control" id="panel_number" name="panel_number">
+                                                        <i>(Type Panel Number)</i>
+                                                    </div> 
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" id="panel_area_div" style="margin-right: 2px;"> 
+                                                    <div class="form-group"> 
+                                                        <input type="text" placeholder="Length in mm" type="text" class="form-control" id="length_panel_area" name="length_panel_area"> 
+                                                        <i>(Type Length in mm)</i> 
+                                                    </div> 
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" id="panel_area_div" style="margin-right: 2px;"> 
+                                                    <div class="form-group"> 
+                                                        <input type="text" placeholder="Breadth in mm" type="text" class="form-control" id="breadth_panel_area" name="breadth_panel_area"> 
+                                                        <i>(Type Breadth in mm)</i>
+                                                    </div>
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" id="tilt_angle_div" style="margin-right: 2px;"> 
+                                                    <div class="form-group"> 
+                                                        <input type="text" placeholder="Tilt Angle" type="text" class="form-control" id="tilt_angle" name="tilt_angle"> 
+                                                        <i>(Type Tilt Angle)</i> 
+                                                    </div> 
+                                                </div> 
+                                                <div class="mar-all col-lg-2 col-md-2" id="group_type_div" style="margin-right: 2px;"> 
+                                                    <div class="form-group"> 
+                                                        <input type="text" placeholder="Group Type" type="text" class="form-control" id="group_type" name="group_type">
+                                                        <i>(Type Group Type)</i> 
+                                                    </div> 
+                                                </div> 
+                                                <div class="mar-all col-lg-2 col-md-2" id="azimuth_div" style="margin-right: 2px;"> 
+                                                    <div class="form-group"> 
+                                                        <input type="text" placeholder="Azimuth" type="text" class="form-control" id="azimuth" name="azimuth"> 
+                                                        <i>(Type azimuth type)</i>
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="inverter_details">
+                                            
+                                        </div>
+                                        <div id="modbus_details">
+                                            
+                                        </div>
+                                    </div>
+        
+                                    <!--Second tab-->
+                                    <div id="roof_details-tab4" class="tab-pane fade" >
+
+                                        <div class="row" id="roof_1">
+                                            <h3 class='text-center'>Roof or Group 1</h3>
+                                            <div class="mar-all col-lg-2 col-md-2">
+                                                <div class="form-group">
+                                                    <input type="text" placeholder="Roof/Group Name" type="text" class="form-control" id="idroofName_1" name="roofName">
+                                                    <i>(Type a group name)</i>
+                                                </div>
+                                            </div>
+                                            <div class="mar-all col-lg-2 col-md-2">
+                                                <div class="form-group">
+                                                    <input type="text" placeholder="Device ID" class="form-control" id="idroofDevice_1" name="roofDevice">
+                                                    <i>(Type a Device ID)</i> 
+                                                </div>
+                                            </div>
+                                            <div class="mar-all col-lg-2 col-md-2">
+                                                <div class="form-group">
+                                                    <input type="number" placeholder="Number of modules" class="form-control" id="idroofModules_1" name="roofModule" min="1">
+                                                    <i>(Type a number)</i> 
+                                                </div>
+                                            </div>
+                                            <div class="mar-all col-lg-2 col-md-2">
+                                                <div class="form-group">
+                                                    <input type="number" placeholder="Tilt angle" class="form-control" id="idroofTilt_1" name="roofTilt" min="1">
+                                                    <i>(Type a number)</i> 
+                                                </div>
+                                            </div>
+                                            <div class="mar-all col-lg-2 col-md-2">
+                                                <div class="form-group">
+                                                    <input type="number" placeholder="Number of inverters" class="form-control" id="idroofInverters_1" name="roofInverters" min="1">
+                                                    <i>(Type a number)</i> 
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div id="new_roofs"></div>
+                                    </div>
+        
+                                    <!--Third tab-->
+                                    <div id="devices_io-tab3" class="tab-pane">
+                                        <h3 class='text-center'>Devices I / O</h3>
+                                        <div class="row" id="devices_io">
+                                            <div class="row" id="devices_row_0">
+                                                <div class="mar-all col-lg-2 col-md-2" style="margin-right: 2px;">
+                                                    <div class="form-group">
+                                                        <input type="text" placeholder="Input ID" type="text" class="form-control" id="input_id_0" name="input_id" value="1" readonly>
+                                                        <i>(Input ID)</i>
+                                                    </div>
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" style="margin-right: 2px;">
+                                                    <div class="form-group">
+                                                        <select class="form-control" id="select_stream_0" name="select_stream">
+                                                            <option value="" disabled selected> --Select a Stream-- </option>
+                                                            <option value="AMBIENT_TEMPERATURE">AMBIENT TEMPERATURE</option>
+                                                            <option value="DAILY_PLANT_ENERGY">DAILY PLANT ENERGY</option>
+                                                            <option value="ENERGY_METER_DATA">ENERGY METER DATA</option>
+                                                            <option value="EXTERNAL_IRRADIATION">EXTERNAL IRRADIATION</option>
+                                                            <option value="FREQUENCY">FREQUENCY</option>
+                                                            <option value="HIGHEST_AMBIENT_TEMPERATURE">HIGHEST AMBIENT TEMPERATURE</option>
+                                                            <option value="IRRADIATION">IRRADIATION</option>
+                                                            <option value="MODULE_TEMPERATURE">MODULE TEMPERATURE</option>
+                                                            <option value="PLANT_ACTIVE_POWER">PLANT ACTIVE POWER</option>
+                                                            <option value="TOTAL_PLANT_ENERGY">TOTAL PLANT ENERGY</option>
+                                                            <option value="WINDSPEED">WINDSPEED</option>
+                                                            <option value="TRANSFORMER">TRANSFORMER</option>
+                                                            <option value="CIRCUIT_BREAKER_STATUS1">CIRCUIT BREAKER STATUS1</option>
+                                                            <option value="CIRCUIT_BREAKER_STATUS2">CIRCUIT BREAKER STATUS2</option>
+                                                            <option value="OTI">OTI</option>
+                                                            <option value="WTI">WTI</option>
+                                                        </select>
+                                                        <i>(Select a Stream)</i>
+                                                    </div>
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" style="margin-right: 2px;">
+                                                    <div class="form-group">
+                                                        <input type="text" placeholder="Manufacturer" type="text" class="form-control" id="device_manufacturer_0" name="device_manufacturer">
+                                                        <i>(Manufacturers name)</i>
+                                                    </div>
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" style="margin-right: 2px;">
+                                                    <div class="form-group">
+                                                        <input type="text" placeholder="Lower Bound" type="text" class="form-control" id="lower_bound_0" name="lower_bound">
+                                                        <i>(Enter Lower Bound)</i>
+                                                    </div>
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" style="margin-right: 2px;">
+                                                    <div class="form-group">
+                                                        <input type="text" placeholder="Upper Bound" type="text" class="form-control" id="upper_bound_0" name="upper_bound">
+                                                        <i>(Enter Upper Bound)</i>
+                                                    </div>
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" style="margin-right: 2px;">
+                                                    <div class="form-group">
+                                                        <select class="form-control" id="output_range_0" name="output_range">
+                                                            <option value="" disabled selected> --Select Output Range-- </option>
+                                                            <option value="4-20mA">4-20 mA</option>
+                                                            <option value="0-10V">0-10 V</option>
+                                                        </select>
+                                                        <i>(Option)</i>
+                                                    </div>
+                                                </div>
+                                                <div class="mar-all col-lg-2 col-md-2" style="margin-right: 2px;" id="irradiation_div_0" name="device_io_number">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="pull-right">
+                                                <button class="btn btn-danger btn-icon btn-circle" id="minus_io_device"><i class="fa fa-minus" aria-hidden="true"></i></button>
+                                                <button class="btn btn-primary btn-icon btn-circle" id="add_io_device"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+        
+                                    <!--Fourth tab-->
+                                    <div id="ws_em_details-tab6" class="tab-pane">
+                                        <h3 class="text-center">Weather Station</h3>
+                                        <div class="row">
+                                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                                <div class="form-group">
+                                                    <label class="col-lg-3 control-label">Weather Station Installed</label>
+                                                    <div class="col-lg-7">
+                                                        <select class="form-control" id="weather_station_boolean" name="weather_station_boolean">
+                                                            <option value="" disabled selected> --Select-- </option>
+                                                            <option value="yes">Yes</option>
+                                                            <option value="no">No</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="weather_station_options"></div>
+                                        </div>
+
+                                        <h3 class="text-center"></h3>
+                                        <div class="row">
+                                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                                <div class="form-group">
+                                                    <label class="col-lg-3 control-label">Energy Meter Installed</label>
+                                                    <div class="col-lg-7">
+                                                        <select class="form-control" id="energy_meter_boolean" name="energy_meter_boolean">
+                                                            <option value="" disabled selected> --Select-- </option>
+                                                            <option value="yes">Yes</option>
+                                                            <option value="no">No</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="energy_meter_options"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <!--Footer buttons-->
+                            <div class="pull-right pad-rgt mar-btm">
+                                <button type="button" class="previous btn btn-primary" id="previous_button">Previous</button>
+                                <button type="button" class="next btn btn-primary" id="next_button">Next</button>
+                                <button type="button" class="finish btn btn-success" id="finish_button" disabled>Finish</button>
+                            </div>
+        
+                        </form>
+                    </div>
+                    <!--===================================================-->
+                    <!-- End of Main Form Wizard -->
+        
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <!--Bootstrap Wizard [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+
+    <!--Bootstrap Validator [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/bootstrap-validator/bootstrapValidator.min.js"></script>
+
+    <!--Form Wizard [ SAMPLE ]-->
+    <script src="/static/solarrms/js/demo/form-wizard.js"></script>
+    <script src="/static/solarrms/js/demo/csrf_validation.js"></script>
+    
+    <script>
+        var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+
+    </script>
+
+    <script src="/static/solarrms/js/demo/add_plant_options.js"></script>
+
+{% endblock %}

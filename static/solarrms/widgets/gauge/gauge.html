@@ -1,0 +1,38 @@
+<link href="/static/solarrms/widgets/gauge/gauge.css" rel="stylesheet">
+
+<div class="row">
+    <div class="col-sm-12 col-lg-12">
+        <div class="panel">
+        	<!-- <i class="fa fa-times pull-right mar-top mar-rgt close" data-close="gauge_or_power"></i> -->
+    		<div class="bg-success text-center">
+          		<!--Gauge placeholder-->
+                <!-- <div id="gauge" style="height: 150px;"></div> -->
+                <canvas id="current-power" height="145" class="canvas-responsive"></canvas>
+        	</div>
+            <div class="pad-top">
+                <ul class="list-unstyled row text-center">
+
+                    <!--Gauge info-->
+                    <li class="col-xs-6">
+                        <span class="text-2x">
+                            <span id="demo-gauge-text"></span>
+                        </span>
+                        <p class="text-uppercase">
+                            <small>Current Power</small>
+                        </p>
+                    </li>
+                    <li class="col-xs-6">
+                        <span class="text-2x">
+                           <span id="plant_capacity"></span> kW
+                        </span>
+                        <p class="text-uppercase">
+                            <small>Plant Capacity</small>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/solarrms/widgets/gauge/gauge.js"></script>

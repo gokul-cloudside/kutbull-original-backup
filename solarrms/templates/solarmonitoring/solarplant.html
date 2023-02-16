@@ -1,0 +1,874 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+
+{% block extrahead %}
+    
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+    <link href="/static/dataglen/css/jquery.datetimepicker.css" rel="stylesheet">
+    
+    <style>
+        .nav-tabs > li, .nav-pills > li {
+            float:none;
+            display:inline-block;
+            *display:inline; /* ie7 fix */
+            zoom:1; /* hasLayout ie7 trigger */
+        }
+
+        .nav-tabs, .nav-pills {
+            text-align:center;
+        }
+
+        .margin-top-0 {
+            margin-top: 0px;
+        }
+
+        .margin-top-10 {
+            margin-top: 10px;
+        }
+
+        .margin-right-0 {
+            margin-right: 0px;
+        }
+
+        .margin-top-25 {
+            margin-top: 25px;
+        }
+
+        .margin-top-55 {
+            margin-top: 55px;
+        }
+
+        .margin-bottom-20 {
+            margin-bottom: 20px;
+        }
+
+        /*Plant Table Styling*/
+
+        .white-space-nowrap {
+          white-space: nowrap;
+        }
+
+        .padding-top-25 {
+          padding-top: 25px !important
+        }
+
+        .margin-left-10 {
+          margin-left: 10px;
+        }
+
+        /*Gauge Chart*/
+
+        #power-gauge g.arc {
+            fill: steelblue;
+        }
+
+        #power-gauge g.pointer {
+            fill: #e85116;
+            stroke: #b64011;
+        }
+        
+        #power-gauge g.label text {
+            text-anchor: middle;
+            font-size: 14px;
+            font-weight: bold;
+            fill: #666;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body_block %}
+
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#">Plant Dashboard</a></li>
+      <li><a href={% url 'solar:plant-inverters-energy-generation' plant.slug %}>Inverters Power Generation</a></li>
+      <li><a href={% url 'solar:plant-inverters-compare' plant.slug %}>Compare Inverter Data</a></li>
+      <li><a href={% url 'solar:plant-inverters-data-table' plant.slug %}>Inverters Data Table</a></li>
+    </ul>
+
+    <div class="row">
+        <div class="col-lg-12 margin-top-25">
+            <div class="col-lg-4">
+                <div class="col-md-1"></div>
+                <div id="power-gauge"></div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row margin-top-55">
+                    <div class="ibox-content form-group" style="float: right; margin-right: 0px; width: 100%;">
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control datetimepicker_star  t" id="start" placeholder="Pick a Date to Update all charts" required="required">
+                        </div>
+                        <div class="col-lg-2">
+                            <button type="submit" onClick="update_date();" class="btn btn-info">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-xs-12 text-right">
+                        <h2 class="text-center" style="font-weight:900;font-size:xx-large;">{{ plant.name }}</h2>
+                        <div class="text-center">{{ plant.location }} <br> <br>
+                        <div class="text-center">Generation today - <strong>{{ today_generation|floatformat }} kWh </strong></div>
+                        <div class="text-center">Current power - <strong>{{ current_power|floatformat }} KWh</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h3>Plant Power Generation Profile for a Day</h3>
+                    </div>
+                    <div class="ibox-content" id="power_chart" style="height: 255px">
+                        <svg>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row" style="margin-top: 5px;">
+            <div class="col-lg-12">
+                <div class="ibox-content" id="month_power_chart">
+
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row" style="margin-top: 5px;">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h3>Plant Power Generation Profile for a Week</h3>
+                        </div>
+
+                    <div class="ibox-content">
+                        <div id="power_week_chart" style="height: 220px;">
+                            <svg>
+
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div>
+                            <h2 style="float: left;">Status of the Inverters</h2>
+                        </div>  <hr> <br>
+
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Manufacturer</th>
+                                    <th>DataGlen Key</th>
+                                    <th>Status</th>
+                                    <th>Inverter Page</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for inverter in inverters_status.stable %}
+                                        <tr>
+                                            <td> {{ inverter.name }}</td>
+                                            <td> {{ inverter.manufacturer }}</td>
+                                            <td> {{ inverter.sourceKey }}</td>
+                                            <td style="color: green"> Connected </td>
+                                            <td> <a href="{% url 'solar:inverter-detail' plant.slug inverter.sourceKey %}"> Page Link </a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for inverter in inverters_status.errors %}
+                                        <tr>
+                                            <td> {{ inverter.name }}</td>
+                                            <td> {{ inverter.manufacturer }}</td>
+                                            <td> {{ inverter.sourceKey }}</td>
+                                            <td class="text-danger"> Disconnected </td>
+                                            <td> <a href="{% url 'solar:inverter-detail' plant.slug inverter.sourceKey %}"> Page Link </a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for inverter in inverters_status.warnings %}
+                                        <tr>
+                                            <td> {{ inverter.displayName }}</td>
+                                            <td> {{ inverter.manufacturer }}</td>
+                                            <td> {{ inverter.sourceKey }}</td>
+                                            <td class="text-warning"> Invalid Data </td>
+                                            <td> <a href="{% url 'solar:inverter-detail' plant.slug inverter.sourceKey %}"> Page Link </a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <h3></h3>
+                    </div>
+                    <div class="" id="inverter_pie_chart" style="height: 255px">
+                        <svg>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/dataglen/js/d3.js"></script>
+    <script src="/static/dataglen/js/jquery.datetimepicker.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/dataglen/js/metricsgraphics.js"></script>
+
+    <script>
+        var live_chart = null;
+        var month_chart = null;
+        var stacked_chart = null;
+        var line_chart = null;
+        var pie_chart = null;
+    </script>
+
+    <script>
+    
+        $(function() {
+        $(".datetimepicker_start").datetimepicker({
+            timepicker: false,
+            format: 'Y/m/d',
+            scrollMonth:false,
+            scrollTime:false,
+            scrollInput:false
+        });
+        $(".datetimepicker_start").on('change', function(ev) {
+            $(this).datetimepicker('hide');
+        });
+      });
+      $(function() {
+        $(".datetimepicker_start_time").datetimepicker();
+      });
+      function limit_inverter_date() {
+        var dat = new Date($('#start_t').val());
+        var d = dat;
+
+        $(function(){
+          $('#end').datetimepicker({
+            onShow:function( ct ){
+                this.setOptions({
+                minDate: new Date($('#start_t').val()),
+                maxDate:(new Date(d.setHours(d.getHours()+168)))
+              })
+            },
+          });
+        });
+      }
+      function enable_button_download_inverters_png() {
+        document.getElementById("button_chart_as_png_download_inverter").disabled = false;
+      }
+      function download_chart_as_png_inv() {
+        saveSvgAsPng(document.getElementById("svg_chart_inverter_download"), "chart.png", {backgroundColor: "white"});
+      }
+      function redraw_window() {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            window.dispatchEvent(new Event('resize'));
+        });
+      }
+      function limit_plant_future_date() {
+        $(function(){
+            $('#start').datetimepicker({
+                onShow:function( ct ){
+                    this.setOptions({
+                        maxDate: new Date()
+                    })
+                }
+            });
+        });
+      }
+
+        $(document).ready(function() {
+            // block the future dates
+            limit_plant_future_date();
+            // plot plant generation data for a date
+            power_data();
+            pie_data();
+            // plot plant generation data for a week
+            week_power_data();
+            month_power_data();
+        });
+
+        function update_date(){
+            power_data();
+            week_power_data();
+            month_power_data();
+        }
+
+        function pie_data(){
+            return
+            if (pie_chart == null) {
+                pie_chart = nv.models.multiBarHorizontalChart()
+                    .x(function(d) { return d.label })
+                    .y(function(d) { return d.value })
+                    .margin({top: 10, right: 10, bottom: 40, left: 150})
+                    .showValues(true)           //Show bar value next to each bar.
+                    .tooltips(false)             //Show tooltips on hover.
+                    .showLegend(false)
+                    .showControls(false);        //Allow user to switch between "Grouped" and "Stacked" mode.
+
+                pie_chart.yAxis
+                    .tickFormat(d3.format(',.2f'));
+
+                d3.select('#inverter_pie_chart svg')
+                    .datum({% autoescape off %} {{ inverters_today_generation }} {% endautoescape %})
+                    .call(pie_chart);
+
+                nv.utils.windowResize(pie_chart.update);
+            } else {
+                d3.select('#inverter_pie_chart svg').empty();
+                d3.select('#inverter_pie_chart svg')
+                          .datum({% autoescape off %} {{ inverters_today_generation }} {% endautoescape %})
+                          .call(pie_chart);
+            }
+        }
+
+        function bar_chart(){
+            if (month_chart == null) {
+                nv.addGraph(function () {
+                    month_chart = nv.models.discreteBarChart()
+                            .x(function (d) { return d[0] })
+                            .y(function (d) { return d[1] })
+                            .showValues(true)
+                            .color(['#ff7f0e'])
+                            .margin({top: 5, right: 0, bottom: 12, left: 0});
+
+                    month_chart.xAxis
+                            .axisLabel("Past weeks")
+                            .tickFormat(function (d) {
+                            return d3.time.format('%d/%m')(new Date(d))
+                            });
+
+                    month_chart.yAxis
+                            .axisLabel("Energy (MWh)")
+                            .tickFormat(d3.format('.02f'))
+                            ;
+
+                    d3.select('#month_chart svg')
+                              .datum({% autoescape off %} {{ month_generation_per_day }} {% endautoescape %})
+                              .call(month_chart);
+
+                    nv.utils.windowResize(month_chart.update);
+
+                    return month_chart;
+                });
+            } else {
+                d3.select('#month_chart svg').empty();
+                d3.select('#month_chart svg')
+                          .datum({% autoescape off %} {{ week_generation }} {% endautoescape %})
+                          .call(month_chart);
+            }
+        }
+        function get_dates(){
+            // get the start date
+            var st = $('#start').val();
+            if (st == '')
+                st = new Date();
+            else
+                st = new Date(st);
+            // prepare an end date
+            var e = new Date(st.getTime());
+            e = new Date(e.setDate(st.getDate() + 1));
+            // convert them into strings
+            st = dateFormat(st, "yyyy-mm-dd");
+            e = dateFormat(e, "yyyy-mm-dd");
+
+            return [st, e]
+        }
+        function get_dates_week(){
+            // get the end date as the selected/today's date
+            var etw = $('#start').val();
+            if (etw == '') {
+                etw = new Date();
+            } else {
+                etw = new Date(etw);
+            }
+            // add a day in etw
+            etw.setDate(etw.getDate() + 1);
+            // prepare a start date
+            var stw = new Date(etw.getTime());
+            stw = new Date(stw.setDate(etw.getDate() - 6));
+            // convert them into strings
+            stw = dateFormat(stw, "yyyy/mm/dd");
+            etw = dateFormat(etw, "yyyy/mm/dd");
+            return [stw, etw];
+        }
+        function get_month_dates(){
+            // get the end date as the selected/today's date
+            var etw = $('#start').val();
+            if (etw == '') {
+                etw = new Date();
+            } else {
+                etw = new Date(etw);
+            }
+            // add a day in etw
+            etw.setMonth(etw.getMonth()+1);
+            etw.setDate(0);
+            // prepare a start date
+            var stw = new Date(etw.getTime());
+            stw = new Date(stw.setDate(01));
+            // convert them into strings
+            stw = dateFormat(stw, "yyyy/mm/dd");
+            etw = dateFormat(etw, "yyyy/mm/dd");
+            return [stw, etw];
+        }
+        function month_power_data() {
+            var dates = get_month_dates();
+            st = dates[0];
+            e = dates[1];
+            
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: "/api/solar/plants/".concat('{{ plant.slug }}').concat('/energy/'),
+                data: {startTime: (st), endTime: (e), aggregator: "DAY"},
+                success: function(data) {
+                    if(data == '') {
+                        $("#month_power_chart").empty();
+                        $("#month_power_chart").append("<h3 class='text-center'>Cumulative Monthly Generation (MWh) </h3>");
+                        $("#month_power_chart").append("<div class='alert alert-warning'> No data for the month </div>");
+
+                        return;
+                    } else {
+                        $("#month_power_chart").empty();
+                        $("#month_power_chart").append("<div class='row' id='month_bar_chart'></div>");
+                        $("#month_bar_chart").append("<div class='col-lg-4'></div><div class='col-lg-4'><h3 class='cumulative_month_energy text-center'>Cumulative Monthly Generation : </h3></div>");
+                        $("#month_power_chart").append("<svg></svg>");
+                    }
+
+                    var y_date = new Date();
+                    var day_energy = 0;
+                    var cumulative_energy = 0;
+                    var arrayData = [];
+
+                    // populate the data array and calculate the day_energy
+                    for(var n= data.length-1; n >=0 ; n--) {
+                        day_energy = parseFloat(data[n].energy);
+                        cumulative_energy = cumulative_energy + parseFloat(data[n].energy);
+                        y_date = new Date(data[n].timestamp);
+                        y_date = dateFormat(y_date, "dd/mm");
+                        arrayData.push({"label": y_date, "value": (day_energy.toFixed(2))/1000});
+                    }
+
+                    cumulative_energy = (cumulative_energy/1000).toFixed(2);
+
+                    $(".cumulative_month_energy").append(cumulative_energy+" MWh");
+
+                    // package the data
+                    var packagedData = [{
+                        "key": "PLANT GENERATION OF THIS MONTH FROM" + dateFormat(st, "dd/mm/yyyy") + "to" + dateFormat(e, "dd/mm/yyyy") + day_energy + "kWh",
+                        "values": arrayData
+                    }];
+                    // plot the chart
+                    monthly_bar_chart(packagedData);
+                },
+                error: function(data) {
+                    console.log("error_streams_data");
+                    data = null;
+                }
+            });
+        }
+        function monthly_bar_chart(packagedData){
+            nv.addGraph(function() {
+              var chart = nv.models.discreteBarChart()
+                    .x(function(d) { return d.label })    //Specify the data accessors.
+                    .y(function(d) { return d.value })
+                    .showValues(true)
+                    .color(['#ff7f0e'])
+                    .margin({top: 5, right: 0, bottom: 12, left: 0});
+                  ;
+
+              d3.select('#month_power_chart svg')
+                  .datum(packagedData)
+                  .call(chart);
+
+              nv.utils.windowResize(chart.update);
+
+              return chart;
+            });
+        }
+        function power_data() {
+            var dates = get_dates();
+            st = dates[0];
+            e = dates[1];
+
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: "/api/solar/plants/".concat('{{ plant.slug }}').concat('/power/'),
+                data: {startTime: st, endTime: e},
+                success: function(data) {
+                    if(data == '') {
+                        $("#power_chart").empty();
+                        $("#power_chart").append("<div class='alert alert-warning'> No data for the date </div>");
+
+                        $(".plant-power-generation h2").empty();
+                        return;
+                    } else {
+                        $("#power_chart").empty();
+                        $("#power_chart").append("<svg></svg>");
+                    }
+
+                    var day_power = 0;
+                    var arrayData = [];
+
+                    // populate the data array and calculate the day_energy
+                    for(var n= data.length-1; n >=0 ; n--) {
+                        day_power = day_power + parseFloat(data[n].power);
+                        arrayData.push([new Date(data[n].timestamp), parseFloat(data[n].power)]);
+                    }
+                    day_power = day_power.toFixed(2);
+
+                    // package the data
+                    var packagedData = [{
+                        "key": "PLANT GENERATION ON DATE " + dateFormat(st, "dd/mm/yyyy") + " in kW",
+                        "values": arrayData,
+                        "color": "#4DDB95"
+                    }];
+                    // plot the chart
+                    plant_power_generation_chart(st, packagedData);
+                },
+                error: function(data) {
+                    console.log("error_streams_data");
+                    data = null;
+                }
+            });
+        }
+        function plant_power_generation_chart(st, data) {
+            $(".plant-power-generation h2").empty();
+
+            if (live_chart == null) {
+                nv.addGraph(function () {
+                    live_chart = nv.models.stackedAreaChart()
+                        .x(function (d) { return d[0] })
+                        .y(function (d) { return d[1] })
+                        .showYAxis(true)
+                        .showControls(false)
+                        .showLegend(false)
+                        .showXAxis(true)
+                        .margin({top: 5, right: 31, bottom: 20, left: 65})
+                        .useInteractiveGuideline(false)
+                        .clipEdge(true);
+
+                    live_chart.interactiveLayer.tooltip
+                          .headerFormatter(function(d, i) {
+                            return nv.models.axis().tickFormat()(d, i);
+                    });
+                    live_chart.xAxis
+                          .axisLabel("")
+                          .tickFormat(function (d) {
+                            return d3.time.format('%H:%M %d/%m')(new Date(d))
+                        });
+                    live_chart.yAxis
+                          .axisLabel("Power (kW)")
+                          .tickFormat(d3.format(",.2f"));
+                    
+                    live_chart.interactiveLayer.tooltip.headerFormatter(function (d) {
+                        return d3.time.format('%x %-I %p')(new Date(d));
+                    });
+                    d3.select('#power_chart svg')
+                              .datum(data)
+                              .call(live_chart);
+                    nv.utils.windowResize(live_chart.update);
+                    return live_chart;
+                });
+            } else {
+                d3.select('#power_chart svg').empty();
+                d3.select('#power_chart svg')
+                      .datum(data)
+                      .call(live_chart);
+                nv.utils.windowResize(live_chart.update);
+            }
+        }
+        function week_power_data() {
+            var dates = get_dates_week();
+            var st = dates[0];
+            var et = dates[1];
+
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: "/api/solar/plants/".concat('{{ plant.slug }}').concat('/power/'),
+                data: {startTime: (st), endTime: (et)},
+                success: function(data) {
+                    if(data == '') {
+                        $("#power_week_chart").empty();
+                        $("#power_week_chart").append("<div class='alert alert-warning'>No data for the week</div>");
+                        return;
+                    } else {
+                        $("#power_week_chart").empty();
+                        $("#power_week_chart").append("<svg></svg>");
+                    }
+
+                    var week_power = 0;
+                    var arrayData = [];
+
+                    // populate the data array and calculate the day_energy
+                    for(var n= data.length-1; n >=0 ; n--) {
+                        week_power = week_power + parseFloat(data[n].power);
+                        arrayData.push([new Date(data[n].timestamp), parseFloat(data[n].power)]);
+                    }
+                    week_power = week_power.toFixed(2);
+
+                    // package the data
+                    var packagedData = [{
+                        "key": "PLANT GENERATION FROM " + dateFormat(st, "dd/mm/yyyy") + " TO " + dateFormat(et, "dd/mm/yyyy") + " in kW",
+                        "values": arrayData,
+                        "color": "#4DDB95"
+                    }];
+                    // plot the chart
+                    plant_week_power_generation_chart(packagedData);
+                },
+                error: function(data) {
+                    console.log("error_streams_data");
+                    data = null;
+                }
+            });
+        }
+        function plant_week_power_generation_chart(data) {
+            nv.addGraph(function () {
+                live_chart = nv.models.stackedAreaChart()
+                    .x(function (d) { return d[0] })
+                    .y(function (d) { return d[1] })
+                    .showYAxis(true)
+                    .showControls(false)
+                    .showLegend(false)
+                    .showXAxis(true)
+                    .margin({top: 5, right: 31, bottom: 20, left: 65})
+                    .useInteractiveGuideline(false)
+                    .clipEdge(true);
+
+                live_chart.interactiveLayer.tooltip
+                      .headerFormatter(function(d, i) {
+                        return nv.models.axis().tickFormat()(d, i);
+                });
+                live_chart.xAxis
+                      .axisLabel("")
+                      .tickFormat(function (d) {
+                        return d3.time.format('%H:%M %d/%m')(new Date(d))
+                    });
+                live_chart.yAxis
+                      .axisLabel("Power (kW)")
+                      .tickFormat(d3.format(",.2f"));
+                
+                live_chart.interactiveLayer.tooltip.headerFormatter(function (d) {
+                    return d3.time.format('%x %-I %p')(new Date(d));
+                });
+                d3.select('#power_week_chart svg')
+                          .datum(data)
+                          .call(live_chart);
+                nv.utils.windowResize(live_chart.update);
+                return live_chart;
+            });
+        }
+
+        function hasWhiteSpace(inverter_name) {
+            return inverter_name.indexOf(' ') > 0;
+        }
+
+        var gauge = function(container, configuration) {
+            var that = {};
+            var config = {
+                size                        : 200,
+                clipWidth                   : 200,
+                clipHeight                  : 110,
+                ringInset                   : 20,
+                ringWidth                   : 20,
+                
+                pointerWidth                : 25,
+                pointerTailLength           : 5,
+                pointerHeadLengthPercent    : 0.9,
+                
+                minValue                    : 0,
+                maxValue                    : 10,
+                
+                minAngle                    : -90,
+                maxAngle                    : 90,
+                
+                transitionMs                : 750,
+                
+                majorTicks                  : 5,
+                labelFormat                 : d3.format(',g'),
+                labelInset                  : 10,
+                
+                arcColorFn                  : d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'))
+            };
+            var range = undefined;
+            var r = undefined;
+            var pointerHeadLength = undefined;
+            var value = 0;
+            
+            var svg = undefined;
+            var arc = undefined;
+            var scale = undefined;
+            var ticks = undefined;
+            var tickData = undefined;
+            var pointer = undefined;
+
+            var donut = d3.layout.pie();
+            
+            function deg2rad(deg) {
+                return deg * Math.PI / 180;
+            }
+            
+            function newAngle(d) {
+                var ratio = scale(d);
+                var newAngle = config.minAngle + (ratio * range);
+                return newAngle;
+            }
+            
+            function configure(configuration) {
+                var prop = undefined;
+                for ( prop in configuration ) {
+                    config[prop] = configuration[prop];
+                }
+                
+                range = config.maxAngle - config.minAngle;
+                r = config.size / 2;
+                pointerHeadLength = Math.round(r * config.pointerHeadLengthPercent);
+
+                // a linear scale that maps domain values to a percent from 0..1
+                scale = d3.scale.linear()
+                    .range([0,1])
+                    .domain([config.minValue, config.maxValue]);
+                    
+                ticks = scale.ticks(config.majorTicks);
+                tickData = d3.range(config.majorTicks).map(function() {return 1/config.majorTicks;});
+                
+                arc = d3.svg.arc()
+                    .innerRadius(r - config.ringWidth - config.ringInset)
+                    .outerRadius(r - config.ringInset)
+                    .startAngle(function(d, i) {
+                        var ratio = d * i;
+                        return deg2rad(config.minAngle + (ratio * range));
+                    })
+                    .endAngle(function(d, i) {
+                        var ratio = d * (i+1);
+                        return deg2rad(config.minAngle + (ratio * range));
+                    });
+            }
+            that.configure = configure;
+            
+            function centerTranslation() {
+                return 'translate('+r +','+ r +')';
+            }
+            
+            function isRendered() {
+                return (svg !== undefined);
+            }
+            that.isRendered = isRendered;
+            
+            function render(newValue) {
+                svg = d3.select(container)
+                    .append('svg:svg')
+                        .attr('class', 'gauge')
+                        .attr('width', config.clipWidth)
+                        .attr('height', config.clipHeight);
+                
+                var centerTx = centerTranslation();
+                
+                var arcs = svg.append('g')
+                        .attr('class', 'arc')
+                        .attr('transform', centerTx);
+                
+                arcs.selectAll('path')
+                        .data(tickData)
+                    .enter().append('path')
+                        .attr('fill', function(d, i) {
+                            return config.arcColorFn(d * i);
+                        })
+                        .attr('d', arc);
+                
+                var lg = svg.append('g')
+                        .attr('class', 'label')
+                        .attr('transform', centerTx);
+                lg.selectAll('text')
+                        .data(ticks)
+                    .enter().append('text')
+                        .attr('transform', function(d) {
+                            var ratio = scale(d);
+                            var newAngle = config.minAngle + (ratio * range);
+                            return 'rotate(' +newAngle +') translate(0,' +(config.labelInset - r) +')';
+                        })
+                        .text(config.labelFormat);
+
+                var lineData = [ [config.pointerWidth / 2, 0], 
+                                [0, -pointerHeadLength],
+                                [-(config.pointerWidth / 2), 0],
+                                [0, config.pointerTailLength],
+                                [config.pointerWidth / 2, 0] ];
+                var pointerLine = d3.svg.line().interpolate('monotone');
+                var pg = svg.append('g').data([lineData])
+                        .attr('class', 'pointer')
+                        .attr('transform', centerTx);
+                        
+                pointer = pg.append('path')
+                    .attr('d', pointerLine/*function(d) { return pointerLine(d) +'Z';}*/ )
+                    .attr('transform', 'rotate(' +config.minAngle +')');
+                    
+                update(newValue === undefined ? 0 : newValue);
+            }
+            that.render = render;
+            
+            function update(newValue, newConfiguration) {
+                if ( newConfiguration  !== undefined) {
+                    configure(newConfiguration);
+                }
+                var ratio = scale(newValue);
+                var newAngle = config.minAngle + (ratio * range);
+                pointer.transition()
+                    .duration(config.transitionMs)
+                    .ease('elastic')
+                    .attr('transform', 'rotate(' +newAngle +')');
+            }
+            that.update = update;
+
+            configure(configuration);
+            
+            return that;
+        };
+
+        function onDocumentReady() {
+            var powerGauge = gauge('#power-gauge', {
+                size: 300,
+                clipWidth: 300,
+                clipHeight: 175,
+                ringWidth: 60,
+                maxValue: {{ plant.capacity }},
+                transitionMs: 4000
+            });
+            powerGauge.render();
+            
+            function updateReadings() {
+                // just pump in random data here...
+                powerGauge.update({{ current_power|floatformat:0 }});
+            }
+            
+            // every few seconds update reading values
+            updateReadings();
+        }
+
+        if ( !window.isLoaded ) {
+            window.addEventListener("load", function() {
+                onDocumentReady();
+            }, false);
+        } else {
+            onDocumentReady();
+        }
+
+    </script>
+{% endblock %}

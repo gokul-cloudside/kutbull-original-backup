@@ -1,0 +1,472 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar RMS DataGlen</title>
+
+
+    <style>
+        .plant-box {
+            background-color: #ffffff;
+            border: 1px solid #e7eaec;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="/static/solarrms/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link href="/static/solarrms/css/nifty.min.css" rel="stylesheet">
+
+
+    <!--Font Awesome [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+
+    <!--Animate.css [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/animate-css/animate.min.css" rel="stylesheet">
+
+
+    <!--Morris.js [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/morris-js/morris.min.css" rel="stylesheet">
+
+
+    <!--Switchery [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/switchery/switchery.min.css" rel="stylesheet">
+
+
+    <!--Bootstrap Select [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+
+    <link href="/static/dataglen/css/jquery.datetimepicker.css" rel="stylesheet">
+
+    <link href="/static/solarrms/js/month-picker/demo/MonthPicker.min.css" rel="stylesheet">
+
+    <!--SCRIPT-->
+    <!--=================================================-->
+
+    <!--Page Load Progress Bar [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/pace/pace.min.css" rel="stylesheet">
+
+    <link href="/static/solarrms/js/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet">
+
+    <script src="/static/solarrms/plugins/pace/pace.min.js"></script>
+
+    {% block extrahead %}
+
+    {% endblock %}
+
+</head>
+
+<!--TIPS-->
+<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+
+<body>
+    <div id="container" class="effect mainnav-lg">
+
+        <!--NAVBAR-->
+        <!--===================================================-->
+        <header id="navbar">
+            <div id="navbar-container" class="boxed">
+
+                <!--Brand logo & name-->
+                <!--================================-->
+                <div class="navbar-header">
+                    <a href="{% url 'dashboards:post_successful_login' %}" class="navbar-brand">
+                        <!--<img src='{{ dataglenclient.clientLogo }}' alt="DATAGLEN" class="brand-icon">-->
+                        <div class="brand-title" style="padding-left: 0px; padding-right: 0px; text-align: center;">
+                            <span class="brand-text">{{ dataglenclient.name }}</span>
+                        </div>
+                    </a>
+                </div>
+                <!--================================-->
+                <!--End brand logo & name-->
+
+
+                <!--Navbar Dropdown-->
+                <!--================================-->
+                <div class="navbar-content clearfix">
+                    <ul class="nav navbar-top-links pull-left">
+                    </ul>
+                    <!--TODO add a logo-->
+                    <ul class="nav navbar-top-links pull-right">
+                        <!--User dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <li id="dropdown-user" class="dropdown" style="border-style: outset;border-left-width: 1px;border-bottom-width: 0px;border-right-width: 0px;border-top-width: 0px;">
+                            <a href="/static/solarrms/#" data-toggle="dropdown" class="dropdown-toggle text-right">
+                                <div class="username hidden-xs">Profile</div>
+                            </a>
+
+
+                            <div class="dropdown-menu dropdown-menu-md dropdown-menu-right panel-default">
+
+                                <!-- Dropdown heading  -->
+                                <div class="pad-all bord-btm">
+                                    <p class="text-lg text-muted text-semibold mar-btm">Premium Subscription</p>
+                                </div>
+
+
+{#                                <!-- User dropdown menu -->#}
+{#                                <ul class="head-list">#}
+{#                                    <li>#}
+{#                                        <a href="/static/solarrms/#">#}
+{#                                            <i class="fa fa-user fa-fw fa-lg"></i> Reset Password#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                </ul>#}
+{##}
+                                <!-- Dropdown footer -->
+                                <div class="pad-all text-right">
+                                    <a href="{% url 'account_logout' %}" class="btn btn-primary">
+                                        <i class="fa fa-sign-out fa-fw"></i> Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!--End user dropdown-->
+
+                    </ul>
+                    <ul class="nav navbar-top-links pull-right" style="margin-bottom: -50px;height: 40px;width: 150px;">
+                        <!--User dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <li style="height: 40px;width: 141px;">
+                            <a href="{% url 'dashboards:post_successful_login' %}" class="navbar-brand" style="position: relative;display: inline-block;bottom: 0;left: 15px;width: 120px;padding-left: 0px;padding-right: 0px;">
+                                <img src='{{ dataglenclient.clientLogo }}' alt="DATAGLEN" style="height: 26px;margin-top: 8px;">
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+                <!--================================-->
+                <!--End Navbar Dropdown-->
+
+            </div>
+        </header>
+        <!--===================================================-->
+        <!--END NAVBAR-->
+
+        <div id="page-content">
+
+            <div class="row">
+                <div class="col-lg-12" style="margin-top: 50px;">
+
+                    <div id="client-panel" class="panel">
+                        <div class="panel-heading">
+
+                            <div class="panel-control pull-left">
+                                <ul class="nav nav-tabs pull-left">
+                                    <li class="active"><a href="#dashboard_client-lft" data-toggle="tab" id="dashboard_clienttab">Dashboard</a></li>
+                                    <li><a href="#block_client-lft" data-toggle="tab" onClick="" id="block_clienttab">Clients</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="tab-content">
+
+                                <div class="tab-pane fade in active" id="dashboard_client-lft">
+
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="ibox-content">
+                                                    <div class="col-lg-12">
+                                                        <p class="mar-no">
+                                                            <span class="pull-right text-lg text-semibold" >
+                                                                <h3 class=""><span id="total_generation"> </span>
+                                                                </h3>
+                                                            </span>
+                                                            <p class="text-lg text-semibold">Total Generation</p>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="ibox-content">
+                                                    <div class="col-lg-12">
+                                                        <p class="mar-no">
+                                                            <span class="pull-right text-lg text-semibold" >
+                                                                <h3 class=""><span id="todays_generation"> </span>
+                                                                </h3>
+                                                            </span>
+                                                            <p class="text-lg text-semibold">Today's Generation</p>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="ibox-content">
+                                                    <div class="col-lg-12">
+                                                        <p class="mar-no">
+                                                            <span class="pull-right text-lg text-semibold" >
+                                                                <h3 class=""><span id="total_capacity"> </span>
+                                                                </h3>
+                                                            </span>
+                                                            <p class="text-lg text-semibold">Total Capacity</p>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="ibox-content">
+                                                    <div class="col-lg-12">
+                                                        <p class="mar-no">
+                                                            <span class="pull-right text-lg text-semibold" >
+                                                                <h3 class=""><span id="co2_conversion"> </span>
+                                                                </h3>
+                                                            </span>
+                                                            <p class="text-lg text-semibold">CO2 Savings</p>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+
+                                            <div class="col-lg-12">
+                                                <div class="row">
+                                                    <div class="panel">
+                                                        <div class="panel-body">
+                                                            <!-- Geocoding -->
+                                                            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+                                                            <div id="dashboard-geocoding-map" style="height:530px"></div>
+                                                            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+
+                                            <div class="col-lg-4">
+
+                                                <div class="row">
+                                                   <div class="col-lg-12">
+                                                        <h3>Performance Ratio</h3>
+                                                        <div class="table-responsive text-semibold" style="overflow-x: hidden;overflow-y: auto;">
+                                                            <table class="table table-striped" id="pr_table_div">
+
+
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-lg-4">
+
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <h3>CUF</h3>
+                                                        <div class="table-responsive text-semibold" style="overflow-x: hidden;overflow-y: auto;">
+                                                            <table class="table table-striped" id="cuf_table_div">
+                                                                    
+
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <h3>Warnings & Alarms</h3>
+                                                        <div class="table-responsive text-semibold" style="overflow-y: auto;">
+                                                            <table class="table table-striped" id="warnings_and_alarms_table_div">
+                                                                    
+
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+
+                                            <h3>Plants Details</h3>
+                                            <div class="table-responsive text-semibold">
+                                                <table class="table table-bordered" id="details_table_div">
+                                                    
+                                                </table>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+
+                                            <h3>Weather</h3>
+                                            <div class="table-responsive text-semibold">
+                                                <table class="table table-bordered" id="weather_table_div">
+                                                    
+                                                </table>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                
+                                <div class="tab-pane fade" id="block_client-lft">
+
+                                    <div class="panel-body mar-top">
+                                        <div class="row">
+                                        {% for solar_plant in solar_plants %}
+                                            {% if forloop.counter|divisibleby:4 %}
+                                                </div>
+                                                <div class="row">
+                                            {% endif %}
+                                            <div class="col-lg-4">
+                                                <div class="plant-box">
+                                                    <a href={% url 'solar:plant' solar_plant.instance.slug %}>
+                                                        <div class="row">
+                                                            <div class="col-lg-5">
+                                                                <h3><strong>{{ solar_plant.instance.name }}</strong></h3>
+                                                                <p><i class="fa fa-map-marker"></i> {{ solar_plant.instance.location }}</p>
+                                                                {% if solar_plant.inverters_status.errors == 0 and solar_plant.inverters_status.stable == 0 and solar_plant.inverters_status.warnings == 0 %}
+                                                                    <button class="btn btn-outline btn-info" type="button"><i class="fa fa-info"></i> No inverters! </button>
+                                                                {% elif solar_plant.inverters_status.errors == 0 and solar_plant.inverters_status.stable > 0 %}
+                                                                    <button class="btn btn-outline btn-primary" type="button"><i class="fa fa-check"></i> No issues! </button>
+                                                                {% else %}
+                                                                    <button class="btn btn-outline btn-danger" type="button"><i class="fa fa-close"></i> Errors! </button>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="col-lg-7" style="margin-top: 25px;">
+                                                                Plant Capacity: <strong> {{ solar_plant.instance.capacity }} kW </strong> <br>
+                                                                Today's Gen.: <strong> {{ solar_plant.today_generation|floatformat }} kWh </strong> <br>
+                                                                Inv. Connected: <strong> {{ solar_plant.inverters_status.stable }}</strong> <br>
+                                                                Inv. Disconnected: <strong> {{ solar_plant.inverters_status.errors }}</strong> <br>
+                                                                Sending Invalid Data: <strong> {{ solar_plant.inverters_status.warnings }}</strong> <br>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- <div class="boxed"> -->
+
+            <!--MAIN NAVIGATION-->
+            <!--===================================================-->
+            <!-- <nav id="mainnav-container">
+                <div id="mainnav"> -->
+
+                    <!--Menu-->
+                    <!--================================-->
+                   <!--  <div id="mainnav-menu-wrap">
+                        <div class="nano">
+                            <div class="nano-content">
+                                <ul id="mainnav-menu" class="list-group"> -->
+
+                                    <!--Category name-->
+                                    <!-- <li class="list-header">Plants</li> -->
+
+                                    <!--Menu list item-->
+                                    <!-- <li class="">
+                                        <a href="{% url 'solar:index' %}">
+                                            <i class="fa fa-tasks"></i>
+                                            <span class="menu-title">
+                                                <strong>Solar Plants</strong>
+                                            </span>
+                                        </a>
+                                    </li> -->
+
+                                <!-- </ul>
+
+                            </div>
+                        </div>
+                    </div> -->
+                    <!--================================-->
+                    <!--End menu-->
+
+                <!-- </div>
+            </nav> -->
+            <!--===================================================-->
+            <!--END MAIN NAVIGATION-->
+        <!-- </div> -->
+
+
+
+        <!-- FOOTER -->
+        <!--===================================================-->
+        <footer id="footer" style="padding-left: 53px;">
+
+            <!-- Visible when footer positions are static -->
+
+
+            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <!-- Remove the class name "show-fixed" and "hide-fixed" to make the content always appears. -->
+            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+            <p>&#0169; 2015-2016 DataGlen Technologies Private Limited</p>
+
+
+        </footer>
+        <!--===================================================-->
+        <!-- END FOOTER -->
+
+
+        <!-- SCROLL TOP BUTTON -->
+        <!--===================================================-->
+        <button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>
+        <!--===================================================-->
+
+
+    </div>
+    <!--===================================================-->
+    <!-- END OF CONTAINER -->
+
+    <!--JAVASCRIPT-->
+    <!--=================================================-->
+    <script src="/static/solarrms/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/solarrms/js/bootstrap.min.js"></script>
+    <script src="https://maps.google.com/maps/api/js?key=AIzaSyAAL-BxO6HSksJtE6VThUIafRki05sG6Dg"></script>
+	<script src="/static/solarrms/plugins/gmaps/gmaps.js"></script>
+
+    <script>
+
+    </script>
+
+    <script>
+        var plants_info = {{ plants_info|safe }};
+        console.log(plants_info);
+        var all_slugs = [];
+        all_slugs = {{ plant_slugs|safe }};
+
+    </script>
+
+    <script src="/static/solarrms/js/demo/niftyclient.js"></script>
+
+</body>
+</html>

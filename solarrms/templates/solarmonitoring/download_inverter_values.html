@@ -1,0 +1,377 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+{% load bootstrap3 %}
+
+{% block extrahead %}
+  <link href="/static/dataglen/css/spinkit.css" rel="stylesheet">
+    <!-- D3 and NVD3 -->
+    <link href="/static/dataglen/css/metricsgraphics.css" rel="stylesheet"> 
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+    <link href="/static/dataglen/css/jquery.datetimepicker.css" rel="stylesheet">
+
+    <style>
+        .nav-tabs > li, .nav-pills > li {
+            float:none;
+            display:inline-block;
+            *display:inline; /* ie7 fix */
+             zoom:1; /* hasLayout ie7 trigger */
+        }
+
+        .nav-tabs, .nav-pills {
+            text-align:center;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body_block %}
+
+    <ul class="nav nav-tabs">
+      <li><a href={% url 'solar:inverter-detail' plant_slug inverter_key %}>Inverter Profile Page</a></li>
+      <li class="active"><a href="#">Download Historical Data</a></li>
+      <!-- <li><a href={% url 'solar:inverter-data-comparison' plant_slug inverter_key %}>Compare Inverter Values</a></li> -->
+    </ul>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+      
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="parameters">Parameters</label>
+              <select class="form-control" id="streams_dropdown" multiple="multiple" required="required">
+                <option value="" disabled selected>--Choose Parameters--</option>
+              </select>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="start_date">Start Date</label>
+            <input type="text" class="form-control datetimepicker_start_time" id="start_time" placeholder="Choose Start Date" required="required" style="background-color: white;">
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="end_date">End Date</label>
+            <input type="text" class="form-control datetimepicker_end_time" id="end_time" placeholder="Choose End Date" onClick="limit_end()" required="required" style="background-color: white;">
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <iframe id="my_iframe" style="display:none;"></iframe>
+          <button type="submit" onClick="streams_data()" class="btn btn-danger" id="button_data_download" style="margin-top: 22px;">Download Data</button>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-lg-12 ">
+          <div class="chart_plot" id="row_plot">
+
+          </div>
+        </div>
+        
+        <div class="col-lg-12">
+          <div class="ibox-title">Mutiselection Graph
+          <button type="submit" onClick="download_chart_as_png()" class="btn btn-danger pull-right" id="button_chart_as_png_download" disabled style="padding: 0px 9px; margin-top: -4px;">Download Chart As Png</button>
+          </div>
+          <div class="ibox-content" id="comparison_data">
+            <div>
+              <svg id="svg_chart" style="height: 250px;">
+
+              </svg>
+          </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script src="/static/dataglen/js/d3.js"></script>
+    <script src="/static/dataglen/js/jquery.datetimepicker.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/dataglen/js/saveSvgAsPng.js"></script>
+    <script src="/static/dataglen/js/metricsgraphics.js"></script>
+
+    <script type="text/javascript">
+
+        var inverter_name = null;
+        $(document).ready(function(){
+            new_source_data();
+            setTimeout(function(){
+               plant_slug = '{{ plant_slug }}';
+               inverter_name = '{{ inverter.name }}';
+               load_inverter_data();
+             }, 500); // milliseconds
+        });
+
+        function csrfSafeMethod(method) {
+            return (/^(HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        function load_inverter_data(){
+            var csrftoken = $.cookie('csrftoken');
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                url: "/solar/plant/".concat('{{ plant_slug }}').concat('/inverter/').concat('{{ inverter_key }}'),
+                success: function(data){
+                    $('#valid_records').empty().html('Valid Records ' + data['valid_records']);
+                    $('#invalid_records').empty().html('Invalid Records ' + data['invalid_records']);
+                },
+                error: function(data){
+                    data = null;
+                }
+            });
+
+            setTimeout(function(){
+               load_inverter_data ();
+             }, 20000);
+        }
+    </script>
+
+    <script>
+      $(function() {
+        $(".datetimepicker_start_time").datetimepicker();
+        $(".datetimepicker_start").datetimepicker();
+      });
+      function limit_end() {
+
+        var dat = new Date($('#start_time').val());
+        var d = dat;
+
+        $(function(){
+          $('#end_time').datetimepicker({
+            onShow:function( ct ){
+              this.setOptions({
+                minDate: new Date($('#start_time').val()),
+                maxDate:(new Date(d.setHours(d.getHours()+168)))
+              })
+            },
+          });
+        });
+      }
+      function enable_button_data_download() {
+        document.getElementById("button_chart_as_png_download").disabled = false;
+      }
+      function download_chart_as_png() {
+        saveSvgAsPng(document.getElementById("svg_chart"), "chart.png", {backgroundColor: "white"});
+      }
+
+    </script>
+
+    <script>
+      var data = {};
+      var streams = {};
+      var stream_data = {};
+      var fields = [];
+      var stream = null;
+      var result = [];
+
+      function new_source_data() {
+        $.ajax({
+            type: "GET",
+            url: "/api/sources/".concat("{{inverter_key}}").concat('/streams/'),
+            success: function(data){
+              /*stream_chart(data);*/
+              streams = data;
+              $("#streams_dropdown").html('');
+              if (data.length == 0) {
+                $("#streams_dropdown").append("<option>No Streams are present! </option>");
+              } else {
+                for (var i = 0 ; i <= data.length-1 ; i++) {
+                  $('#streams_dropdown').append("<option value=" + data[i].name + ">" + data[i].name + "</option>");
+                } 
+              }
+            },
+            error: function(data){
+              data = null;
+            }
+        });
+      }
+
+      function streams_data() {
+
+        fields = [];
+
+        $('#streams_dropdown > option:selected').each(function() {
+          fields.push($(this).val());
+        });
+
+        if(fields.length == 0) {
+          $("#row_plot").empty();
+          $("#row_plot").append("<div class='alert alert-warning' id='alert'></div>");
+          $("#alert").empty();
+          $("#alert").append("Select 1 or more Parameters.");
+          return;
+        } else {
+          $("#row_plot").empty();
+        }
+
+        var st = $('#start_time').val();
+        console.log(st);
+
+        var et = $('#end_time').val();
+
+        if(st == '') {
+          $("#row_plot").empty();
+          $("#row_plot").append("<div class='alert alert-warning' id='alert'></div>");
+          $("#alert").empty();
+          $("#alert").append("Select a Start Date.");
+          return;
+        } else {
+          $("#row_plot").empty();
+        }
+
+        if(et == '') {
+          $("#row_plot").empty();
+          $("#row_plot").append("<div class='alert alert-warning' id='alert'></div>");
+          $("#alert").empty();
+          $("#alert").append("Select a End Date.");
+
+          return;
+        } else {
+          $("#row_plot").empty();
+        }
+
+        var newst = new Date(st).getTime();
+        var newet = new Date(et).getTime();
+
+        if(newet < newst) {
+          $("#row_plot").empty();
+          $("#row_plot").append("<div class='alert alert-warning' id='alert'></div>");
+          $("#alert").empty();
+          $("#alert").append("End Date should be greater than Start Date.");
+
+          return;
+        } else {
+          $("#row_plot").empty();
+        }
+
+        $.ajax({
+          type: "GET",
+          url: "/api/solar/plants/".concat('{{ plant_slug }}').concat('/inverters/').concat('{{ inverter_key }}').concat('/data/'),
+          data: {streamNames: fields.join(","), startTime: st, endTime: et},
+          success: function(data) {
+            var k = fields.length;
+            stream_chart(data);
+          },
+          error: function(data) {
+            console.log("error_streams_data");
+            data = null;
+          }
+        });
+      }
+
+      function stream_chart(data) {
+
+        color = ["#ff7f0e","#7777ff","#2ca02c","#FF0018","#FF00B1","#00ADFF","#00FF4E","#91FF00","#FFF700"];
+
+        var k = fields.length;
+        packagedData = [];
+        streamNames = [];
+
+        console.log(data);
+
+        for(var n= 0; n < k; n++) {
+          arrayValue = [];
+          for (var j = data.streams[n].timestamps.length - 1; j >= 0; j--) {
+            arrayValue.push({x: new Date(data.streams[n].timestamps[j]), y: parseFloat(data.streams[n].values[j])});
+          }
+          packagedData.push(arrayValue);
+          streamNames[n] = data.streams[n].name;
+        }
+        console.log(packagedData);
+
+        nv.addGraph(function() {
+          var chart = nv.models.lineChart()
+                        .margin({left: 80, right: 50, bottom:80})  //Adjust chart margins to give the x-axis some breathing room.
+                        .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                        .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                        .showYAxis(true)        //Show the y-axis
+                        .showXAxis(true)
+          ;
+          chart.xAxis     //Chart x-axis settings
+              .axisLabel('')
+              .tickFormat(function(ts) { 
+                return d3.time.format('%y-%m-%d %H:%M')(new Date(ts)); 
+              })
+              .rotateLabels(-45);
+
+          chart.yAxis     //Chart y-axis settings
+              .axisLabel('Value')
+              .tickFormat(d3.format('.02f'));
+
+          result = [];
+          for (var i = 0; i < k; i++) {
+            result.push({
+              values: packagedData[i], 
+              key: streamNames[i], 
+              color: color[i]
+            });
+          }            
+            d3.select('#comparison_data svg')    //Select the <svg> element you want to render the chart in.   
+              .datum(result)         //Populate the <svg> element with chart data...
+              .call(chart);
+
+      
+          //Update the chart when window resizes.
+          nv.utils.windowResize(function() { chart.update() });
+          return chart;
+      });
+      var j = 0;
+      for(var i = 0; i < packagedData.length; i++) {
+        if(packagedData[i].length > 0) {
+          j++;
+        } 
+      }
+      if(j > 0) {
+        stream_data_download();
+        enable_button_data_download();
+      }
+      else {
+          $("#row_plot").empty();
+          $("#row_plot").append("<div class='alert alert-warning' id='alert'></div>");
+          $("#alert").empty();
+          $("#alert").append("Their is no data between these date range. Please change the date range.");
+        }
+      }
+
+    function download(url) {
+      document.getElementById('my_iframe').src = url;
+    };
+
+    function stream_data_download() {
+
+      var fields = [];
+      $('#streams_dropdown > option:selected').each(function() {
+        fields.push($(this).val());
+      });
+
+      var st = $('#start_time').val();
+      var et = $('#end_time').val();
+
+      var download_url = "/solar/plant/".concat('{{ plant_slug }}').concat('/inverter/').concat("{{ inverter_key }}").concat('/data/').concat('download/');
+      $.ajax({
+        type: "GET",
+        url: download_url,
+        data: {streamNames: fields.join(","), startTime: st, endTime: et},
+        success: function(data) {
+          var n = {streamNames: fields.join(","), startTime: st, endTime: et};
+          final_download_url = "/solar/plant/".concat('{{ plant_slug }}').concat('/inverter/').concat("{{ inverter_key }}").concat('/data/').concat('download/').concat("?streamNames=").concat(streamNames).concat("&startTime=").concat(st).concat("&endTime=").concat(et);
+          download(final_download_url);
+        },
+        error: function(data) {
+          console.log("error_streams_data_download");
+          data = null;
+        }
+      });
+    }
+ 
+    </script>
+
+{% endblock %}

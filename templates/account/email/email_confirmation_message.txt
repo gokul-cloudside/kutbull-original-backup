@@ -1,0 +1,18 @@
+{% load account %}
+{% user_display user as user_display %}
+{% load i18n %}{% autoescape off %}
+
+{% blocktrans with current_site.name as site_name %}
+
+Hi {{ user_display }},
+
+Thank you for registering at {{ site_name }}. Here's your unique activation link, please click on it to activate the account.
+
+{{ activate_url }}
+
+Thank you!
+
+Team DataGlen
+
+{% endblocktrans %}{% endautoescape %}
+

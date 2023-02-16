@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Daily Performance Report
+  </title>
+    <!--
+    The style block is collapsed on page load to save you some scrolling.
+    Postmark automatically inlines all CSS properties for maximum email client
+    compatibility. You can just update styles here, and Postmark does the rest.
+  -->
+  <style type="text/css" rel="stylesheet" media="all">
+
+  .email-masthead {
+    padding: 25px 0;
+    text-align: center;
+    background-color: #0c61ae;
+    width:100%;
+  }
+  .email-masthead_name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFFFFF !important;
+    text-decoration: none;
+    text-shadow: 0 1px 0 white;
+  }
+
+  tr:nth-child(even){background-color: #f2f2f2}
+
+
+
+  #customers {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    align: center;
+  }
+
+  #customers td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  #customers th {
+    border: 1px solid #ddd;
+    padding: 4px;
+  }
+
+  #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+  #customers tr:hover {background-color: #ddd;}
+
+  #customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #51ac95;
+    color: white;
+  }
+  #customers tr {
+    text-align: right;
+    background-color: #EDEFF2;
+  }
+</style>
+</head>
+<body>
+
+</head>
+<body>
+  <table width="100%" align="center">
+    <td class="email-masthead">
+      <a href="https://solar.dataglen.com" class="email-masthead_name">
+        {{ client_name }}
+      </a>
+    </td>
+  </table>
+  <div style="overflow-x:auto;" align="center">
+    <h1>Hi {{user_full_name}},</h1>
+    <p>We have created the Daily Performance Report [Date: {{ current_date }}] for your plant(s):  </p>
+
+    <table id="customers" align="center">
+      <tr>
+        <th>Plant Name</th>
+        <th>DC Capacity (kWh)</th>
+        <th>Today's Generation (kWh)</th>
+        <th>Last Weeks Daily Average Generation (kWh)</th>
+        {% if show_pr == "True" %}
+            <th>Today's PR (%)</th>
+        {% endif %}
+        <!--<th>CUF (%)</th>-->
+      </tr>
+    </thead>
+    <tbody>
+      {% for plant in solar_plants %}
+      <tr>
+        <td>{{ plant.name }}</td>
+        <td>{{ plant.dc_capacity }}</td>
+        <td>{{ plant.energy_generation }}</td>
+        <td>{{ plant.energy_generation_week_avg }}</td>
+        {% if show_pr == "True" %}
+            <td>{{ plant.performance_ratio }}</td>
+        {% endif %}
+
+        <!--<td>{{ plant.cuf }}</td>-->
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table  align="center"cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center">
+        <p >&copy; {{ copyright_year }} DataGlen Technologies Private Limited.</p>
+        <p >
+          <br>Sahakar Nagar, Bangalore.
+          <br>Powered by SunDash &copy;
+          <br>All rights reserved.
+        </p>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

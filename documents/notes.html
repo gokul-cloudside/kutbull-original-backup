@@ -1,0 +1,403 @@
+<HTML>
+<Title> DataGlen </Title>
+<Body>
+	<H1> Introduction </H1>
+	This document is a collection of notes about various technologies and components used in the development of DataGlen System.
+	
+	<H1> System </H1>
+	Running debian stable v 7.6 (wheezy ) with sun java version (1.8.0_25) and python version 2.7.3.
+	
+	<H1> Cassandra </H1>
+	Selected cassandra as the datastore for jplug data. the main reasons for choosing cassandra are:
+
+	<ol>
+		<li> seems to be <a href= http://kkovacs.eu/cassandra-vs-mongodb-vs-couchdb-vs-redis> an excellent choice for storing sensor data. </a> </li>
+		<li> provides <a href= https://cassandra.apache.org/doc/cql/CQL.html>a SQL like interface. </a> </li>
+		<li> <a href=http://techblog.netflix.com/2011/11/benchmarking-cassandra-scalability-on.html>scales well </a> </li>
+		<li> <a href=http://planetcassandra.org/apache-cassandra-use-cases/>impressive precedents </a> </li>
+	</ol>	
+		
+	some good reference material:
+	<ul>
+		<li> <a href=http://www.amazon.com/NoSQL-Distilled-Emerging-Polyglot-Persistence/dp/0321826620/ref=pd_cp_b_2>NoSQL Distilled: A Brief Guide to the Emerging World of Polyglot Persistence </a> </li>
+		<li> <a href=http://static.googleusercontent.com/media/research.google.com/en//archive/bigtable-osdi06.pdf> Big Table </a> </li>
+		<li> <a href=https://academy.datastax.com> datastax </a> </li>
+		<li> <a http://wiki.apache.org/cassandra/DataModel> data modeling </li>
+	</ul>	
+	
+	<H2> Cassandra Installation </H2>
+	First approach - Downloaded the stable release (v 2.1.0) from
+	the <a href=http://cassandra.apache.org/download/>
+	website </a> and placed it in /usr/local/cassandra-2.1.0.
+
+current approach - followed the instructions at
+<a href=https://wiki.apache.org/cassandra/DebianPackaging> cassandra
+  debian packages </a>
+
+
+	
+	<H2> Cassandra Database setup </H2>
+	created a simple keyspace and 3 tables. <b>note the indices </b>.
+	<pre>
+		CREATE KEYSPACE jplug_keyspace WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1'}  AND durable_writes = true;
+
+
+		CREATE TABLE jplug_keyspace.jplug_status_table (
+		    premise_name text,
+		    load_name text,
+		    data_count bigint,
+		    sample_time timestamp,
+		    caretaker text,
+                    is_monitoring boolean,
+                    alarms_raised int,
+                    email_address text,
+                    phone_naumber text,
+		    PRIMARY KEY (premise_name, load_name)
+		) WITH CLUSTERING ORDER BY (load_name ASC)
+		    AND bloom_filter_fp_chance = 0.01
+		    AND caching = '{"keys":"ALL", "rows_per_partition":"NONE"}'
+		    AND comment = ''
+		    AND compaction = {'min_threshold': '4', 'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32'}
+		    AND compression = {'sstable_compression': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+		    AND dclocal_read_repair_chance = 0.1
+		    AND default_time_to_live = 0
+		    AND gc_grace_seconds = 864000
+		    AND max_index_interval = 2048
+		    AND memtable_flush_period_in_ms = 0
+		    AND min_index_interval = 128
+		    AND read_repair_chance = 0.0
+		    AND speculative_retry = '99.0PERCENTILE';
+
+		CREATE TABLE jplug_keyspace.jplug_data_table (
+		    premise_name text,
+		    load_name text,
+		    sample_time timestamp,
+		    active_power float,
+		    apparent_power float,
+		    cost float,
+		    current float,
+		    energy float,
+		    frequency float,
+		    insertion_time timestamp,
+		    mac_address text,
+		    phase_angle float,
+		    power_factor float,
+		    reactive_power float,
+		    voltage float,
+		    PRIMARY KEY ((premise_name, load_name), sample_time)
+		) WITH CLUSTERING ORDER BY (sample_time DESC)
+		    AND bloom_filter_fp_chance = 0.01
+		    AND caching = '{"keys":"ALL", "rows_per_partition":"NONE"}'
+		    AND comment = ''
+		    AND compaction = {'min_threshold': '4', 'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32'}
+		    AND compression = {'sstable_compression': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+		    AND dclocal_read_repair_chance = 0.1
+		    AND default_time_to_live = 0
+		    AND gc_grace_seconds = 864000
+		    AND max_index_interval = 2048
+		    AND memtable_flush_period_in_ms = 0
+		    AND min_index_interval = 128
+		    AND read_repair_chance = 0.0
+		    AND speculative_retry = '99.0PERCENTILE';
+		CREATE INDEX jplug_data_table_premise_name_idx ON jplug_keyspace.jplug_data_table (premise_name);
+		CREATE INDEX jplug_data_table_load_name_idx ON jplug_keyspace.jplug_data_table (load_name);
+		CREATE INDEX jplug_data_table_sample_time_idx ON jplug_keyspace.jplug_data_table (sample_time);
+
+		
+	</pre>
+	
+	<H2> Cassandra Python Driver </H2>
+	Running version 2.1.2 of the driver. followed the instructions on https://pypi.python.org/pypi/cassandra-driver/2.1.1. 
+	installed lz4, snappy, scales and blist.
+	
+	(had to install several dependencies such as python-dev, libev, build-essential, etc.)
+	
+	<H2> Cassandra SSL </H2>
+	TODO - having a few issues. have posted on <a href=http://stackoverflow.com/questions/26521827/connecting-to-cassandra-2-1-0-over-ssl-from-cqlsh>stackoverflow.</a>
+	<H2> Cassandra timezone </H2>
+	<font color="red">Adding timezone to the timestamps. 
+	TODO	the timezone information must be included in the jplug data points.
+	</font>
+	<H2> Cassandra data insertion </H2>
+	the data insertion program works now. 
+	however, it is not efficient as the preparedstatement has issues with inserting timestamps as strings. see https://datastax-oss.atlassian.net/browse/PYTHON-85. 
+	TODO - see if preparedstatment can be used.
+	
+	<H2> Cassandra dump </H2>
+	exporting from cassandra
+	(must be executed from shell prompt)
+	<pre>
+		echo -e "DESCRIBE KEYSPACE jplug_keyspace;\n" | cqlsh localhost > jplug_keyspace_schema.cdl
+	</pre>
+	
+	importing into cassandra
+	(must be executed from cqlsh)
+	source '/home/dpseetharam/database/jplug_keyspace_schema.cdl'
+	
+	<H2> Cassandra authentication </H2>
+	<a href=http://www.datastax.com/documentation/cassandra/2.0/cassandra/security/security_config_native_authenticate_t.html> Background information </a>
+	
+	changed cassandra.yaml to include the following:
+	<pre>
+		authenticator: PasswordAuthenticator
+		
+	</pre>
+	
+	logged in using the following command:
+	<pre>
+		cqlsh -u cassandra -p cassandra
+	</pre>
+	
+	created a new superuser id:
+	<pre>
+		create user rkunnath with password ********* superuser;
+	</pre>
+	
+	logged in using the new superuser id
+	<pre>
+		cqlsh -u rkunnath -p *********
+	</pre>
+	
+	made the cassandra id ineffective
+	<pre>
+		alter user cassandra with password '********';
+		alter user cassandra nosuperuser;
+	</pre>
+	
+	created a new user for only reading and writing data
+	<pre>
+		create user databoy with password ****** nosuperuser;		
+	</pre>
+	
+	change cassandra.yaml to include the following
+	
+	<pre>
+			authorizer: CassandraAuthorizer
+	
+	</pre>
+	
+	revoked all permissions from that user
+	<pre>
+		revoke all permissions on all keyspaces from databoy; 
+	</pre>
+	
+	granted specific modify and select permissions to that user:
+	<pre>
+		grant modify on keyspace jplug_keyspace to databoy; 
+		grant select on keyspace jplug_keyspace to databoy;
+	</pre>
+		
+	added the following code to enable authentication through python:
+	
+	
+	<pre>
+	from cassandra.auth import PlainTextAuthProvider
+	
+	auth_provider = PlainTextAuthProvider(username='databoy', password=*******)
+	cassandra_cluster = Cluster(CASSANDRA_HOSTS, auth_provider=auth_provider)
+	</pre>
+
+	<h2> Note: </h2>
+
+               One cannot log onto cassandra as a databoy user. To view and modify the tables, use the super user id. However you should provide username as 'databoy' and password as '*****' in python file -> upload-jplug-data.py 
+
+
+	<h2> Loading cassandra database from jplug data files </h2>
+	Since we have already collected massive amounts of jplug data
+	from previous projects, we must load that data into the
+	database. 
+	
+	<h3> finding unique records </h2>
+sometimes there are multiple records from the same jplug with same
+timestamp but different measured values. for example:
+<pre>
++50.02 +231.050 +9.451 +824.572 +0.123 +0.068 +12.689 +15.822 +0.597 +53.318 Time: 00:59:13 17/06/14  00:1E:C0:0C:7E:8B Vijay_Dry 31078
++50.02 +232.041 +9.451 +824.415 +0.123 +0.069 +12.914 +16.003 +0.591 +53.802 Time: 00:59:13 17/06/14  00:1E:C0:0C:7E:8B Vijay_Dry 31072
+</pre>
+
+first create a single large file that contains all the data files:
+<pre>
+find . -type f -name '001EC00*' -exec cat {} + >> massive-data.txt
+</pre>
+
+now sort that file and eliminate duplicates. use time, date and
+premise-load-names as key. use /var/tmp as the temp directory since
+/tmp could be small.
+<pre>
+sort -biu -T /var/tmp -k 12,14 massive-data.txt > unique-massive-data.txt
+</pre>
+
+after this duplicates removal, unique-massive-data contains 18527650
+records - a 28% reduction from 26022984 records in massive dataset.
+
+        <h2> Quicker way to write to a database </h2>
+Unlike conventional databases, cassandra does not impose uniqueness
+	constraints. so we cannot attempt 
+
+                  To write to the database quickly, a dictionary (Hash table) is created. It stores premise_load as KEY and values as data-count, last_sample_time and dirty_bit. For every interval of records in numbers (now 1000), whatever in dictionary is written to jplug_status_table if the dirty_bit is set to 1. Dirty_bit for a key is set to one, if the contents of jplug_status_table is different from what is stored in dictionary for the corresponding premise_load key. It is set to zero, when its contents are updated to jplug_status_table.
+
+       <h2>Handling time offset problem</h2>  
+
+             When last_sample time is read from jplug_status_table,
+             python gives GMT time. So a time offset of +5.30 is added
+             and updated in dictionary so as to make comparsion
+             effective.
+
+
+		<H1> Apache </H1>
+		<H2> Apache Installation </H2>
+		installed apache2.2 and apache2-mpm-worker
+		<pre>
+			<VirtualHost *:80>
+    
+			    ServerName www.kutbill.com
+			    ServerAlias kutbill.com
+			    # **** MUST CHANGE ****
+			    ServerAdmin webmaster@kutbill.com
+    
+			    DocumentRoot /var/www/kutbill/documents
+			    Alias /index.html /var/www/kutbill/documents/index.html
+			    Alias /main.html /var/www/kutbill/documents/main.html
+			    # <Directory />
+			    # 	Options FollowSymLinks
+			    # 	AllowOverride None
+			    # </Directory>
+
+			    <Directory /var/www/kutbill/documents>
+				Options Indexes FollowSymLinks MultiViews
+				AllowOverride None
+				Order allow,deny
+				allow from all
+			    </Directory>
+				
+			    WSGIScriptAlias / /var/www/kutbill/scripts/wsgi.py
+			    # WSGIPythonPath /var/www/kutbill/
+
+			    <Directory /var/www/kutbill/scripts>
+				<Files wsgi.py>
+				    Order allow,deny
+				    Allow from all
+				</Files>
+			    </Directory>
+
+			    WSGIDaemonProcess kutbill.com python-path=/var/www/kutbill/ processes=2 threads=2 display-name=%{GROUP}
+			    WSGIProcessGroup kutbill.com
+
+			    # ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+			    # <Directory "/usr/lib/cgi-bin">
+			    # 	AllowOverride None
+			    # 	Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+			    # 	Order allow,deny
+			    # 	Allow from all
+			    # </Directory>
+
+			    ErrorLog ${APACHE_LOG_DIR}/error.log
+
+			    # Possible values include: debug, info, notice, warn, error, crit,
+			    # alert, emerg.
+			    LogLevel debug
+
+			    CustomLog ${APACHE_LOG_DIR}/access.log combined
+			</VirtualHost>
+			
+		</pre> 
+		
+	    <H2> Installing mod_wsgi </H2>
+	   Excellent documents:              
+	   <a href=https://code.google.com/p/modwsgi/wiki/QuickInstallationGuide> installation guide </a>
+	   <a href= https://code.google.com/p/modwsgi/wiki/QuickConfigurationGuide> configuration guide </a>
+	   
+	   Installing wsgi requires apache2-mpm-worker and apache2-threaded-dev.
+	   
+	   Downloaded mod_wsgi from <a href=https://github.com/GrahamDumpleton/mod_wsgi/releases>github</a>, configured and installed as explained in the aforementioned <a href=https://code.google.com/p/modwsgi/wiki/QuickInstallationGuide> installation guide. </a>
+	   
+	   Added a file <b> mod_wsgi.load </b> in /etc/apache2/mods-available with the following line
+	   <pre>
+		   LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so
+	   </pre>
+	   
+	   and added a soft link to this file the mods-enabled directory. 
+	   
+       <H1> Django </H1>
+       For running Django on apache, mod_wsgi seems to be the best (and only?) option.
+		   
+       <H2> Installing Django </H2>
+       pip install Django==1.7.1 (note the double equals)
+
+	   <H2> Installing Django-cassandra engine </H2>
+		Installed Django-cassandra as per there <a href=https://pypi.python.org/pypi/django-cassandra-engine/0.1.6> instructions. </a>
+	   <H1> Git </H1>
+	   Followed the <a href=http://www.git-scm.com/book/en/v2/Git-on-the-Server-Setting-Up-the-Server> Git remote repository setup instructions </a> to set up a repository on Linode. 
+	   the repository is in /opt/git directory and there are two sub directories - kutbill-bulkload and kutbill-django - that contain the two sets of code files.
+
+	    <H1> Extending the installation for DataGlen code </H1>
+        <ul>
+            <li> Install MySQL </li>
+            <li> Install the following packages: </li>
+                <ol>
+                    <li> apt-get install python-dev </li>
+                    <li> apt-get install libmysqlclient-dev </li>
+                    <li> easy_install -Z MySQL-python </li>
+                    <li> easy_install -Z django-registration-redux </li>
+                    <li> easy_install -Z django-bootstrap3 </li>
+                    <li> easy_install -Z djangorestframework </li>
+                </ol>
+            <li> Create a user 'root' in mysql database with the standard password '***********'. Add a database 'dataglen_metadata.' Similary, for cassandra, add user 'rkunnath' with password '***********' </li>
+            <li> Pull the code from git, switch to branch 'dataglen' </li>
+            <li> Optionally add datasink and dataviz in the list of installed applications in scripts/settings.py </li>
+            <li> Copy the entire code to /var/www/kutbill. </li>
+            <li> Restart apache apachectl -k graceful </li>
+            <li> Check /var/log/apache2/access.log, /var/log/apache2/error.log if there's any error(s). </li>
+            <li> Add 'WSGIPassAuthorization On' in apache configuration file. </li>
+            <li> Run the following commands in /var/www/kutbill </li>
+            <ol>
+                <li> python manage.py makemigrations </li>
+                 <li> python manage.py migrate </li>
+            </ol>
+            <li> Set 'www-data' owner for /var/log/kutbill/dataglen.log file. </li>
+            <li> Restart apache and you should be able to see a login page on /dataglen/ </li>
+        </ul>
+
+	<!-- used the
+       <a href=http://blog.amussey.com/post/64036730812/cassandra-2-0-client-server-ssl-with-datastax-python>
+       instructions </a> to add ssl access.
+
+
+		
+	
+	
+	<pre>
+	keytool -genkeypair -alias cassandra -keyalg DSA -keysize 1024 -keystore cassandra_keystore.jks -storepass ******* -keypass ******
+	(password obscured)
+	What is your first and last name?
+	  [Unknown]:  Deva P. Seetharam
+	What is the name of your organizational unit?
+	  [Unknown]:  Analytics  
+	What is the name of your organization?
+	  [Unknown]:  RadioStudio
+	What is the name of your City or Locality?
+	  [Unknown]:  Chennai
+	What is the name of your State or Province?
+	  [Unknown]:  Tamil Nadu
+	What is the two-letter country code for this unit?
+	  [Unknown]:  IN
+	Is CN=Deva P. Seetharam, OU=Analytics, O=RadioStudio, L=Chennai, ST=Tamil Nadu, C=IN correct?
+	  [no]:  yes
+	
+	
+	keytool -exportcert -alias cassandra -file cassandra_cert.crt -keystore cassandra_keystore.jks -storepass ********
+	
+	</pre>
+	
+	
+	Had to modify the cassandra.yaml file as well.
+	<pre>
+	client_encryption_options:
+		enabled: true
+		keystore: /usr/local/cassandra-2.1.0/ssl/cassandra_keystore.jks
+		keystore_password: **********
+	</pre>
+-->
+</Body>
+
+</HTML>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar RMS DataGlen</title>
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+    <link href="/static/solarrms/css/nifty.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/static/solarrms/css/dataglensolar.css">
+
+    <style>
+
+        @media screen and (min-width: 768px) {
+            .navbar-header:before {
+                background-color: transparent !important; 
+            }
+
+        }
+
+    </style>
+<!-- start Mixpanel -->
+    <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+mixpanel.init("1ddd19271a41ecc9d91aae03aab40458");
+    </script>
+    <!-- end Mixpanel -->
+
+    {% block extrahead %}
+
+    {% endblock %}
+
+</head>
+
+<!--TIPS-->
+<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+
+<body>
+    <div id="noty_alert"> </div>
+	<div id="container" class="effect aside-float aside-bright mainnav-sm">
+
+        <header id="navbar">
+            <div id="navbar-container" class="boxed">
+                <!--Navbar Dropdown-->
+                <!--================================-->
+                <div class="navbar-content clearfix">
+                    <ul class="nav navbar-top-links pull-left">
+                        <!--Notification dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <li>
+                            <ol class="breadcrumb mar-ver-5" id="breadcrumb_page_path"> 
+                            </ol>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-top-links pull-right">
+                        <!--User dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!--End user dropdown-->
+
+                        <li>
+                            <a href="{% url 'account_logout' %}" class="btn text-thin text-center text-semibold text-white" style="background-color:#2672a6"> Logout </a>
+                        </li>
+                    </ul>
+                </div>
+                <!--================================-->
+                <!--End Navbar Dropdown-->
+            </div>
+        </header>
+
+		<div class="boxed">
+
+			<!--CONTENT CONTAINER-->
+			<!--===================================================-->
+			<div id="content-container" style="">
+                {% block body_block %}
+
+                {% endblock %}
+			</div>
+			<!--===================================================-->
+			<!--END CONTENT CONTAINER-->
+
+            <!--MAIN NAVIGATION-->
+            <!--===================================================-->
+            <nav id="mainnav-container" style="padding-top: 30px;">
+                <div id="mainnav">
+
+                    <!--Menu-->
+                    <!--================================-->
+                    <div id="mainnav-menu-wrap">
+                        <div class="nano">
+                            <div class="nano-content">
+                                <ul id="mainnav-menu" class="list-group">
+
+						            <!--Category name-->
+						            <!-- <li class="list-header">Plants</li> -->
+
+						            <!--Menu list item-->
+						            <li class="">
+						                <a href="{% url 'solar:index' %}">
+						                    <i class="fa fa-tasks"></i>
+						                    <span class="menu-title">
+												<strong>All Plants Dashboard</strong>
+											</span>
+						                </a>
+						            </li>
+
+						            <!--Category name-->
+						            <li class="list-header">{{ plant.name }}</li>
+
+						            <!--Menu list item-->
+						            <li class="">
+						                <a href="{% url 'solar:plant' plant.slug %}">
+						                    <i class="fa fa-dashboard"></i>
+						                    <span class="menu-title">
+												<strong>Live Summary</strong>
+											</span>
+						                </a>
+						            </li>
+
+						            <!--Menu list item-->
+                                    <li>
+                                        <a href="#">
+                                            <i class="fa fa-list-alt" aria-hidden="true"></i>
+                                            <span class="menu-title">
+                                                <strong>Details</strong>
+                                            </span>
+                                            <i class="arrow"></i>
+                                        </a>
+
+                                        <!--Submenu-->
+                                        <ul class="collapse">
+                                            <li>
+                                                <a href="#">
+                                                    <i class="fa fa-line-chart"></i>
+                                                    <span class="menu-title">
+                                                        <strong>Plant Level</strong>
+                                                    </span>
+                                                    <i class="arrow"></i>
+                                                </a>
+
+                                                <!--Submenu-->
+                                                <ul class="collapse">
+                                                    {% if plant.slug == 'asun' or plant.slug == 'grps' or plant.slug == 'msjs' or plant.slug == 'slsdav' or plant.slug == 'rajghat'  %}
+                                                        {% if user_access == 'OWNER' %}
+                                                            <li><a href={% url 'solar:plant-power-values' plant.slug %}>Power Generation</a></li>
+                                                            <li><a href={% url 'solar:plant-metrics-view' plant.slug %}>Performance Metrics</a></li>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <li><a href={% url 'solar:plant-power-values' plant.slug %}>Power Generation</a></li>
+                                                        <li><a href={% url 'solar:plant-metrics-view' plant.slug %}>Performance Metrics</a></li>
+                                                    {% endif %}
+
+                                                    <li><a href={% url 'solar:plant-energy-generation' plant.slug %}>Energy Generation</a></li>
+{% comment %}
+                                                    {% if plant.metadata %}
+                                                        <li><a href={% url 'solar:plant-meta-view' plant.slug %}>Contextual Data</a></li>
+                                                        <!-- <li><a href={% url 'solar:plant-meta_download-view' plant.slug %}>Contextual Data Download</a></li> -->
+                                                    {% endif %}
+{% endcomment %}
+                                                </ul>
+                                            </li>
+{% comment %}
+                                            <li class="">
+                                                <a href="#">
+                                                    <i class="fa fa-plug"></i>
+                                                    <span class="menu-title">
+                                                        <strong>Inverter Level</strong>
+                                                    </span>
+                                                    <i class="arrow"></i>
+                                                </a>
+                                                <!--Submenu-->
+                                                <ul class="collapse">
+                                                    <li><a href={% url 'solar:inverters-status' plant.slug %}>Inverter Status</a></li>
+                                                    <li><a href={% url 'solar:plant-inverters-energy-generation' plant.slug %}>Compare Performance</a></li>
+                                                </ul>
+                                            </li>
+                                        {% if plant.ajb_units.all|length > 0 %}
+                                            <li class="">
+                                                <a href="#">
+                                                    <i class="fa fa-cogs" aria-hidden="true"></i>
+                                                    <span class="menu-title">
+                                                        <strong>String Level</strong>
+                                                    </span>
+                                                    <i class="arrow"></i>
+                                                </a>
+                                                <ul class="collapse">
+                                                    <li><a href={% url 'solar:inverter-device-comparisons' plant.slug %}>SMB Comparisons</a></li>
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+{% endcomment %}
+                                        </ul>
+                                    </li>
+
+						            <!--Menu list item-->
+
+                                    {% if plant.slug == 'asun' or plant.slug == 'grps' or plant.slug == 'msjs' or plant.slug == 'slsdav' or plant.slug == 'rajghat'  %}
+                                        {% if user_access == 'OWNER' %}
+                                            <li>
+                                                <a href="#">
+                                                    <i class="fa fa-line-chart" aria-hidden="true"></i>
+                                                    <span class="menu-title">
+                                                        <strong>Visualize Data</strong>
+                                                    </span>
+                                                    <i class="arrow"></i>
+                                                </a>
+                                                <!--Submenu-->
+                                                <ul class="collapse">
+                                                    <li> <a href={% url 'solar:plant-client-multiple_parameters-view' plant.slug %}> Data </a> </li>
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+                                    {% else %}
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-line-chart" aria-hidden="true"></i>
+                                                <span class="menu-title">
+                                                    <strong>Visualize Data</strong>
+                                                </span>
+                                                <i class="arrow"></i>
+                                            </a>
+                                            <!--Submenu-->
+                                            <ul class="collapse">
+                                                <li> <a href={% url 'solar:plant-client-multiple_parameters-view' plant.slug %}> Data </a> </li>
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+
+
+
+
+						            <!--Menu list item-->
+                                    <li>
+                                        <a href="#">
+                                            <i class="fa fa-download" aria-hidden="true"></i>
+                                            <span class="menu-title">
+                                                <strong>Download</strong>
+                                            </span>
+                                            <i class="arrow"></i>
+                                        </a>
+                                        <!--Submenu-->
+                                        <ul class="collapse">
+                                            <li><a href={% url 'solar:report-summary-view' plant.slug %}>Report Summary</a></li>
+                                            {% if plant.slug == 'asun' or plant.slug == 'grps' or plant.slug == 'msjs' or plant.slug == 'slsdav' or plant.slug == 'rajghat'  %}
+                                                {% if user_access == 'OWNER' %}
+                                                    <li><a href={% url 'solar:compare-table-view' plant.slug %}>Detailed Reports</a></li>
+                                                    <!-- <li><a href={% url 'solar:compare-plant-table-view' plant.slug %}>Devices Data</a></li> -->
+                                                {% endif %}
+                                            {% else %}
+                                                <li><a href={% url 'solar:compare-table-view' plant.slug %}>Detailed Reports</a></li>
+                                                <!-- <li><a href={% url 'solar:compare-plant-table-view' plant.slug %}>Devices Data</a></li> -->
+                                            {% endif %}
+
+                                        </ul>
+                                    </li>
+
+
+                                    {% if plant.slug == 'asun' or plant.slug == 'grps' or plant.slug == 'msjs' or plant.slug == 'slsdav' or plant.slug == 'rajghat'  %}
+                                        {% if user_access == 'OWNER' %}
+                                            {% if plant.metadata %}
+                                            <li>
+                                                <a href="#">
+                                                    <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                                    <span class="menu-title">
+                                                        <strong>Analytics</strong>
+                                                    </span>
+                                                    <i class="arrow"></i>
+                                                </a>
+
+                                                <!--Submenu-->
+                                                <ul class="collapse">
+                                                    <li>
+                                                        <a href="#">
+                                                            <i class="fa fa-line-chart"></i>
+                                                            <span class="menu-title">
+                                                                <strong>Plant Level</strong>
+                                                            </span>
+                                                            <i class="arrow"></i>
+                                                        </a>
+
+                                                        <!--Submenu-->
+                                                        <ul class="collapse">
+                                                            <li><a href={% url 'solar:plant-inverters-residual' plant.slug %}>Inverter Residuals</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% if plant.metadata %}
+                                            <li>
+                                                <a href="#">
+                                                    <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                                    <span class="menu-title">
+                                                        <strong>Analytics</strong>
+                                                    </span>
+                                                    <i class="arrow"></i>
+                                                </a>
+
+                                                <!--Submenu-->
+                                                <ul class="collapse">
+                                                    <li>
+                                                        <a href="#">
+                                                            <i class="fa fa-line-chart"></i>
+                                                            <span class="menu-title">
+                                                                <strong>Plant Level</strong>
+                                                            </span>
+                                                            <i class="arrow"></i>
+                                                        </a>
+
+                                                        <!--Submenu-->
+                                                        <ul class="collapse">
+                                                            {% if dataglenclient.slug == 'edp' %}
+                                                            <li><a href={% url 'solar:plant-inverters-residual' plant.slug %}>Panel Residuals</a></li>
+                                                            {% else %}
+                                                            <li><a href={% url 'solar:plant-inverters-residual' plant.slug %}>Inverter Residuals</a></li>
+                                                            {% endif %}
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if user_access == 'OWNER' %}
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-cogs" aria-hidden="true"></i>
+                                                <span class="menu-title">
+                                                    <strong>O&M</strong>
+                                                </span>
+                                                <i class="arrow"></i>
+                                            </a>
+
+                                            <!--Submenu-->
+                                            <ul class="collapse">
+                                                <li> <a href={% url 'solar:ticket-list' plant.slug %}> Ticket List </a> </li>
+                                                <li> <a href={% url 'solar:alarms-list-view' plant.slug %}> Alarms List </a> </li>
+                                                {% if webdyn_client == True %}
+                                                    <!-- <li> <a href={% url 'solar:add-plant-options-view' plant.slug %}> Add Webdyn Device </a> </li> -->
+                                                {% endif %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+
+
+{% comment %}
+                                    <li class="">
+						                <a href="#">
+						                    <i class="fa fa-dashboard"></i>
+						                    <span class="menu-title">
+												<strong>AJB status</strong>
+											</span>
+						                </a>
+						            </li>
+
+                                    <li class="">
+						                <a href="#">
+						                    <i class="fa fa-dashboard"></i>
+						                    <span class="menu-title">
+												<strong>Alerts</strong>
+											</span>
+						                </a>
+						            </li>
+{% endcomment %}
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--================================-->
+                    <!--End menu-->
+
+                </div>
+            </nav>
+            <!--===================================================-->
+            <!--END MAIN NAVIGATION-->
+		</div>
+
+
+
+        <!-- FOOTER -->
+        <!--===================================================-->
+        <footer id="footer">
+            <p class="pad-lft">&#0169; DataGlen Technologies Private Limited</p>
+
+
+
+        </footer>
+        <!--===================================================-->
+        <!-- END FOOTER -->
+	</div>
+	<!--===================================================-->
+	<!-- END OF CONTAINER -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.3/js.cookie.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
+    <script src="/static/solarrms/js/nifty.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-noty/2.4.0/packaged/jquery.noty.packaged.min.js"></script>
+    <script src="/static/solarrms/js/demo/dashboard1.js"></script>
+    <script src="/static/solarrms/js/demo/noty.js"></script>
+
+    <script>
+
+        var client_slug = '{{ dataglenclient.slug }}'
+
+    </script>
+
+    <!--
+    <script src="/static/solarrms/plugins/plotlyjs/dist/plotly.min.js"></script>
+-->
+    {% block js %}
+    {% endblock %}
+</body>
+</html>

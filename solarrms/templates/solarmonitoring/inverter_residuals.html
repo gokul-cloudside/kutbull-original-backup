@@ -1,0 +1,65 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+
+    <link href="/static/solarrms/css/spinner.css" rel="stylesheet">
+
+    <style>
+        
+    </style>
+
+{% endblock %}
+
+{% block body_block %}
+
+    <div id="page-content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div id="residual-panel-network" class="panel">
+                    <div class="panel-body">
+                        <div class="pad-btm">
+                            {% if dataglenclient.slug == 'edp' %}
+                                <p class="text-lg text-semibold text-uppercase text-thin text-info">Panel Residuals</p>
+                            {% else %}
+                                <p class="text-lg text-semibold text-uppercase text-thin text-info">Inverter Residuals</p>
+                            {% endif %}
+                                <p class="text-sm text-thin text-semibold"> Visualise data for the residual of devices of today's date. </p>
+                        </div>
+
+                        <div class="row">
+                            <div id="inverter_residual">
+
+                            </div>
+                            <div id="residual_message">
+                                <div class="col-lg-5 col-md-5"></div>
+                                <div class="col-lg-7 col-md-7">
+                                    <div class="col-md-1-offset"></div>
+                                    <div class="loader"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="/static/dataglen/js/date.format.js"></script>
+
+    <script>
+        var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+        var client_slug = '{{ dataglenclient.slug }}'
+
+    </script>
+
+    <script src="//cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="/static/solarrms/js/js_functions/basic_bar_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/demo/visualisations-inverter_residuals.js"></script>
+
+{% endblock %}

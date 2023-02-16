@@ -1,0 +1,70 @@
+{% extends 'dataglen/dataglenbase.html' %}
+{% load bootstrap3 %}
+
+{% block body_block %}
+    <div class="row wrapper border-bottom white-bg page-heading" xmlns="http://www.w3.org/1999/html">
+    <div class="col-lg-10">
+        <h2> Your Profile </h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{% url 'dataglen:dashboard' %}">Home</a>
+            </li>
+            <li>
+                <a>Profile</a>
+            </li>
+        </ol>
+    </div>
+    </div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Profile Information</h5>
+                        </div>
+                        <div class="ibox-content">
+                        {{ user.first_name }} {{ user.last_name }}<br>
+                        {{ user.email }} <br> <br>
+                        You are the administrator of your organization
+                        <b>{{ dataglenclient.organization_ptr.name }}</b> account on DataGlen.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Organization Details</h5>
+                        </div>
+                        <div class="ibox-content">
+                            {{ dataglenclient.organization_ptr.name }} </br>
+                            {{ dataglenclient.clientWebsite }} </br>
+                            {{ dataglenclient.clientLogo }} </br>
+                            {{ dataglenclient.clientContactAddress }}
+                            {{ token }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Employees, Clients and Members details</h5>
+                </div>
+                <div class="ibox-content">
+                    <a href="{% url 'dataglen:employee-add' %}">Employees</a> : {{ employees|length }} <br>
+                    <a href="{% url 'dataglen:member-add' %}">Members</a> : {{ members|length }} <br>
+
+                    <a href="{% url 'dataglen:group-add' %}">Groups</a> : {{ groups|length }} <br>
+                    Total Sensors : {{ total_sources|length }} <br>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,350 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+{% load bootstrap3 %}
+
+{% block extrahead %}
+
+  <link href="/static/dataglen/css/spinkit.css" rel="stylesheet">
+    <!-- D3 and NVD3 -->
+    <link href="/static/dataglen/css/metricsgraphics.css" rel="stylesheet">
+    
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+    <link href="/static/dataglen/css/jquery.datetimepicker.css" rel="stylesheet">
+
+    <style>
+        .nav-tabs > li, .nav-pills > li {
+            float:none;
+            display:inline-block;
+            *display:inline; /* ie7 fix */
+             zoom:1; /* hasLayout ie7 trigger */
+        }
+
+        .nav-tabs, .nav-pills {
+            text-align:center;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body_block %}
+
+	<ul class="nav nav-tabs">
+      <li><a href={% url 'solar:plant' plant_slug %}>Plant Dashboard</a></li>
+      <li><a href="#">Inverters Power Generation</a></li>
+      <li><a href={% url 'solar:plant-inverters-compare' plant_slug %}>Compare Inverter Data</a></li>
+      <li><a href={% url 'solar:plant-inverters-data-table' plant_slug %}>Inverters Data Table</a></li>
+      <li class="active"><a href="#">Reports</a></li>
+    </ul>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        
+      <div class="row">
+
+            <div class="col-lg-12">
+                <div class="tabs-container">
+                    <!-- <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#tab-1"> Plant Report</a></li>
+                        <li class=""><a data-toggle="tab" href="#tab-2"> Inverter Report</a></li> -->
+                        <div class="col-md-5"></div>
+                        <div data-toggle="buttons" class="nav-tabs btn-group active">
+                          <label class="btn btn-sm btn-white active"><a data-toggle="tab" href="#tab-1"> <input type="radio" id="option1" name="options"> Plant Report </a></label>
+                          <label class="btn btn-sm btn-white"><a data-toggle="tab" href="#tab-2"> <input type="radio" id="option2" name="options"> Inverter Report </a></label>
+                        </div>
+                    <!-- </ul> -->
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="ibox">
+                                        <div class="ibox-content">
+
+                                            <div class="row">
+                                                <div class="col-lg-5">
+                                                  <div class="form-group">
+                                                    <label for="start_date">Start Date</label>
+                                                    <input type="text" class="form-control datetimepicker_start_time" id="start" placeholder="Choose Start Date" required="required" style="background-color: white;">
+                                                  </div>
+                                                </div>
+                                                <div class="col-lg-5">
+                                                  <div class="form-group">
+                                                    <label for="end_date">End Date</label>
+                                                    <input type="text" class="form-control datetimepicker_end_time" id="end" placeholder="Choose End Date" onClick="set_end_time_plant()" required="required" style="background-color: white;">
+                                                  </div>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                  <iframe id="my_iframe" style="display:none;"></iframe>
+                                                  <button type="submit" class="btn btn-danger" id="button_data_download" onClick="plant_report()" style="margin-top: 22px;">Download Report</button>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+
+                                                    <tbody>
+                                                    
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-2" class="tab-pane">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="ibox">
+                                        <div class="ibox-content">
+
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                  <div class="form-group">
+                                                    <label for="inverters">Inverters</label>
+                                                      <select class="form-control" id="inverters_dropdown_compare">
+                                                        <option value="" disabled selected>--Choose Inverter--</option>
+                                                      </select>
+                                                  </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                  <div class="form-group">
+                                                    <label for="start_date">Start Date</label>
+                                                    <input type="text" class="form-control datetimepicker_start_time" id="start_time" placeholder="Choose Start Date" required="required" style="background-color: white;">
+                                                  </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                  <div class="form-group">
+                                                    <label for="end_date">End Date</label>
+                                                    <input type="text" class="form-control datetimepicker_end_time" id="end_time" placeholder="Choose End Date" onClick="set_end_time_inverter()" required="required" style="background-color: white;">
+                                                  </div>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                  <iframe id="my_iframe" style="display:none;"></iframe>
+                                                  <button type="submit" class="btn btn-danger" id="button_data_download" onClick="single_inverter_report()" style="margin-top: 22px;">Download Report</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/static/dataglen/js/d3.js"></script>
+
+    <script src="/static/dataglen/js/jquery.datetimepicker.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/dataglen/js/saveSvgAsPng.js"></script>
+    <script src="/static/dataglen/js/metricsgraphics.js"></script>
+
+    <script>
+
+        var inverter_name = null;
+        $(document).ready(function(){
+            inverters_data();
+            limit_plant_future_date();
+            setTimeout(function(){
+               plant_slug = '{{ plant_slug }}';
+               inverter_name = '{{ inverter.name }}';
+               load_inverter_data();
+             }, 500); // milliseconds
+        });
+
+        function csrfSafeMethod(method) {
+            return (/^(HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        function load_inverter_data(){
+            var csrftoken = $.cookie('csrftoken');
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+        }
+        function redraw_window() {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            window.dispatchEvent(new Event('resize'));
+        });
+      }
+
+      $(function() {
+        $(".datetimepicker_start").datetimepicker({
+            timepicker: false,
+            format: 'Y/m/d',
+            scrollMonth:false,
+            scrollTime:false,
+            scrollInput:false
+        });
+        $(".datetimepicker_end").datetimepicker({
+            timepicker: false,
+            format: 'Y/m/d',
+            scrollMonth:false,
+            scrollTime:false,
+            scrollInput:false
+        });
+        $(".datetimepicker_start_time").datetimepicker({
+            timepicker: false,
+            format: 'Y/m/d',
+            scrollMonth:false,
+            scrollTime:false,
+            scrollInput:false
+        });
+        $(".datetimepicker_end_time").datetimepicker({
+            timepicker: false,
+            format: 'Y/m/d',
+            scrollMonth:false,
+            scrollTime:false,
+            scrollInput:false
+        });
+      });
+      function limit_plant_future_date() {
+        $(function(){
+          $('#start').datetimepicker({
+              onShow:function( ct ){
+                  this.setOptions({
+                      maxDate: new Date()
+                  })
+              }
+          });
+          $('#start_time').datetimepicker({
+              onShow:function( ct ){
+                  this.setOptions({
+                      maxDate: new Date()
+                  })
+              }
+          });
+        });
+      }
+
+      function set_end_time_plant() {
+        $('#end').datetimepicker({
+          onShow:function( ct ){
+              this.setOptions({
+                  minDate: new Date($('#start').val()),
+                  maxDate: new Date()
+              })
+          }
+        });
+      }
+
+      function set_end_time_inverter() {
+        $('#end_time').datetimepicker({
+          onShow:function( ct ){
+              this.setOptions({
+                  minDate: new Date($('#start_time').val()),
+                  maxDate: new Date()
+              })
+          }
+        });
+      }
+
+      function get_dates(){
+          // get the startTime date
+          var st = $('#start').val();
+          if (st == '')
+              st = new Date();
+          else
+              st = new Date(st);
+          // prepare an end date
+          var e = new Date(st.getTime());
+          e = new Date(e.setDate(st.getDate() + 1));
+          // convert them into strings
+          st = dateFormat(st, "yyyy/mm/dd");
+          e = dateFormat(e, "yyyy/mm/dd");
+
+          return [st, e]
+      }
+
+      function plant_report() {
+
+        var st = $("#start").val();
+        var et = $("#end").val();
+
+        $.ajax({
+          type: "GET",
+          async: false,
+          url: "/api/solar/plants/".concat('{{ plant_slug }}').concat('/reports/'),
+          data: {startTime: st, endTime: et},
+          success: function(reports){
+            console.log("Plant report");
+          },
+          error: function(data){
+            console.log("no data");
+          }
+        });
+      }      
+
+      function inverters_data() {
+        $.ajax({
+          type: "GET",
+          async: false,
+          url: "/api/solar/plants/".concat("{{plant_slug}}").concat("/inverters/"),
+          success: function(inverters){
+            var keys = [];
+            $("#inverters_dropdown_compare").html('');
+            if (inverters.length == 0) {
+              $("#inverters_dropdown_compare").append("<option>No Streams are present! </option>");
+            } else {
+              for (var i = 0 ; i <= inverters.length-1 ; i++) {
+                $('#inverters_dropdown_compare').append("<option value=" + inverters[i].sourceKey + ">" + inverters[i].name + "</option>");
+                keys[i] = inverters[i].sourceKey;
+              } 
+            }
+          },
+          error: function(data){
+            console.log("no data");
+          }
+        });
+      }
+
+      function single_inverter_report() {
+
+        var inverters_data = [];
+
+        $.ajax({
+          type: "GET",
+          async: false,
+          url: "/api/solar/plants/".concat("{{plant_slug}}").concat("/inverters/"),
+          success: function(inverters){
+            inverters_data = inverters;
+          },
+          error: function(data){
+            console.log("no data");
+          }
+        });
+
+        var st = $("#start").val();
+        var et = $("#end").val();
+
+        for(var i = 0; i < inverters_data.length; i++) {
+          $.ajax({
+            type: "GET",
+            async: false,
+            url: "/api/solar/plants/".concat('{{ plant_slug }}').concat('/inverters/').concat(inverters_data[i].sourceKey).concat('/reports/') ,
+            data: {startTime: st, endTime: et},
+            success: function(reports){
+              console.log("Inverter report");
+            },
+            error: function(data){
+              console.log("no data");
+            }
+          });
+        }
+      }
+
+        function hasWhiteSpace(inverter_name) {
+            return inverter_name.indexOf(' ') > 0;
+        }
+
+    </script>
+
+{% endblock %}

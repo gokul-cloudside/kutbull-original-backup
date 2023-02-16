@@ -1,0 +1,171 @@
+<html>
+{% block body_block %}
+<head>
+<style>
+    @page {
+        size: a4 portrait;
+        @frame header_frame {           /* Static Frame */
+            -pdf-frame-content: header_content;
+            left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+        }
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+        }
+        @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+        }
+    }
+</style>
+</head>
+
+<body>
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content"><h1>Performance Report  (Plant Level): Plant Name - {{plant_name}}</h1></div>
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">DataGlen Inc (c) - page <pdf:pagenumber>
+        of <pdf:pagecount>
+    </div>
+
+</body>
+  <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h3>Total energy generated in the specified interval: Start Time = {{startTime}} and End Time = {{endTime}}</h3>
+                  <h1>{{ total_plant_energy }}</h1>
+                  <h3>Total number of hours for which energy got generated in the specified interval: Start Time = {{startTime}} and End Time = {{endTime}}</h3>
+                  <h1>{{ daily_plant_energy_generations_size }}</h1>
+                  <h2>Below are the hourly generated energy details</h2>
+                </div>
+                <div class="ibox-content">
+                    <table class="table">
+                      <span class="pull-left">
+                        <thead>
+                            <tr>
+                                <th>Plant Slug</th>
+                                <th>Time</th>
+                                <th>Energy</th>
+                            </tr>
+                        </thead>
+                      </span>
+                        {% for daily_plant_energy_generation in daily_plant_energy_generations %}
+                            <tbody>
+                                <td style="text-align: center;"> {{ daily_plant_energy_generation.identifier }} </td>
+                                <td style="text-align: center;">{{ daily_plant_energy_generation.ts}}</td>
+                                <td style="text-align: center;">{{ daily_plant_energy_generation.energy}}</td>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h3>Total number of valid data points in the specified interval: Start Time = {{startTime}} and End Time = {{endTime}}</h3>
+                  <h1>{{ valid_records_size_final }}</h1>
+                  <h2>Below are the details</h2>
+                </div>
+                <div class="ibox-content">
+                    <table class="table">
+                      <span class="pull-left">
+                        <thead>
+                            <tr>
+                                <th>Source Key</th>
+                                <th>Stream Name</th>
+                                <th>Insertion Time</th>
+                                <th>Stream Value</th>
+                            </tr>
+                        </thead>
+                      </span>
+                        {% for valid_record in valid_records_final %}
+                            <tbody>
+                                <td style="text-align: center;"> {{ valid_record.source_key }} </td>
+                                <td style="text-align: center;">{{ valid_record.stream_name}}</td>
+                                <td style="text-align: center;">{{ valid_record.insertion_time}}</td>
+                                <td style="text-align: center;">{{ valid_record.stream_value}}</td>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h3>Total number of Invalid data points in the specified interval: Start Time = {{startTime}} and End Time = {{endTime}}</h3>
+                  <h1>{{ invalid_records_size_final }}</h1>
+                  <h2>Below are the details</h2>
+                </div>
+                <div class="ibox-content">
+                    <table class="table">
+                      <span class="pull-left">
+                        <thead>
+                            <tr>
+                                <th>Source Key</th>
+                                <th>Time</th>
+                                <th>Error</th>
+                            </tr>
+                        </thead>
+                      </span>
+                        {% for invalid_record in invalid_records_final %}
+                            <tbody>
+                                <td style="text-align: center;"> {{ invalid_record.source_key }} </td>
+                                <td style="text-align: center;">{{ invalid_record.insertion_time}}</td>
+                                <td style="text-align: center;">{{ invalid_record.error}}</td>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h3>Total number of alerts sent in the specified interval: Start Time = {{startTime}} and End Time = {{endTime}}</h3>
+                  <h1>{{ alerts_size_final }}</h1>
+                  <h2>Below are the details</h2>
+                </div>
+                <div class="ibox-content">
+                    <table class="table">
+                      <span class="pull-left">
+                        <thead>
+                            <tr>
+                                <th>Identifier</th>
+                                <th>Event Name</th>
+                                <th>Alert Time</th>
+                                <th>Email Id</th>
+                            </tr>
+                        </thead>
+                      </span>
+                        {% for alert in alerts_final %}
+                            <tbody>
+                                <td style="text-align: center;"> {{ alert.identifier }} </td>
+                                <td style="text-align: center;"> {{ alert.event.event_name }} </td>
+                                <td style="text-align: center;">{{ alert.alert_time}}</td>
+                                <td style="text-align: center;">{{ alert.email_id}}</td>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+{% endblock %}
+</html>

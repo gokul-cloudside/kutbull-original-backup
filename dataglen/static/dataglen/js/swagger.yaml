@@ -1,0 +1,458 @@
+swagger: "2.0"
+
+################################################################################
+#                              API Information                                 #
+################################################################################
+info:
+  version: "1.1"
+  title: HornPlease REST API's
+# during dev, should point to your local machine
+host: dataglen.com
+# basePath prefixes all resource paths
+basePath: /api/docs
+#
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+
+################################################################################
+#                              Paths                                           #
+################################################################################
+paths:
+  /accounts/newaccount:
+    post:
+      description: Create a new account.
+      parameters:
+        - name: body
+          in: body
+          description: Details of the new account to be created
+          schema:
+            $ref: '#/definitions/Account'
+          required: true
+      responses:
+        "201":
+          description: Account Created
+          
+          
+  /accounts/profiles:        
+    get:
+      description: Get list of all the profiles
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Profile'
+          
+          
+          
+  /accounts/profiles/{userid}:
+    get:
+      description: Get details of specified profile
+      parameters:
+        - name: userid
+          in: path
+          description: Id of the user whose details has to be viewed
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          
+          
+    patch:
+      description: Update the details of the specified profile.
+      parameters:
+        - name: userid
+          in: path
+          description: Id of the user whose details has to be updated
+          required: true
+          type: string
+      responses:
+        "201":
+          description: Account details updated
+          
+          
+    delete:
+      description: Delete account of the specified user.
+      parameters:
+        - name: userid
+          in: path
+          description: Id of the user whose account has to be deleted
+          required: true
+          type: string
+      responses:
+        "204":
+          description: Account Deleted
+          
+          
+  /accounts/profiles/3pls:
+    get:
+      description: Get details of all the 3pls profiles
+      responses:
+        "200":
+          description: Success
+          
+          
+  /accounts/profiles/3pls/{userid}:
+    get:
+      description: Get details of 3pls profile for the specified user id.
+      parameters:
+        - name: userid
+          in: path
+          description: Id of the user whose details has to be viewed
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          
+          
+    patch:
+      description: Update the details of 3pls profile for the specified id.
+      parameters:
+        - name: userid
+          in: path
+          description: Id of the user whose details has to be updated
+          required: true
+          type: string
+      responses:
+        "201":
+          description: Account details updated successfully
+          
+          
+          
+  /accounts/profiles/shippers:
+    get:
+      description: Get details of all the shipper profiles
+      responses:
+        "200":
+          description: Success
+          
+          
+  /accounts/profiles/shippers/{userid}:
+    get:
+      description: Get details of shipper profile for the specified user id.
+      parameters:
+        - name: userid
+          in: path
+          description: Id of the user whose details has to be viewed
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          
+    patch:
+      description: Update the details of shipper profile for the specified id.
+      parameters:
+        - name: userid
+          in: path
+          description: Id of the user whose details has to be updated
+          required: true
+          type: string
+      responses:
+        "201":
+          description: Account details updated successfully
+          
+          
+  /accounts/profiles/drivers:
+    get:
+      description: Get details of all the driver profiles
+      responses:
+        "200":
+          description: Success
+          
+          
+  /accounts/profiles/drivers/{userid}:
+    get:
+      description: Get details of driver profile for the specified user id.
+      parameters:
+        - name: userid
+          in: path
+          description: Id of the user whose details has to be viewed
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          
+          
+    patch:
+      description: Update the details of driver profile for the specified id.
+      parameters:
+        - name: userid
+          in: path
+          description: Id of the user whose details has to be updated
+          required: true
+          type: string
+      responses:
+        "201":
+          description: Account details updated successfully
+          
+          
+  /accounts/login:
+    post:
+      description: Login to the account
+      responses:
+        "201":
+          description: Logged-in successfully
+          
+          
+  /accounts/logout:
+    get:
+      description: Logout from the account
+      responses:
+        "200":
+          description: Logged-out successfully
+          
+          
+  /identity/drivers/:
+    post:
+      description: Create a new driver identity
+      responses:
+        "201":
+          description: Identity creted successfully.
+          
+    get:
+      description: Get all the driver identities
+      responses:
+        "200":
+          description: Success.
+          
+  /identity/drivers/{driverid}:
+    get:
+      description: Get the identity of the mentioned driver id
+      parameters:
+        - name: driverid
+          in: path
+          description: Id of the driver whose identity has to be viewed
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          
+          
+    patch:
+      description: Update the identity of the mentioned driver id
+      parameters:
+        - name: driverid
+          in: path
+          description: Id of the driver whose identity has to be updated
+          required: true
+          type: string
+      responses:
+        "201":
+          description: Success
+          
+          
+  /identity/vehicles/:
+    post:
+      description: Create a new vehicle identity
+      responses:
+        "201":
+          description: Identity creted successfully.
+          
+    get:
+      description: Get all the vehicle identities
+      responses:
+        "200":
+          description: Success.
+          
+  /identity/vehicles/{vehicleid}:
+    get:
+      description: Get the identity of the mentioned vehicle id
+      parameters:
+        - name: vehicleid
+          in: path
+          description: Id of the vehicle whose identity has to be viewed
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          
+    patch:
+      description: Update the identity of the mentioned vehicle id
+      parameters:
+        - name: vehicleid
+          in: path
+          description: Id of the vehicle whose identity has to be updated
+          required: true
+          type: string
+      responses:
+        "201":
+          description: Success
+          
+          
+          
+  /identity/shippers/:
+    post:
+      description: Create a new shipper identity
+      responses:
+        "201":
+          description: Identity creted successfully.
+          
+    get:
+      description: Get all the shipper identities
+      responses:
+        "200":
+          description: Success.
+          
+  /identity/shippers/{shipperid}:
+    get:
+      description: Get the identity of the mentioned shipper id
+      parameters:
+        - name: shipperid
+          in: path
+          description: Id of the shipper whose identity has to be viewed
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          
+    patch:
+      description: Update the identity of the mentioned shipper id
+      parameters:
+        - name: shipperid
+          in: path
+          description: Id of the shipper whose identity has to be updated
+          required: true
+          type: string
+      responses:
+        "201":
+          description: Success
+          
+          
+  /identity/3pls/:
+    post:
+      description: Create a new 3pls identity
+      responses:
+        "201":
+          description: Identity creted successfully.
+          
+    get:
+      description: Get all the 3pls identities
+      responses:
+        "200":
+          description: Success.
+          
+  /identity/3pls/{3plsid}:
+    get:
+      description: Get the identity of the mentioned 3pls id
+      parameters:
+        - name: 3plsid
+          in: path
+          description: Id of the 3pls whose identity has to be viewed
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          
+    patch:
+      description: Update the identity of the mentioned 3pls id
+      parameters:
+        - name: 3plsid
+          in: path
+          description: Id of the 3pls whose identity has to be updated
+          required: true
+          type: string
+      responses:
+        "201":
+          description: Success
+          
+          
+  /identity/packages/:
+    post:
+      description: Create a new package identity
+      responses:
+        "201":
+          description: Identity creted successfully.
+          
+    get:
+      description: Get all the package identities
+      responses:
+        "200":
+          description: Success.
+          
+  /identity/packages/{packageid}:
+    get:
+      description: Get the identity of the mentioned package id
+      parameters:
+        - name: packageid
+          in: path
+          description: Id of the package whose identity has to be viewed
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          
+    patch:
+      description: Update the identity of the mentioned package id
+      parameters:
+        - name: packageid
+          in: path
+          description: Id of the package whose identity has to be updated
+          required: true
+          type: string
+      responses:
+        "201":
+          description: Success
+          
+          
+          
+definitions:
+  Account:
+    type: object
+    properties:
+      name:
+        type: string
+      phone no:
+        type: string
+        
+        
+  Profile:
+    type: object
+    properties:
+      name:
+        type: string
+      phone no:
+        type: string
+      
+          
+          
+  
+          
+  
+      
+      
+      
+    
+          
+          
+ 
+          
+  
+  
+    
+    
+        
+  
+  
+
+
+
+
+

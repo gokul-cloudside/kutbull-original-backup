@@ -1,0 +1,265 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block body_block %}
+
+    <!--Panel with Tabs-->
+<div class="boxed">
+    <!--===================================================-->
+    <div class="panel">
+
+        <!--Panel heading-->
+        <div class="panel-heading">
+            <h3 class="panel-title">Inverters Status</h3>
+            <div class="panel-control">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#north" data-toggle="tab">North <span class="badge badge-mint">{{ status.NORTH|length }}</span></a></li>
+                    <li><a href="#south" data-toggle="tab">South <span class="badge badge-mint">{{ status.SOUTH|length }}</span></a></li>
+                    <li><a href="#east" data-toggle="tab">East <span class="badge badge-mint">{{ status.EAST|length }}</span></a></li>
+                    <li><a href="#west" data-toggle="tab">West <span class="badge badge-mint">{{ status.WEST|length }}</span></a></li>
+                    <li><a href="#all" data-toggle="tab">All</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!--Panel body-->
+        <div class="panel-body">
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="north">
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div id="page-title">
+                                <h1 class="page-header text-overflow">Inverters connected to PVs with North Orientation</h1>
+                            </div>
+                            <hr>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Energy Generated Today</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in status.NORTH %}
+                                        <tr>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.name }} </td>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.energy|floatformat }} KWH </td>
+                                            {% if entry.status == 'CONNECTED' %}
+                                                <td class="label label-table label-success text-center mar-top"> {{ entry.status }} </td>
+                                            {% elif entry.status == 'DISCONNECTED' %}
+                                                <td class="label label-table label-danger text-center mar-top"> {{ entry.status }} </td>
+                                            {% else %}
+                                                <td class="label label-table label-info text-center mar-top"> {{ entry.status }} </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="boxed pad-lft">
+                                <div id = ""></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="south">
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div id="page-title">
+                                <h1 class="page-header text-overflow">Inverters connected to PVs with South Orientation</h1>
+                            </div>
+                            <hr>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Energy Generated Today</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in status.SOUTH %}
+                                        <tr>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.name }} </td>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.energy|floatformat }} KWH </td>
+                                            {% if entry.status == 'CONNECTED' %}
+                                                <td class="label label-table label-success text-center mar-top"> {{ entry.status }} </td>
+                                            {% elif entry.status == 'DISCONNECTED' %}
+                                                <td class="label label-table label-danger text-center mar-top"> {{ entry.status }} </td>
+                                            {% else %}
+                                                <td class="label label-table label-info text-center mar-top"> {{ entry.status }} </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-5"> </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="east">
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div id="page-title">
+                                <h1 class="page-header text-overflow">Inverters connected to PVs with East Orientation</h1>
+                            </div>
+                            <hr>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Energy Generated Today</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in status.EAST %}
+                                        <tr>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.name }} </td>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.energy|floatformat }} KWH </td>
+                                            {% if entry.status == 'CONNECTED' %}
+                                                <td class="label label-table label-success text-center mar-top"> {{ entry.status }} </td>
+                                            {% elif entry.status == 'DISCONNECTED' %}
+                                                <td class="label label-table label-danger text-center mar-top"> {{ entry.status }} </td>
+                                            {% else %}
+                                                <td class="label label-table label-info text-center mar-top"> {{ entry.status }} </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-5"> </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="west">
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div id="page-title">
+                                <h1 class="page-header text-overflow">Inverters connected to PVs with West Orientation</h1>
+                            </div>
+                            <hr>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Energy Generated Today</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in status.WEST %}
+                                        <tr>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.name }} </td>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.energy|floatformat }} KWH </td>
+                                            {% if entry.status == 'CONNECTED' %}
+                                                <td class="label label-table label-success text-center mar-top"> {{ entry.status }} </td>
+                                            {% elif entry.status == 'DISCONNECTED' %}
+                                                <td class="label label-table label-danger text-center mar-top"> {{ entry.status }} </td>
+                                            {% else %}
+                                                <td class="label label-table label-info text-center mar-top"> {{ entry.status }} </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-5"> </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="all">
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div id="page-title">
+                                <h1 class="page-header text-overflow">All Orientations</h1>
+                            </div>
+                            <hr>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Energy Generated Today</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in status.NORTH  %}
+                                        <tr>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.name }} </td>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.energy|floatformat }} KWH </td>
+                                            {% if entry.status == 'CONNECTED' %}
+                                                <td class="label label-table label-success text-center mar-top"> {{ entry.status }} </td>
+                                            {% elif entry.status == 'DISCONNECTED' %}
+                                                <td class="label label-table label-danger text-center mar-top"> {{ entry.status }} </td>
+                                            {% else %}
+                                                <td class="label label-table label-info text-center mar-top"> {{ entry.status }} </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                    {% for entry in status.SOUTH  %}
+                                        <tr>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.name }} </td>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.energy|floatformat }} KWH </td>
+                                            {% if entry.status == 'CONNECTED' %}
+                                                <td class="label label-table label-success text-center mar-top"> {{ entry.status }} </td>
+                                            {% elif entry.status == 'DISCONNECTED' %}
+                                                <td class="label label-table label-danger text-center mar-top"> {{ entry.status }} </td>
+                                            {% else %}
+                                                <td class="label label-table label-info text-center mar-top"> {{ entry.status }} </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                    {% for entry in status.EAST  %}
+                                        <tr>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.name }} </td>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.energy|floatformat }} KWH </td>
+                                            {% if entry.status == 'CONNECTED' %}
+                                                <td class="label label-table label-success text-center mar-top"> {{ entry.status }} </td>
+                                            {% elif entry.status == 'DISCONNECTED' %}
+                                                <td class="label label-table label-danger text-center mar-top"> {{ entry.status }} </td>
+                                            {% else %}
+                                                <td class="label label-table label-info text-center mar-top"> {{ entry.status }} </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                    {% for entry in status.WEST  %}
+                                        <tr>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.name }} </td>
+                                            <td class="text-center mar-top text-lg text-semibold" style="padding-top: 19px"> {{ entry.energy|floatformat }} KWH </td>
+                                            {% if entry.status == 'CONNECTED' %}
+                                                <td class="label label-table label-success text-center mar-top"> {{ entry.status }} </td>
+                                            {% elif entry.status == 'DISCONNECTED' %}
+                                                <td class="label label-table label-danger text-center mar-top"> {{ entry.status }} </td>
+                                            {% else %}
+                                                <td class="label label-table label-info text-center mar-top"> {{ entry.status }} </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-5"> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--===================================================-->
+    <!--End Panel with Tabs-->
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        var north_data = [{
+            type: 'bar',
+            x: {% autoescape off %} {{ plot_data.NORTH.x }} {% endautoescape %},
+            y: {% autoescape off %} {{ plot_data.NORTH.y }} {% endautoescape %},
+            orientation: 'h'
+        }];
+
+        Plotly.newPlot('north-bar-chart', north_data)
+    </script>
+{% endblock %}

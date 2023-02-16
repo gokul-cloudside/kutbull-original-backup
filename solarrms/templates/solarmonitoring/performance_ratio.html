@@ -1,0 +1,194 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+	
+	<style>
+		.nvd3 g.nv-groups path.nv-line {
+		  stroke-width: 5px;
+		}
+
+		.width-70 {
+			width: 70px;
+		}
+	</style>
+
+{% endblock %}
+
+{% block body_block %}
+
+				<!--Page Title-->
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<div id="page-title">
+					<h1 class="page-header text-overflow"></h1>
+				</div>
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<!--End page title-->
+
+				<!--Page content-->
+				<!--===================================================-->
+				<div id="page-content">
+
+
+					<div class="row">
+					    <div class="col-lg-12">
+
+					        <!--Network Line Chart-->
+					        <!--===================================================-->
+					        <div id="performance_ratio-panel-network" class="panel">
+					            <div class="panel-heading">
+					            	<!-- <div class="panel-control">
+					                    <button id="demo-panel-network-refresh" data-toggle="panel-overlay" data-target="#demo-panel-network" class="btn"><i class="fa fa-rotate-right"></i></button>
+					                </div> -->
+					                <h3 class="panel-title">Performance Ratio</h3>
+
+						            <div class="panel-control pull-left">
+						                <ul class="nav nav-tabs pull-left">
+						                	{% if plant.metadata.calculate_hourly_pr %}
+						                    	<li class="active"><a href="#day_performance_ratio-lft" data-toggle="tab" onClick="redraw_window();day_performance_ratio_data();" id="daytab">Day</a></li>
+						                    {% endif %}
+						                    <li id="weeklist" class=""><a href="#week_performance_ratio-lft" data-toggle="tab" onClick="redraw_window();week_performance_ratio_data();" id="weektab">Week</a></li>
+						                    <li><a href="#month_performance_ratio-lft" data-toggle="tab" onClick="redraw_window();month_performance_ratio_data();" id="monthtab">Month</a></li>
+						                    <!-- <li><a href="#year_performance_ratio-lft" data-toggle="tab" onClick="redraw_window()">Year</a></li> -->
+						                </ul>
+						            </div>
+						        </div>
+
+						        <div class="panel-body">
+						            <div class="tab-content">
+						            	{% if plant.metadata.calculate_hourly_pr %}
+							                <div class="tab-pane fade in active" id="day_performance_ratio-lft">
+						                        <div class="col-md-6 pad-btm pull-right">
+						                        	<div class="col-md-6"></div>
+								                	<div class="col-md-4">
+									                	<input type="text" class="form-control datetimepicker_start_performance_ratio_day" id="start_performance_ratio_day" placeholder="Pick a Date" required="required">
+									                </div>
+									                <div class="col-md-2">
+								                		<button type="submit" id="dayperformance_ratio-panel-network-update" data-toggle="panel-overlay" data-target="#dayperformance_ratio-panel-network-update" class="btn btn-success width-70">Update</button>
+								                	</div>
+								                	<!-- <div class="col-md-2">
+								                		<button type="submit" id="dayperformance_ratio-panel-network-refresh" data-toggle="panel-overlay" data-target="#dayperformance_ratio-panel-network-refresh" class="btn btn-info pad-no">Refresh</button>
+								                	</div> -->
+								                	<div class="row" id="legend-badge-row">
+								                    	
+								                    </div>
+								                </div>
+
+							                    <div class="ibox-content" style="height: 335px">
+							                    	<div id="day_performance_ratio_chart" style="height: 255px">
+							                    	</div>
+							                    </div>
+							                    <div id="day_performance_ratio_no_data">
+							                    </div>
+							            		<div id="day_performance_ratio_expected">
+							                    </div>
+							                </div>
+							           	{% endif %}
+						                <div class="tab-pane fade" id="week_performance_ratio-lft">
+					                        <div class="col-md-6 pad-btm pull-right">
+					                        	<div class="col-md-2"></div>
+							                	<div class="col-md-6">
+								                	<input type="text" class="form-control datetimepicker_start_performance_ratio_week" id="start_performance_ratio_week" placeholder="Pick a Date and get the following week" required="required">
+								                </div>
+								                <div class="col-md-2">
+							                		<button type="submit" id="weekperformance_ratio-panel-network-update" data-toggle="panel-overlay" data-target="#weekperformance_ratio-panel-network-update" class="btn btn-success width-70">Update</button>
+							                	</div>
+							                	<div class="col-md-2">
+							                		<button type="submit" id="weekperformance_ratio-panel-network-refresh" data-toggle="panel-overlay" data-target="#weekperformance_ratio-panel-network-refresh" class="btn btn-info pad-no">Refresh</button>
+							                	</div>
+							                	<div class="row">
+							                    	<div class="col-md-4"></div>
+							                    	<span class="badge" style="margin-top: 10px;">
+								                    	<div class="pull-left">The chart for week : </div>
+								                    	<div id="week_range_start" class="pull-left"></div>
+								                    	<div id="week_range_to" class="pull-left" style="margin-left: 7px;margin-right: 7px;"></div>
+								                    	<div id="week_range_end" class="pull-left"></div>
+								                    </span>	
+							                    </div>
+							                </div>
+
+						                    <div class="ibox-content" style="height: 355px">
+						                        <div id="week_performance_ratio_chart" style="height: 255px">
+						                    	</div>
+						                    </div>
+						                    <div id="week_performance_ratio_no_data">
+						                    </div>
+						                    <div id="week_performance_ratio_expected">
+							            	</div>
+						                </div>
+							                <div class="tab-pane fade" id="month_performance_ratio-lft">
+						                        <div class="col-md-6 pad-btm pull-right">
+						                        	<div class="col-md-2"></div>
+								                	<div class="col-md-6">
+									                	<input type="text" class="form-control" id="start_performance_ratio_month" placeholder="Pick a Month" required="required">
+									                </div>
+									                <div class="col-md-2">
+								                		<button type="submit" id="monthperformance_ratio-panel-network-update" data-toggle="panel-overlay" data-target="#monthperformance_ratio-panel-network-update" class="btn btn-success width-70">Update</button>
+								                	</div>
+								                	<div class="col-md-2">
+								                		<button type="submit" id="monthperformance_ratio-panel-network-refresh" data-toggle="panel-overlay" data-target="#monthperformance_ratio-panel-network-refresh" class="btn btn-info pad-no">Refresh</button>
+								                	</div>
+								                </div>
+							                    <div class="ibox-content" style="height: 285px;">
+							                        <div id="month_performance_ratio_chart" style="height: 275px">
+							                        </div>
+							                    </div>
+							                    <div id="month_performance_ratio_no_data">
+							                    </div>
+							                    <div id="month_performance_ratio_expected">
+							            		</div>
+							                </div>
+
+						                <div class="tab-pane fade" id="year_performance_ratio-lft">
+					                        <div class="col-md-6 pad-btm pull-right">
+					                        	<div class="col-md-2"></div>
+							                	<div class="col-md-6">
+								                	<input type="text" class="form-control datetimepicker_start_performance_ratio_year" id="start_performance_ratio_year" placeholder="Pick a Date" required="required">
+								                </div>
+								                <div class="col-md-2">
+							                		<button type="submit" data-toggle="panel-overlay" data-target="#yearperformance_ratio-panel-network-update" class="btn btn-success width-70">Update</button>
+							                	</div>
+							                	<div class="col-md-2">
+							                		<button type="submit" id="yearperformance_ratio-panel-network-refresh" data-toggle="panel-overlay" data-target="#yearperformance_ratio-panel-network-refresh" class="btn btn-info pad-no">Refresh</button>
+							                	</div>
+							                </div>
+						                    <div class="ibox-content" id="year_performance_ratio_chart" style="height: 255px">
+
+						                    </div>
+						                </div>
+						            </div>
+						        </div>
+
+					        </div>
+					        <!--===================================================-->
+					        <!--End network line chart-->
+
+					    </div>
+					</div>
+
+				</div>
+				<!--===================================================-->
+				<!--End page content-->
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/dataglen/js/d3.v3.min.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+
+    <script>
+    	var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+
+        var plant_metadata_calculate_hourly_pr = null;
+
+        {% if plant.metadata.calculate_hourly_pr %}
+        	plant_metadata_calculate_hourly_pr = '{{ plant.metadata.calculate_hourly_pr }}';
+        {% endif %}
+
+    </script>
+
+    <script src="/static/solarrms/js/demo/visualisations-performance_ratio.js"></script>
+{% endblock %}

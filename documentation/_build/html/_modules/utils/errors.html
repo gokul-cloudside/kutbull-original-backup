@@ -1,0 +1,303 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>utils.errors &mdash; DataGlen 0.2 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="DataGlen 0.2 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../../index.html" class="icon icon-home"> DataGlen
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/utils.html">Utilities</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">DataGlen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>utils.errors</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <h1>Source code for utils.errors</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">JsonResponse</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
+
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">JsonResponse</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+
+<span class="kn">from</span> <span class="nn">logger.views</span> <span class="kn">import</span> <span class="n">log_a_data_write_failure</span><span class="p">,</span> <span class="n">log_an_error</span><span class="p">,</span> <span class="n">log_an_independent_error</span>
+
+
+<div class="viewcode-block" id="generate_exception_comments"><a class="viewcode-back" href="../../modules/utils.html#utils.errors.generate_exception_comments">[docs]</a><span class="k">def</span> <span class="nf">generate_exception_comments</span><span class="p">(</span><span class="n">function_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Captures exception details and generate a comments dictionary for logs.</span>
+<span class="sd">    Call this function right after capturing the exception.</span>
+
+<span class="sd">    :param function_name: Name of the function where exception was raised</span>
+<span class="sd">    :return: A dictionary with two keys (&#39;exception&#39; and &#39;function_name&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">comments</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">comments</span><span class="p">[</span><span class="s">&#39;exception&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+    <span class="n">comments</span><span class="p">[</span><span class="s">&#39;function_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">function_name</span>
+
+</div>
+<div class="viewcode-block" id="generate_error_response"><a class="viewcode-back" href="../../modules/utils.html#utils.errors.generate_error_response">[docs]</a><span class="k">def</span> <span class="nf">generate_error_response</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response_type</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+                            <span class="n">error_code</span><span class="p">,</span> <span class="n">use_template</span><span class="p">,</span>
+                            <span class="n">response_params</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates an error response of HttpResponse (Django) type or of Response (Django Rest Framework) type.</span>
+<span class="sd">    It either renders an error template (for errors encountered in GUI) or creates a response with a dictionary.</span>
+<span class="sd">    The dictionary at least contains an &#39;error&#39; key with error description. Additional (key:value) pairs can be</span>
+<span class="sd">    passed to be included in the response.</span>
+
+<span class="sd">    :param request: Http request received. Either from Django/Django REST framework.</span>
+<span class="sd">    :param response_type: Either to create a DRF response (Response) or a Django JsonResponse. (settings.RESPONSE_TYPES)</span>
+<span class="sd">    :param error: Error object (from settings.ERROR)</span>
+<span class="sd">    :param error_code: status_code to be set in the response.</span>
+<span class="sd">    :param use_template: (True/False) If the error template (dataglen/message.html) should be used or plain response.</span>
+<span class="sd">    :param response_params: A list (key:value) of additional parameters to be defined in the response</span>
+<span class="sd">    :return: Returns a response</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">use_template</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;dataglen/message.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;code&#39;</span><span class="p">:</span> <span class="n">error</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+                                                             <span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="n">error</span><span class="o">.</span><span class="n">description</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">response</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">response_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">response_dict</span><span class="p">[</span><span class="s">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">description</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">response_params</span><span class="p">:</span>
+            <span class="n">response_dict</span><span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">response_type</span> <span class="o">==</span> <span class="n">settings</span><span class="o">.</span><span class="n">RESPONSE_TYPES</span><span class="o">.</span><span class="n">DRF</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">response_dict</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">error_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">response_dict</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">response_type</span> <span class="o">==</span> <span class="n">settings</span><span class="o">.</span><span class="n">RESPONSE_TYPES</span><span class="o">.</span><span class="n">DJANGO</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="n">response_dict</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">error_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="log_and_return_error"><a class="viewcode-back" href="../../modules/utils.html#utils.errors.log_and_return_error">[docs]</a><span class="k">def</span> <span class="nf">log_and_return_error</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+                         <span class="n">response_type</span><span class="p">,</span> <span class="n">use_template</span><span class="p">,</span> <span class="n">comments</span><span class="p">,</span>
+                         <span class="n">response_params</span><span class="o">=</span><span class="p">{},</span> <span class="n">source_key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a response, writes error logs into ActionLogByError, ActionLogByUser and ActionLogBySource</span>
+<span class="sd">    (if source_key is mentioned) and returns the response.</span>
+
+<span class="sd">    :param user_id: User id of the user</span>
+<span class="sd">    :param request: Http request received. Either from Django/Django REST framework.</span>
+<span class="sd">    :param ts: Timestamp at which the request was received</span>
+<span class="sd">    :param error: Error instance (settings.ERRORS)</span>
+<span class="sd">    :param response_type: Either to create a DRF response (Response) or a Django Response (HttpResponse)</span>
+<span class="sd">    :param use_template: If to use error template while rendering a response. Or plain JSON (further categorization</span>
+<span class="sd">    :param comments: Comments to be stored with the log</span>
+<span class="sd">    :param response_params: A list (key:value) of additional parameters to be defined in the response</span>
+<span class="sd">    :param source_key: source_key if the error is associated to a source.</span>
+<span class="sd">    :return: Returns an Http Response of type (as defined in the call).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">response</span><span class="p">,</span> <span class="n">text_response</span> <span class="o">=</span> <span class="n">generate_error_response</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response_type</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+                                                      <span class="n">error</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">use_template</span><span class="p">,</span> <span class="n">response_params</span><span class="p">)</span>
+    <span class="c"># action log by error, user and source</span>
+    <span class="n">log_an_error</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">text_response</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">error</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span>
+                 <span class="bp">False</span><span class="p">,</span> <span class="n">source_key</span><span class="o">=</span><span class="n">source_key</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="n">comments</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+</div>
+<div class="viewcode-block" id="log_and_return_independent_error"><a class="viewcode-back" href="../../modules/utils.html#utils.errors.log_and_return_independent_error">[docs]</a><span class="k">def</span> <span class="nf">log_and_return_independent_error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">response_type</span><span class="p">,</span>
+                                     <span class="n">use_template</span><span class="p">,</span> <span class="n">comments</span><span class="p">,</span> <span class="n">response_params</span><span class="o">=</span><span class="p">{}):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a response, writes error logs into IndependentError and returns the response.</span>
+
+<span class="sd">    :param request: Http request received. Either from Django/Django REST framework.</span>
+<span class="sd">    :param ts: Timestamp at which the request was received</span>
+<span class="sd">    :param error: Error instance (settings.ERRORS)</span>
+<span class="sd">    :param response_type: Either to create a DRF response (Response) or a Django Response (HttpResponse)</span>
+<span class="sd">    :param use_template: If to use error template while rendering a response. Or plain JSON (further categorization</span>
+<span class="sd">    :param comments: Comments to be stored with the log</span>
+<span class="sd">    :param response_params: A list (key:value) of additional parameters to be defined in the response</span>
+<span class="sd">    :return: Returns an Http Response of type (as defined in the call).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">response</span><span class="p">,</span> <span class="n">text_response</span> <span class="o">=</span> <span class="n">generate_error_response</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">error</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+                                                      <span class="n">use_template</span><span class="p">,</span> <span class="n">response_type</span><span class="p">,</span> <span class="n">response_params</span><span class="p">)</span>
+    <span class="n">log_an_independent_error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">text_response</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                             <span class="n">error</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">comments</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+</div>
+<div class="viewcode-block" id="log_and_return_bad_data_write_request"><a class="viewcode-back" href="../../modules/utils.html#utils.errors.log_and_return_bad_data_write_request">[docs]</a><span class="k">def</span> <span class="nf">log_and_return_bad_data_write_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates an error response, logs it into InvalidDataStorageBySource, DataWriteHistoryByUser,</span>
+<span class="sd">    DataWriteHistoryBySource, ActionLogByError, ActionLogByUser and ActionLogBySource tables and returns a response.</span>
+<span class="sd">    The error response may contain error details of a user defined error_message in Sensor settings.</span>
+
+<span class="sd">    :param request: Http request received. Either from Django/Django REST framework.</span>
+<span class="sd">    :param ts: Timestamp at which the request was received</span>
+<span class="sd">    :param error: Error instance (settings.ERRORS)</span>
+<span class="sd">    :param source: An instance of the Sensor class.</span>
+<span class="sd">    :return: Returns an Http Response of type (as defined in the call).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">failed_message</span><span class="p">:</span>
+        <span class="c"># TODO should we create a dict here as well?</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">failed_message</span><span class="p">,</span>
+                                <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="n">error</span><span class="o">.</span><span class="n">description</span><span class="p">},</span>
+                                <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+    <span class="c"># writes the invalid data, action logs and data write history</span>
+    <span class="n">log_a_data_write_failure</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(),</span>
+                             <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">error</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                             <span class="n">ts</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span></div>
+</pre></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Deva Seetharam, Sunil Ghai.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

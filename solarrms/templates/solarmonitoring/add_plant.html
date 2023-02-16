@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataGlen Add Plants</title>
+    <!--STYLESHEET-->
+    <!--=================================================-->
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="/static/solarrms/css/bootstrap.min.css" rel="stylesheet">
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link href="/static/solarrms/css/nifty.min.css" rel="stylesheet">
+    <!--Font Awesome [ OPTIONAL ]-->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet">
+
+    <!--SolarRMS CSS-->
+    <link href="/static/solarrms/css/dataglensolar.css" rel="stylesheet">
+
+    <!--Nifty Premium Icon [ DEMONSTRATION ]-->
+    <link href="/static/solarrms/css/demo/nifty-demo-icons.min.css" rel="stylesheet">
+
+    <!--Bootstrap Validator [ OPTIONAL ]-->
+    <link href="/static/solarrms/plugins/bootstrap-validator/bootstrapValidator.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="container" class="effect aside-float aside-bright mainnav-out">
+
+        <header id="navbar">
+            <div id="navbar-container" class="boxed">
+                <!--Navbar Dropdown-->
+                <!--================================-->
+                <div class="navbar-content clearfix">
+                    <ul class="nav navbar-top-links pull-left">
+                        <!--Notification dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <li>
+                            <ol class="breadcrumb mar-ver-5"> 
+                                <li class="text-center text-bold" > 
+                                    <a href="/solar/client">
+                                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                                        <span>All Plants</span>
+                                    </a> 
+                                </li> 
+                            </ol>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-top-links pull-right">
+                        <!--User dropdown-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        
+                        <li class="dropdown">
+                                <span class="pull-right p-l-10 p-r-15 p-t-5 text-thin text-semibold last_updated_time" id="last_updated_time"></span>
+                        </li>
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!--End user dropdown-->
+
+                        <li>
+                            <a href="{% url 'account_logout' %}" class="btn text-thin text-center text-semibold text-white" style="background-color:#2672a6"> Logout </a>
+                        </li>
+                    </ul>
+                </div>
+                <!--================================-->
+                <!--End Navbar Dropdown-->
+            </div>
+        </header>
+
+        <div class="boxed">
+
+            <div id="content-container">
+
+                <div id="page-content" style="padding-top: 0px;">
+
+                    <div class="row" id="loading_row">
+                        <div class="loading" id="client_spinner" hidden>
+                        </div>
+                    </div>
+
+                    <h3>Create a Plant</h3>
+
+                            <div class="panel">
+
+                                <!--form-->
+                                <form class="form-horizontal" id="create_plant">
+                                    <div class="panel-body">
+                                        <div id="form_error_message_plant"></div>
+                                        <h3 class="text-center">Plant Details</h3>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <!-- <div class="col-lg-1 col-md-1 col-sm-1"></div> -->
+                                                <div class="col-lg-10 col-md-10 col-sm-10">
+                                                    <label class="col-lg-4 control-label">Plant Name *</label>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" class="form-control" id="plant_name" name="plant_name" placeholder="Plant Name" required="required">
+                                                        <i>(Type a name without the word "plant" anywhere in the name)</i>
+                                                        <div class="row"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                                <div class="form-group">
+                                                    <label class="col-lg-5 control-label">Location *</label>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" class="form-control" id="location" name="location" placeholder="Plant Location" required="required">
+                                                        <i>(Type a valid location)</i>
+                                                    </div>
+                                                    <div class="row"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                                <div class="form-group">
+                                                    <label class="col-lg-5 control-label">City *</label>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" class="form-control" id="city" name="city" placeholder="Plant City">
+                                                        <i>(Type a city)</i>
+                                                    </div>
+                                                    <div class="row"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                                <div class="form-group">
+                                                    <label class="col-lg-5 control-label">Plant DC Capacity *</label>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" class="form-control" id="plant_dc_capacity" name="plant_dc_capacity" placeholder="Plant DC Capacity in kW" required="required">
+                                                        <i>(Type an integer)</i>
+                                                    </div>
+                                                    <div class="row"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                                <div class="form-group">
+                                                    <label class="col-lg-5 control-label">Plant AC Capacity *</label>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" class="form-control" id="plant_ac_capacity" name="plant_ac_capacity" placeholder="Plant AC Capacity in kW">
+                                                        <i>(Type an integer)</i>
+                                                    </div>
+                                                    <div class="row"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                                <div class="form-group">
+                                                    <label class="col-lg-5 control-label">Latitude *</label>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Latitude">
+                                                        <i>(Type a decimal value)</i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                                <div class="form-group">
+                                                    <label class="col-lg-5 control-label">Longitude *</label>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Longitude">
+                                                        <i>(Type a decimal value)</i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                                <div class="form-group">
+                                                    <label class="col-lg-5 control-label">Elevation (mtr)</label>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" class="form-control" id="elevation" name="elevation" placeholder="Elevation in meters (Optional)">
+                                                        <i>(Type a string)</i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <h3 class="text-center">SPV Details</h3>
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="col-lg-6 control-label">SPV Module Wp (at STC) *</label>
+                                                    <div class="col-lg-6">
+                                                        <input type="number" class="form-control" id="spv_module_wp_stc" name="spv_module_wp_stc" placeholder="SPV Module Wp">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="col-lg-6 control-label">SPV Module Eff. (at STC) *</label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="spv_module_efficiency_stc" name="spv_module_efficiency_stc" placeholder="SPV Module Eff. in %">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                    <div class="form-group">
+                                                        <label class="col-lg-4 control-label">Length *</label>
+                                                        <div class="col-lg-5">
+                                                            <input type="text" class="form-control" id="length_module" name="length_module" placeholder="Length">
+                                                        </div>
+                                                        <div class="col-lg-3" style="padding-top: 1vh;">
+                                                            <strong><span>mm</span></strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                    <div class="form-group">
+                                                        <label class="col-lg-4 control-label">Breadth *</label>
+                                                        <div class="col-lg-5">
+                                                            <input type="text" class="form-control" id="breadth_module" name="breadth_module" placeholder="Breadth">
+                                                        </div>
+                                                        <div class="col-lg-3" style="padding-top: 1vh;">
+                                                            <strong><span>mm</span></strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="col-lg-6 control-label">SPV Module Make *</label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="spv_module_make" name="spv_module_make" placeholder="SPV Module Make">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="col-lg-6 control-label">SPV Module Technology *</label>
+                                                    <div class="col-lg-6">
+                                                        <select class="form-control" id="spv_module_technology" name="spv_module_technology">
+                                                            <option value="" disabled selected> --Select SPV Module Technology-- </option>
+                                                            <option value="Polycrystalline_Silicon">Polycrystalline Silicon</option>
+                                                            <option value="Monocrystalline_Silicon">Monocrystalline Silicon</option>
+                                                            <option value="a-Si">a-Si (Amorphous Silicon)</option>
+                                                            <option value="CIGS">CIGS</option>
+                                                            <option value="CdTe">CdTe</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="col-lg-6 control-label">Total Number of SPV *</label>
+                                                    <div class="col-lg-6">
+                                                        <input type="number" class="form-control" id="total_number_of_spv" name="total_number_of_spv" placeholder="Total Number of SPV">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <button type="button" class="finish btn btn-success pull-right" id="create_plant-button">Create Plant</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--JAVASCRIPT-->
+    <!--=================================================-->
+    <!--ALL [ REQUIRED ]-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.3/js.cookie.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+
+    <script src="/static/solarrms/js/nifty.min.js"></script>
+
+    <script src="/static/solarrms/js/demo/slidereveal.js"></script>
+    <script src="/static/solarrms/js/demo/csrf_validation.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-noty/2.4.0/packaged/jquery.noty.packaged.min.js"></script>
+    <script src="/static/solarrms/js/demo/noty.js"></script>
+
+    <!--Bootstrap Wizard [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+
+    <!--Bootstrap Validator [ OPTIONAL ]-->
+    <script src="/static/solarrms/plugins/bootstrap-validator/bootstrapValidator.min.js"></script>
+
+    <!--Form Wizard [ SAMPLE ]-->
+    <script src="/static/solarrms/js/demo/form-wizard.js"></script>
+    
+    <script src="/static/solarrms/js/demo/add_plant.js"></script>
+
+</body>
+</html>

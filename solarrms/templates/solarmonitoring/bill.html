@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0811)https://mail-attachment.googleusercontent.com/attachment/u/0/?ui=2&ik=6ce1e1bb28&view=att&th=163ed9131f941367&attid=0.1&disp=inline&realattid=f_ji9vyxix1&safe=1&zw&saddbat=ANGjdJ_25ygpC09olFll_NT2DuAajlYiZQZj9iWhxcSYe7DbbqtKWyRdMem1jia5-vlFiaRllUX57rZz5SOw0I9zMb8y71XSfwyDJQO8YItR-L60RGcnNCiW8CvD0webJQATSYgNjT0t9a8i2bXGLRExPmVj-n50E-t7SLpHAzGt-_JgBYBXQDlTVuJQVb_D2jHRS2cvxhaHZ6GhoICG7Ayy14Eav9CWY5gIPrZ3jhQBFuCdPQvrJy3bC-TRHt_1Ocnk-96nrFkAUeFT6rqiwZJVwusLspFnPI0r8pcTFVZpEi-96LHRR2DYB_2Xa54_FaAhFx6GD9-i4ZEM1orkrsHiEST-SX3z74teH69D9M54oBcE4VLeH7c_WB69XYM9-nGHRKVjx1odtYgJsu5WHWIrpMuA8maslEsCy998vuNp-D3oWj69YMxitVyASkMUDR7KnFYQpaHTEcAywrUqT3B6Dk5n_hUfsJzFjfr3I634GOHWIdShIFENJ6qgxOC-oFEcaTIomKWKifCgWS4v3c7aI6CVIIGnqQwCDVRRnxQLxywsRLbLOkuBZOC2mvtvt3ZNC5xTbqwGzRoJCdn2N4_9GFjiLLnfry_H7-3IjRS7F52O2DDtnY_0Vyskqco -->
+<html class="gr__mail-attachment_googleusercontent_com">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+        table {
+            border-collapse: collapse;
+            border: none;
+            font-size: 12px;
+            font-weight: 300;
+        }
+        table tr td {
+            border-color: #c8c8c8;
+            padding: 5px;
+        }
+        table tr th {
+            border:  none;
+            padding-bottom: 10px;
+            font-size:12px;
+        }
+        body {
+            width: 600px;
+            margin: 0 auto;
+            font-size: 11px;
+            font-family: 'Roboto', sans-serif;
+        }
+        .top-logo-section {
+
+        }
+        .logo {
+            height: 60px;
+            width: 80px;
+        }
+        .logo img {
+            height: 100%;
+        }
+        .logo_wrapper {
+            float: left;
+        }
+        .top-left-wrapper {
+            float: right;
+            width: 30%;
+            text-align:right;
+        }
+        .invoice_txt {
+         font-size: 32px;
+         color: #a6a6a6;
+         text-transform: uppercase;
+         margin-bottom: 10px;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        .invoice_hdr_term {
+            margin-bottom: 8px;
+        }
+        .invoice_hdr_term .txt_label {
+            margin-right: 5px;
+            font-weight: 600;
+        }
+        .invoice_hdr_term .address{
+            text-align: right;
+        }
+        .flex-container {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-flow: row wrap;
+            flex-flow: row wrap;
+        }
+
+        .flex-item {
+            -webkit-flex: 1 auto;
+            flex: 1 auto;
+        }
+        .plant_info_section {
+            margin: 20px 0px;
+        }
+        .field_title {
+            font-size: 12px;
+        }
+        .field_val {
+            font-size: 12px;
+            margin-top: 10px;
+            border: 1px solid #c8c8c8;
+            padding: 5px;
+        }
+        .bank_title {
+            margin-bottom: 10px;
+            color: #a6a6a6;
+            text-decoration: underline;
+        }
+        .bank_txt {
+            color: #a6a6a6;
+            font-size: 10px;
+        }
+
+    </style>
+</head>
+
+<body data-gr-c-s-loaded="true">
+    <div>
+        <section class="top-logo-section clearfix">
+            <div class="logo_wrapper">
+                <div class="logo">
+                    <img src={{ logo }} />
+                </div>
+            </div>
+            <div class="top-left-wrapper">
+                <div class="invoice_txt">Invoice</div>
+                <div class="invoice_hdr_term"><strong class="txt_label">Date </strong><span>{{ bill_date }}</span></div>
+                <div class="invoice_hdr_term"><strong class="txt_label">INVOICE # </strong><span>{{ invoice_number }}</span></div>
+                <div class="invoice_hdr_term">
+                    <div class="invoice_hdr_term ">To</div>
+                    <div class="invoice_hdr_term ">{{ payer_name }}</div>
+                    <div><span class="txt_label">Address :</span><span class="address">{{ payer_address }}</span></div>
+                </div>
+                <div class="invoice_hdr_term">
+                    <strong class="txt_label">GST :</strong>
+                    <span>{{ clint_GST }}</span>
+                </div>
+            </div>
+
+        </section>
+        <section class="plant_info_section">
+            <div class="flex-container">
+                <div class="flex-item">
+                    <div class="field_title">Solar plant capacity (kWp)</div>
+                    <div class="field_val">{{ plant_capacity }}</div>
+                </div>
+                 <div class="flex-item">
+                    <div class="field_title">Bill date</div>
+                    <div class="field_val">{{ bill_date }}</div>
+                </div>
+                <div class="flex-item">
+                    <div class="field_title">Bill Supplies</div>
+                    <div class="field_val">{{ bill_supplies }}</div>
+                </div>
+                <div class="flex-item">
+                    <div class="field_title">Due Date</div>
+                    <div class="field_val">{{ due_date }}</div>
+                </div>
+
+
+            </div>
+        </section>
+                      <!--   <div class="flex-item">
+                    <div class="field_title">Bill amount payable</div>
+                    <div class="field_val">{{ solar_charges }}</div>
+                </div> -->
+<!--         <table style="margin-left:auto;margin-right:auto" border="1">
+            <caption>&nbsp;</caption>
+            <tbody>
+                <tr>
+                    <td><strong>Solar plant total capacity</strong></td>
+                    <td style="width:533.95px">{{ plant_capacity }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Bill date</strong></td>
+                    <td style="width:533.95px">{{ bill_date }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Bill Supplies</strong></td>
+                    <td style="width:533.95px">{{ bill_supplies }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Bill amount payable</strong></td>
+                    <td style="width:533.95px">{{ solar_charges }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Bill amount payable in words ({{currency}})</strong></td>
+                    <td style="width:533.95px">{{ solar_charges_in_words }}</td>
+                </tr>
+            </tbody>
+        </table> -->
+        <!-- {{ solar_charges }} -->
+        <table style="margin-left:auto;margin-right:auto; margin-top: 30px;" border="1">
+            <thead>
+                <tr>
+                    <th style="width:224.833px;text-align:center"><strong>Item</strong></th>
+                    <th style="width:159.217px;text-align:center"><strong>Quantity</strong></th>
+                    <th style="width:101.283px;text-align:center"><strong>Unit</strong></th>
+                    <th style="width:259.667px;text-align:center"><strong>Comments</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Current Reading (A)</td>
+                    <td style="width:159.217px">{{ current_reading }}</td>
+                    <td style="width:101.283px">&nbsp;</td>
+                    <td style="width:259.667px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Previous Reading (B)</td>
+                    <td style="width:159.217px">{{ previous_reading }}</td>
+                    <td style="width:101.283px">&nbsp;</td>
+                    <td style="width:259.667px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="text-decoration: underline;"><strong>Billed Units (C=A-B)</strong></td>
+                    <td style="width:159.217px">{{ billed_units }}</td>
+                    <td style="width:101.283px">&nbsp;</td>
+                    <td style="width:259.667px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="width:159.217px"></td>
+                    <td style="width:101.283px">&nbsp;</td>
+                    <td style="width:259.667px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Tariff per unit (D)</td>
+                    <td style="width:159.217px">{{ tarrif_per_unit }}</td>
+                    <td style="width:101.283px">{{ currency }}/kWh</td>
+                    <td style="width:259.667px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="font-style: italic;font-weight: 600;">Solar Charges (E = C * D)</td>
+                    <td style="width:159.217px">{{ solar_charges }}</td>
+                    <td style="width:101.283px">{{ currency }}</td>
+                    <td style="width:259.667px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Electrity duty (F)</td>
+                    <td style="width:159.217px">&nbsp;</td>
+                    <td style="width:101.283px">&nbsp;</td>
+                    <td style="width:259.667px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="font-style: italic;font-weight: 600;">Total Charges ( G = E + F )</td>
+                    <td style="width:159.217px">&nbsp;</td>
+                    <td style="width:101.283px">&nbsp;</td>
+                    <td style="width:259.667px">&nbsp;</td>
+                </tr>
+                <tr style="height:44px">
+                    <td style="width:224.833px;height:44px">Last date for early payment ({{early_discount}}%discount)</td>
+                    <td style="width:159.217px;height:44px">{{ early_date }}</td>
+                    <td style="width:101.283px;height:44px">&nbsp;</td>
+                    <td style="width:259.667px;height:44px">&nbsp;</td>
+                </tr>
+                <tr style="height:66px">
+                    <td style="width:224.833px;height:66px">Bill amount if early discount availed ( H = {{early_discount_factor}} * E)</td>
+                    <td style="width:159.217px;height:66px">{{early_discount_ammount}}</td>
+                    <td style="width:101.283px;height:66px">&nbsp;</td>
+                    <td style="width:259.667px;height:66px">Benefit {{currency}} {{benefit}}</td>
+                </tr>
+                <tr>
+                    <td style="width:224.833px">Late Payment Penalty</td>
+                    <td style="width:532.167px" colspan="3">{{ late_payment_penalty }}</td>
+                </tr>
+            </tbody>
+        </table>
+         <section class="plant_info_section">
+            <div class="flex-container">
+                <div class="flex-item" style="width: 0">
+                    <div class="bank_title">Bank Details</div>
+                    <div class="bank_txt"> {{ client_bank_details }}</div>
+                </div>
+                <div class="flex-item" style="width: 0; text-align: right">
+                    <div>For <span> {{ client_short_name }}</span></div>
+                    <p><strong>&nbsp;</strong></p>
+                    <p><strong>&nbsp;</strong></p>
+
+                    <div><strong>Authorized Signatory</strong></div>
+                </div>
+            </div>
+         </section>
+         <div style="page-break-before: always;"></div>
+<!--         <table style="margin-left:auto;margin-right:auto" border="1">
+            <tbody>
+                <tr>
+                    <td><strong>Payer</strong></td>
+                    <td style="width:602.35px">{{ payer_name }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Payer Address</strong></td>
+                    <td style="width:602.35px">{{ payer_address }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Solar Plant Total Capcaity (kW)</strong></td>
+                    <td style="width:602.35px">{{ plant_capacity }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Summary Date</strong></td>
+                    <td style="width:602.35px">{{ bill_date }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Bill Supplies</strong></td>
+                    <td style="width:602.35px">{{ bill_supplies }}</td>
+                </tr>
+            </tbody>
+        </table> -->
+        <p>&nbsp;</p>
+        <table style="margin-left:auto;margin-right:auto" border="1">
+            <tbody>
+                <tr>
+                    <td style="width:177.717px"><strong>Block</strong></td>
+                    <td style="width:70.2833px"><strong>Reading Type</strong></td>
+                    <td style="width:125px"><strong>Previous Reading (kWh)</strong></td>
+                    <td style="width:125px"><strong>Current Reading (kWh)</strong></td>
+                    <td style="width:125px"><strong>Billable Units (kWh)</strong></td>
+                    <td style="width:125px"><strong>Comments</strong></td>
+                </tr>
+                <tr>
+                    <td style="width:177.717px"><strong>{{ payer_name }}</strong></td>
+                    <td style="width:70.2833px">Energy Meter</td>
+                    <td style="width:125px">{{ previous_reading }}</td>
+                    <td style="width:125px">{{ current_reading }}</td>
+                    <td style="width:125px">{{ billed_units }}</td>
+                    <td style="width:125px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="width:177.717px"><strong>Total</strong></td>
+                    <td style="width:70.2833px">&nbsp;</td>
+                    <td style="width:125px">{{ previous_reading }}</td>
+                    <td style="width:125px">{{ current_reading }}</td>
+                    <td style="width:125px">{{ billed_units }}</td>
+                    <td style="width:125px">&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>&nbsp;</p>
+    </div>
+        <div id="footer_content"></div>
+        <script>
+        document.getElementById("footer_content").innerHTML = "<div id='jscompleted'>";
+        console.log("footer_content");
+        </script>
+
+</body>
+
+</html>

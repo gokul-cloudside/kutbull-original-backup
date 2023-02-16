@@ -1,0 +1,1347 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+    
+    <style>
+
+        .chart {
+          position: relative;
+          display: inline-block;
+          width: 110px;
+          height: 110px;
+          margin-top: 5px;
+          margin-bottom: 0px;
+          text-align: center;
+        }
+        .chart canvas {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+        .percent {
+          display: inline-block;
+          line-height: 110px;
+          z-index: 2;
+        }
+        .percent:after {
+          content: '%';
+          margin-left: 0.1em;
+          font-size: .8em;
+        }
+
+        @media screen and (min-width: 1440px) {
+          .chart {
+            position: relative;
+            display: inline-block;
+            width: 190px;
+            height: 190px;
+            margin-top: 10px;
+            margin-left: 15px;
+            margin-bottom: 0px;
+            text-align: center;
+          }
+
+          .chart canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+
+          .percent {
+            display: inline-block;
+            line-height: 130px;
+            z-index: 2;
+            margin-right: 5.1em;
+          }
+          .percent:after {
+            content: '%';
+            margin-left: 0.1em;
+            font-size: 0.8em;
+          }
+        }
+
+        @media screen and (min-width: 1600px) {
+          .chart {
+            position: relative;
+            display: inline-block;
+            width: 220px;
+            height: 220px;
+            margin-top: 10px;
+            margin-left: 15px;
+            margin-bottom: 0px;
+            text-align: center;
+          }
+
+          .chart canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+
+          .percent {
+            display: inline-block;
+            line-height: 150px;
+            z-index: 2;
+            margin-right: 5.1em;
+          }
+          .percent:after {
+            content: '%';
+            margin-left: 0.1em;
+            font-size: 0.8em;
+          }
+        }
+
+        @media screen and (min-width: 1680px) {
+          .chart {
+            position: relative;
+            display: inline-block;
+            width: 210px;
+            height: 220px;
+            margin-top: 10px;
+            margin-left: 30px;
+            margin-bottom: 0px;
+            text-align: center;
+          }
+
+          .chart canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+
+          .percent {
+            display: inline-block;
+            line-height: 144px;
+            z-index: 2;
+            margin-right: 5.1em;
+          }
+          .percent:after {
+            content: '%';
+            margin-left: 0.1em;
+            font-size: 0.8em;
+          }
+        }
+
+        @media screen and (min-width: 1920px) {
+          .chart {
+            position: relative;
+            display: inline-block;
+            width: 310px;
+            height: 310px;
+            margin-top: 10px;
+            margin-left: 15px;
+            margin-bottom: 0px;
+            text-align: center;
+          }
+
+          .chart canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+
+          .percent {
+            display: inline-block;
+            line-height: 184px;
+            z-index: 2;
+            margin-right: 10.1em;
+          }
+          .percent:after {
+            content: '%';
+            margin-left: 0.1em;
+            font-size: 0.8em;
+          }
+        }
+
+        @media screen and (min-width: 2048px) {
+          .chart {
+            position: relative;
+            display: inline-block;
+            width: 270px;
+            height: 270px;
+            margin-top: 10px;
+            margin-left: 20px;
+            margin-bottom: 0px;
+            text-align: center;
+          }
+
+          .chart canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+
+          .percent {
+            display: inline-block;
+            line-height: 194px;
+            z-index: 2;
+            margin-right: 5.8em;
+          }
+          .percent:after {
+            content: '%';
+            margin-left: 0.1em;
+            font-size: 0.8em;
+          }
+        }
+
+        .red_color_font {
+            color: #e74c3c;
+        }
+
+        .black_color_font {
+            color: #2c3e50;
+        }
+
+        * { box-sizing: border-box; }
+
+        .btn.btn-default.is-checked {
+          background-color: #00b3ca;
+          color: white;
+        }
+
+        .grid {
+          border: 0px solid #333;
+        }
+
+        /* clear fix */
+        .grid:after {
+          content: '';
+          display: block;
+          clear: both;
+        }
+
+        /* ---- .element-item ---- */
+        
+        .element-item {
+          /*position: relative;*/
+          float: left;
+          border: 5px solid #ecf0f1;
+        }
+
+        /*.element-item > * {
+          margin: 0;
+          padding: 0;
+        }*/
+
+        .element-item .name {
+          /*position: absolute;*/
+
+          /*left: 10px;
+          top: 60px;*/
+          text-transform: none;
+          letter-spacing: 0;
+          /*font-size: 12px;
+          font-weight: normal;*/
+        }
+
+        .element-item .group_name {
+          /*position: absolute;*/
+
+          /*left: 62px;
+          top: 60px;*/
+          text-transform: none;
+          letter-spacing: 0;
+          /*font-size: 12px;
+          font-weight: normal;*/
+        }
+
+        .element-item .energy {
+          /*position: absolute;*/
+          /*left: 10px;
+          top: 0px;*/
+          /*font-size: 42px;
+          color: white;*/
+        }
+
+        .element-item .energy_text {
+          /*position: absolute;*/
+          /*left: 16px;
+          top: 44px;*/
+        }
+
+        .element-item .current {
+          /*position: absolute;*/
+          /*left: 10px;
+          top: 0px;*/
+          /*font-size: 42px;
+          font-weight: bold;*/
+          /*color: white;*/
+        }
+
+        .element-item .power {
+          /*position: absolute;*/
+          /*right: 35px;
+          top: 17px;*/
+          /*font-size: 42px;*/
+        }
+
+        .element-item .power_unit {
+          /*position: absolute;*/
+          /*right: 10px;
+          top: 29px;*/
+        }
+
+        .element-item .power_text {
+          /*position: absolute;*/
+          /*right: 10px;
+          top: 44px;*/
+        }
+
+        .element-item .inside_temperature {
+          /*position: absolute;*/
+          /*right: 30px;
+          top: 75px;*/
+          /*font-weight: bold;
+          font-size: 20px;*/
+        }
+
+        .element-item .inside_temperature_unit {
+          /*position: absolute;*/
+          /*right: 10px;
+          top: 75px;*/
+        }
+
+        .element-item .inside_temperature_text {
+          /*position: absolute;*/
+          /*right: 10px;
+          top: 91px;*/
+        }
+
+        .element-item .connection {
+          /*position: absolute;*/
+          /*left: 10px;
+          top: 76px;*/
+          /*font-size: 12px;*/
+        }
+
+        .element-item .total_ajbs_down {
+          /*position: absolute;*/
+          /*right: 26px;
+          top: 60px;*/
+          /*font-weight: bold;
+          font-size: 20px;*/
+        }
+
+        .element-item .total_ajbs_down_text {
+          /*position: absolute;*/
+          /*right: 10px;
+          top: 85px;*/
+        }
+
+        /*.element-item.connected { 
+            background: #86c042;
+        }
+        .element-item.disconnected { 
+            background: #ee4a47;
+        }
+        .element-item.unknown { 
+            background: #00b3ca;2
+        }*/
+
+        .fa.fa-blink.fa-bolt {
+            /*position: absolute;*/
+            /*right: 8px;
+            top: 7px;*/
+        }
+
+        .grey_panel {
+          background-color: #ecf0f1;
+        }
+
+        .text-dark {
+          color: #2b425b;
+        }
+
+        .modal-width {
+          max-width: 800px !important;
+        }
+
+    </style>
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/datepicker/0.5.0/datepicker.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css" rel="stylesheet">
+
+    <link href="/static/solarrms/plugins/jquery-modal/jquery.modal.min.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block body_block %}
+
+    <div id="page-content" style="padding-left: 0px;padding-right: 0px;padding-top: 0px;">
+        
+        <div class="row" id="loading_row">
+            <div class="loading" id="client_spinner">
+            </div>
+        </div>
+        <div class="tab-base">
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <!--Nav Tabs-->
+              <ul class="nav nav-tabs">
+                <li class="active" id="plant_section_li">
+                  <a onClick="redraw_window();" data-toggle="tab" href="#plant">Plant</a>
+                </li>
+                <li id="dc_devices_li">
+                  <a onClick="redraw_window();" data-toggle="tab" href="#dc_devices">DC Devices</a>
+                </li>
+                <li id="ac_devices_li">
+                  <a onClick="redraw_window();energy_meters_and_transformers();" data-toggle="tab" href="#ac_devices">AC Devices</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-8">
+              <div class="col-lg-1 col-md-1 col-sm-1 pad-no mar-no">
+                <div class="pull-right" style="padding-top: 4px;">
+                  <a class="btn btn-default disabled" id="power_irradiation-before" style="float: right;"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Previous
+                  </a>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-3">
+                <div style="padding-top: 4px;">
+                  <input type="text" class="form-control datepicker_start_days" id="datepicker_selected_picker" placeholder="Pick a Date" style="height: 31px;">
+                </div>
+              </div>
+              <div class="col-lg-1 col-md-1 col-sm-1 pad-no mar-no">
+                <div class="pull-left" style="padding-top: 4px;">
+                  <a class="btn btn-default disabled" id="power_irradiation-next" style="float: right;">Next <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2 pull-right">
+                <div class="p-t-10 text-thin text-semibold">
+                  <div id="last_updated_time"></div>
+                </div>
+              </div>
+              <!-- <li class="pull-right text-thin text-semibold" data-toggle="tab">
+                <div style="padding-right: 435px;padding-top: 5px;">
+                  <input type="text" class="form-control datepicker_start_days" id="datepicker_selected_picker" placeholder="Pick a Date" style="height: 31px;">
+                </div>
+              </li>
+              <li id="power_irradiation-li-next" class="next disabled">
+                <a class="btn btn-default" id="power_irradiation-next" style="float: right;">Next <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li id="power_irradiation-li" class="previous disabled">
+                <a class="btn btn-default" id="power_irradiation-before" style="float: right;"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Previous</a></li> -->
+            </div>
+          </div>
+
+          <!--Tabs Content-->
+          <div class="tab-content pad-no mar-no">
+              <div id="plant" class="tab-pane fade active in">
+                  <div class="row bord-no" style="margin-left: 0;">
+                      <div class="col-lg-2 col-md-2 pad-no mar-no">
+                          <div class="row bord-no pad-no mar-no">
+                              <div class="col-lg-12 col-md-12 pad-no mar-no">
+                                  <div class="panel panel-primary mar-no text-center">
+                                      <div id="image_div" class="panel-bordered-default p-t-15" style="border-color: #2980B9; border-width: 1vw">
+                                          <div id="client_logo"></div>
+                                          <!-- <img alt="Client Logo" style="width: 8vw" class="mar-btm" src="/static/solarrms/img/hfen.png"> -->
+                                      </div>
+                                      <div id="left_block" class="tiles color-e text-center text-white" style="height: 46vh;">
+                                          <span class="left_block_text text-2x mar-no text-white text-semibold p-b-15" id="client_name"></span><br>
+                                          <span class="left_block_text text-lg mar-no text-white text-semibold p-b-15 p-t-15" id="dc_capacity"></span><br>
+                                          <p class="left_block_text text-sm mar-no text-white text-semibold p-b-15">DC Capacity</p>
+                                          <p class="left_block_text text-sm mar-no text-white text-muted" id="plant_location"></p>
+                                          <div class="row tiles-container">
+                                              <hr align="center pad-no mar-no" width="50%" color="white" style="margin-bottom:10px;">
+                                              <span class="semi-bold text-2x mar-no" id="no_weather"></span>
+                                              <div class="col-md-5 col-xs-5 col-md-5 col-xs-5 pad-no mar-no">
+                                                  <div class="pad-top h-align-middle" id="weather_icon"></div>
+                                                  <h6 class="left_block_text bold text-uppercase tex-bold text-white text-center text-sm p-b-15" id="weather_status"></h6>
+                                              </div>
+
+                                              <div class="col-md-7 col-xs-7 col-md-7 col-xs-7 text-center pad-no mar-no">
+                                                  <div class="">
+                                                      <span class="left_block_text semi-bold text-white mar-no pad-no" id="temperature" style="font-size: 44px!important"></span>
+                                                      <div class="row pad-no mar-no">
+                                                          <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+                                                              <canvas class="canvas_icon" id="wind_status_icon" width="16" height="16"></canvas>
+                                                          </div>
+                                                          <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+                                                              <canvas class="canvas_icon" id="cloudy_status_icon" width="16" height="16"></canvas>
+                                                          </div>
+                                                      </div>
+                                                      <div class="row pad-no mar-no">
+                                                          <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+                                                              <span class="semi-bold text-x mar-no" id="windspeed"></span>
+                                                          </div>
+                                                          <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+                                                              <span class="semi-bold text-x mar-no" id="precipitation"></span>
+                                                          </div>
+                                                      </div>
+                                                      <div class="row pad-no mar-no">
+                                                          <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+                                                              <span class="semi-bold text-x mar-no" id="windspeed_unit">kmph</span>
+                                                          </div>
+                                                          <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+                                                              <span class="semi-bold text-x mar-no" id="precipitation_unit">MM</span>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+{#                                          <button class="btn btn-success mar-ver"><i class="fa fa-icon fa-check"></i> Connected</button>#}
+                                      </div>
+                                  </div>
+                              </div>
+                              {% if dataglenclient.slug == 'edp' %}
+                                <div class="col-lg-12 pad-no mar-no">
+                                  <div class="panel mar-no">
+                                    <!--Carousel-->
+                                    <!--===================================================-->
+                                    <div id="demo-carousel" class="carousel slide" data-ride="carousel">
+                                        <!--Indicators-->
+                                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                        <!-- <ol class="carousel-indicators out">
+                                            <li class="active" data-slide-to="0" data-target="#demo-carousel"></li>
+                                            <li data-slide-to="1" data-target="#demo-carousel"></li>
+                                            <li data-slide-to="2" data-target="#demo-carousel"></li>
+                                            <li data-slide-to="3" data-target="#demo-carousel"></li>
+                                        </ol> -->
+                                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                                        <div class="carousel-inner">
+                                            <div class="item panel mar-no active" style="height: 31.2vh; background-color: rgba(82,97,109,1) !important;">
+                                                <div class="overlayer top-right" style="z-index: 1;">
+                                                    <!-- <div class="p-r-15 p-t-15">
+                                                        <img src="/static/solarrms/img/panel.png" style="height: 10vh;">
+                                                    </div> -->
+                                                </div>
+                                                <div id="module_temperature_div" style="display:none">
+                                                  <div class="overlayer top-left pad-all text-white">
+                                                    <div class="p-l-5 p-b-15">
+                                                        <!-- <i class="fa fa-icon fa-thermometer-full fa-2x" aria-hidden="true"></i>
+                                                        <span class="text-thin text-white text-semibold text-sm" id="module_temperature"></span><br>
+                                                        <span class="text-thin text-white text-semibold text-xs p-b-10">Module Temp.</span> -->
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <div class="overlayer bottom-left pad-all">
+                                                  <div class="p-l-5">
+                                                    <!-- <span class="text-thin text-white text-semibold text-3x" id="panel_numbers"></span><br>
+                                                    <span class="text-white thin text-white text-semibold text-2x">Panels </span> <br>
+                                                    <span class="text-white text-sm" id="panel_make"></span> <br>
+                                                    <span class="text-white text-sm" id="panel_capacity"></span> -->
+                                                  </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--carousel-control-->
+                                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                        <a class="carousel-control left" data-slide="prev" href="#demo-carousel"><i class="demo-pli-arrow-left icon-2x"></i></a>
+                                        <a class="carousel-control right" data-slide="next" href="#demo-carousel"><i class="demo-pli-arrow-right icon-2x"></i></a>
+                                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                                    </div>
+                                    <!--===================================================-->
+                                    <!--End Carousel-->
+                        </div>
+                    </div>
+                              {% else %}
+                              <div class="col-lg-12 pad-no mar-no">
+				                        <div class="panel mar-no">
+                                      <!--Carousel-->
+                                      <!--===================================================-->
+                                      <div id="demo-carousel" class="carousel slide" data-ride="carousel">
+                                          <!--Indicators-->
+                                          <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                          <!-- <ol class="carousel-indicators out">
+                                              <li class="active" data-slide-to="0" data-target="#demo-carousel"></li>
+                                              <li data-slide-to="1" data-target="#demo-carousel"></li>
+                                              <li data-slide-to="2" data-target="#demo-carousel"></li>
+                                              <li data-slide-to="3" data-target="#demo-carousel"></li>
+                                          </ol> -->
+                                          <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                                          <div class="carousel-inner">
+                                              <div class="item panel mar-no active" style="height: 31.2vh; background-color: rgba(82,97,109,1) !important;">
+                                                  <div class="overlayer top-right" style="z-index: 1;">
+                                                      <div class="p-r-15 p-t-15">
+                                                          <img src="/static/solarrms/img/panel.png" style="height: 10vh;">
+                                                      </div>
+                                                  </div>
+                                                  <div id="module_temperature_div" style="display:none">
+                                                      <div class="overlayer top-left pad-all text-white">
+                                                          <div class="p-l-5 p-b-15">
+                                                              <i class="fa fa-icon fa-thermometer-full fa-2x" aria-hidden="true"></i>
+                                                              <span class="text-thin text-white text-semibold text-sm" id="module_temperature"></span><br>
+                                                              <span class="text-thin text-white text-semibold text-xs p-b-10">Module Temp.</span>
+                                                          </div>
+
+                                                      </div>
+                                                  </div>
+                                                  <div class="overlayer bottom-left pad-all">
+                                                      <div class="p-l-5">
+                                                          <span class="text-thin text-white text-semibold text-3x" id="panel_numbers"></span><br>
+                                                          <span class="text-thin text-white text-semibold text-2x">Panels </span> <br>
+                                                          <span class="text-white text-sm" id="panel_make"></span> <br>
+                                                          <span class="text-white text-sm" id="panel_capacity"></span>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+
+                                          <!--carousel-control-->
+                                          <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                          <a class="carousel-control left" data-slide="prev" href="#demo-carousel"><i class="demo-pli-arrow-left icon-2x"></i></a>
+                                          <a class="carousel-control right" data-slide="next" href="#demo-carousel"><i class="demo-pli-arrow-right icon-2x"></i></a>
+                                          <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                                      </div>
+                                      <!--===================================================-->
+                                      <!--End Carousel-->
+				                </div>
+				            </div>
+                    {% endif %}
+                          </div>
+                      </div>
+                      <div class="col-lg-8 pad-no mar-no">
+                          <div class="row pad-no mar-no">
+                              <div class="col-lg-12 panel pad-no mar-no">
+                                  <div class="pad-all" id="power_and_irradiation_container" style="height: 40vh">
+                                      <div id="no_power_and_irradiation"></div>
+                                      <canvas id="power_irradiation_chartjs"></canvas>
+                                      <div class="row pad-no mar-no">
+                                          <div class="col-lg-3 col-md-3"></div>
+                                          <div class="col-lg-6 col-md-6 text-center">
+                                              <div id="annotation_tooltip" hidden></div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="row mar-no">
+                                      <div class="col-lg-4 col-md-4" id="generation_summary_div">
+				                        <div class="panel" style="background-color: rgb(236,240,241); !important;">
+				                    <div class="pad-all media">
+				                        <div class="overlayer top-right">
+                                              <div class="p-r-20 p-t-15">
+                                                  <img class="" src="/static/solarrms/img/generation.png" style="height:6vh">
+                                              </div>
+
+				                        </div>
+				                        <div class="media-body">
+                                              <div class="row pad-no mar-no">
+  					                            <div class="col-lg-7 col-md-7 col-sm-7 pad-no mar-no">
+                                                      <p class="h2 mar-no media-heading" id="plant_today_generation"></p>
+                                                      <span>Generation Today</span>
+                                                  </div>
+                                              </div>
+                                              <div class="row pad-no mar-no" style="padding-top: 10px !important;">
+                                                  <div class="pad-no mar-no col-lg-4 col-md-4">
+                                                      <span class="text-semibold" id="plant_total_energy"></span> <br>Total
+                                                  </div>
+                                                  <div class="pad-no mar-no col-lg-4 col-md-4" id="pvsyst_generation_today_div" hidden>
+                                                      <span class="text-semibold" id="pvsyst_generation"></span> <br>PVsyst
+                                                  </div>
+                                                  <div class="pad-no mar-no col-lg-4 col-md-4">
+                                                      <span class="text-semibold" id="predicted_plant_generation_today"></span> <br><span id="predicted_plant_generation_text"></span>
+                                                  </div>
+                                              </div>
+				                        </div>
+				                    </div>
+				                    <div class="progress progress-xs progress-dark-base mar-no">
+				                        <div role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-dark" style="width: 75%"></div>
+				                    </div>
+				                </div>
+                                      </div>
+                                      <div class="col-lg-4 col-md-4" id="insolation_div" style="display:none">
+				                        <div class="panel" style="background-color: rgb(236,240,241); !important;">
+				                    <div class="pad-all media">
+				                        <div class="overlayer top-right">
+                                              <div class="p-r-20 p-t-15">
+                                                  <img class="" src="/static/solarrms/img/sun.png" style="height:6vh">
+                                              </div>
+				                        </div>
+				                        <div class="media-body">
+				                            <p class="h2 mar-no media-heading" id="insolation"></p>
+				                            <span>Insolation Today</span>
+                                              <div class="row p-t-10">
+                                                  <div class="col-lg-6 col-md-6" id="pvsyst_ghi_div" hidden>
+                                                      <span class="text-semibold" id="pvsyst_ghi"></span> <br>PVsyst GHI
+                                                  </div>
+                                                  <div class="col-lg-6 col-md-6" id="pvsyst_in_plane_div" hidden>
+                                                      <span class="text-semibold" id="pvsyst_in-plane"></span> <br/>PVsyst In-plane
+                                                  </div>
+                                              </div>
+				                        </div>
+				                    </div>
+				                    <div class="progress progress-xs progress-dark-base mar-no">
+				                        <div role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-dark" style="width: 75%"></div>
+				                    </div>
+				                </div>
+                                      </div>
+                                      <div class="col-lg-4 col-md-4" id="economic_benefits_div">
+				                        <div class="panel" style="background-color: rgb(236,240,241); !important;">
+				                    <div class="pad-all media">
+				                        <div class="overlayer top-right">
+                                              <div class="p-r-20 p-t-15">
+                                                  <img class="" src="/static/solarrms/img/co2.png" style="height:6vh">
+                                              </div>
+
+				                        </div>
+				                        <div class="media-body">
+				                            <p class="h2 mar-no media-heading" id="co2_value">
+                                              </p>
+				                            <span>Carbon Emissions Saved</span>
+                                              <div class="row p-t-10">
+                                                  <div class="col-lg-6 col-md-6">
+                                                      <span class="text-semibold" id="houses_powered"></span> <br>Houses Powered
+                                                  </div>
+                                                  <div class="col-lg-6 col-md-6">
+                                                      <span class="text-semibold" id="distance_travelled"></span> <br/>Trees Planted
+                                                  </div>
+                                              </div>
+				                        </div>
+				                    </div>
+				                    <div class="progress progress-xs progress-dark-base mar-no">
+				                        <div role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-dark" style="width: 75%"></div>
+				                    </div>
+				                </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-lg-12 pad-no">
+
+				        <div class="panel">
+				            <!--Panel heading-->
+				            <div class="panel-heading" style="background-color: rgb(236,240,241)">
+				                <div class="panel-control">
+				                    <ul class="nav nav-tabs">
+				                        <li class="active">
+				                            <a data-toggle="tab" href="#operations_and_maintenance">
+				                                <img src="/static/solarrms/img/oandmblack.png" style="height: 4vh;">
+				                            </a>
+				                        </li>
+<!--
+				                        <li>
+				                            <a data-toggle="tab" href="#generation_availability_charts">
+				                                <img src="/static/solarrms/img/panel.png" style="height: 4vh;">
+				                            </a>
+				                        </li>
+-->
+				                    </ul>
+				                </div>
+				                <h3 class="panel-title">Operations & Maintenance</h3>
+				            </div>
+
+				            <!--Panel Body-->
+				            <div class="">
+			                <div class="tab-content pad-no mar-no" style="height: 24vh;">
+		                    <div id="operations_and_maintenance" class="tab-pane fade in active">
+                          <div class="row pad-no mar-no">
+                            <div class="col-lg-8 col-md-8 col-xs-8 col-sm-8 text-center mar-no p-t-15">
+                              <div class="row">
+                                <div id="data_alerts_div" style="display: none">
+                                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center mar-no">
+                                    <span class="black_color_font text-3x text-bold" id="devices_down">0</span>
+                                    <p class=" text-sm text-thin text-semibold">Devices<br>  Down</p>
+                                    <p class="text-xs text-thin" id="devices_down_details"></p>
+                                  </div>
+                                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center mar-no" style="padding-left: 0px;padding-right: 0px;">
+                                    <span class="black_color_font text-3x text-bold" id="alarms_raised">0</span>
+                                    <p class="text-sm text-thin text-semibold">Alarms<br>  Raised</p>
+                                    <p class="text-xs text-thin" id="alarms_raised_details"></p>
+                                  </div>
+                                </div>
+                                <div id="data_analytics_div" style="display: none">
+                                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center mar-no" style="padding-left: 0px;padding-right: 0px;">
+                                    <span class="black_color_font text-3x text-bold" id="predictive_issues">0</span>
+                                    <p class="text-sm text-thin text-semibold">Predictive <br> Issues</p>
+                                    <p class="text-xs text-thin" id="predictive_issues_details"></p>
+                                  </div>
+                                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center mar-no" style="padding-left: 0px;padding-right: 0px;">
+                                    <span class="black_color_font text-3x text-bold" id="inverters_panel_need_cleaning" >0</span>
+                                    <p class="text-sm text-thin text-semibold">Inv. Panels <br> Need Cleaning</p>
+                                    <p class="text-xs text-thin" id="inverters_panels_need_cleaning_details"></p>
+                                  </div>
+                                </div>
+                                <div id="gateways_div" style="display: none">
+                                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center mar-no" style="padding-left: 0px;padding-right: 0px;">
+                                    <span class="black_color_font text-3x text-bold" id="gateways_disconnected">0</span>
+                                    <p class="text-sm text-thin text-semibold">Gateways <br> Disconnected</p>
+                                    <p class="text-xs text-thin" id="gateways_disconnected_details"></p>
+                                  </div>
+                                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center mar-no" style="padding-left: 0px;padding-right: 0px;">
+                                    <span class="black_color_font text-3x text-bold" id="gateways_powered_off">0</span>
+                                    <p class="text-sm text-thin text-semibold">Gateways <br> Powered Off</p>
+                                    <p class="text-xs text-thin" id="gateways_powered_off_details"></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- <div class="col-lg-1 col-md-1 hidden-xs">
+                              <div class="mar-ver" style="border-left: 1px solid rgba(0,0,0,0.14);height: 18vh;margin-left: 2.5vw"></div>
+                            </div> -->
+                            <div class=" col-lg-2 col-md-2 text-center p-t-15 mar-no" style="padding-left: 0px;padding-right: 10px;">
+                              <div class="pad-no mar-no" id="grid_availability" style="height: 18vh;" align="center">
+                                <div class="row">
+                                  <span id="grid_availability_chart" class="pad-no chart" data-percent="0">
+                                    <span class="percent"></span>
+                                  </span>
+                                </div>
+                              </div>
+                              <div class="row text-center">
+                                <p class="text-thin text-center text-semibold">Grid Availability</p>
+                              </div>
+                            </div>
+                            <div class="hidden-xs col-lg-2 col-md-2 text-center p-t-15 mar-no" style="padding-left: 0px;padding-right: 15px;">
+                                <div class="pad-no mar-no" id="equipment_availability" style="height: 18vh;" align="center">
+                                  <div class="row">
+                                    <span id="equipment_availability_chart" class="pad-no chart" data-percent="0">
+                                        <span class="percent"></span>
+                                    </span>
+                                  </div>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                              <p class="text-thin text-center text-semibold">Devices Availability</p>
+                            </div>
+                          </div>
+		                    </div>
+		                    <div id="generation_availability_charts" class="tab-pane fade">
+                          <!-- <div class="col-lg-6 col-md-6 pad-no mar-no" style="height: 22vh;">
+                              <div id="generation" style="width: 25vw;height: 20vh;"></div>
+                          </div> -->
+                          <div class="col-lg-6 col-md-6 pad-no mar-no">
+                              <div id="availability" style="width: 28vw;height: 26vh;"></div>
+                          </div>
+		                    </div>
+			                </div>
+				            </div>
+				        </div>
+                                  
+
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-lg-2 pad-no mar-no">
+                          <div class="row bord-no pad-no mar-no">
+                              <div class="col-lg-12 pad-no mar-no">
+                                  <div class="panel panel-mint mar-no text-center">
+                                      <div class="panel-bordered-mint p-t-15" style="border-color: #26a69a; border-width: 1vw">
+                                          <img id="solar_metrics_block" alt="Client Logo" style="width: 4vw" class="mar-btm">
+                                      </div>
+                                      <div class="tiles color-mint text-center text-white" style="height: 45.2vh;">
+                                          <div class="pad-no mar-no" id="summary_performance_ratio" style="display:none">
+                                              <div class="p-t-5 text-center" style="padding-bottom: 9vh">
+                                                  <p class="p-b-5 text-white text-semibold text-lg mar-no text-main"> Performance Ratio </p>
+                                                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="pr_div">
+                                                      <p class="text-center text-2x text-thin pad-no mar-no" id="performance_ratio_today" style="padding-top: 5px"></p>
+                                                      <span class="text-center text-sm text-semibold text-thin" >Today's</span>
+                                                  </div>
+                                                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="pvsyst_pr_div" hidden>
+                                                      <p class="text-center text-2x text-thin pad-no mar-no" id="pvsyst_pr" style="padding-top: 5px"></p>
+                                                      <span class="text-center text-sm text-semibold text-thin pad-no mar-no" >PVsyst</span>
+                                                  </div>
+                                              </div>
+                                              <hr align="center" width="50%" color="white" style="margin-top: 0; margin-bottom: 0">
+                                          </div>
+
+                                          <div class="text-center"  style="padding-bottom: 9vh; padding-top: 2vh">
+                                              <p class="p-b-5 text-white text-semibold text-lg mar-no text-main"> Specific Yield </p>
+                                              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="padding-bottom: 2vh;" id="sy_today">
+                                                  <p class="text-center text-2x text-thin pad-no mar-no" id="specific_yield_todays" style="padding-top: 5px"></p>
+                                                  <span class="text-center text-sm text-thin">kWh/kWp</span><br>
+                                                  <span class="text-center text-sm text-semibold text-thin" >Today's</span>
+                                              </div>
+                                              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="padding-bottom: 2vh;" id="sy_pvsyst">
+                                                  <p class="text-center text-2x text-thin pad-no mar-no" id="pvsyst_specific_yield" style="padding-top: 5px"></p>
+                                                  <!-- <span class="text-center text-sm text-thin">kWh/m2</span> --><br>
+                                                  <span class="text-center text-sm text-semibold text-thin pad-no mar-no" >PVsyst </span>
+                                              </div>
+                                          </div>
+                                          <hr align="center" width="50%" color="white" style="margin-top: 0; margin-bottom: 0">
+                                          <div id="cuf_block" class="text-center" style="padding-bottom: 9vh; padding-top: 2vh">
+                                              <p class="p-b-5 text-white text-semibold text-lg mar-no text-main" id="cuf_text"> </p>
+                                              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="cuf_div" style="padding-top: 0px; ">
+                                                  <p class="text-center text-2x text-thin pad-no mar-no" id="cuf_todays"></p>
+                                                  <span class="text-center text-sm text-semibold text-thin" id="cuf_unit"></span>
+                                              </div>
+                                              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="pvsyst_cuf_div" style="padding-top: 0px; " hidden>
+                                                  <p class="text-center text-2x text-thin pad-no mar-no" id="pvsyst_cuf"></p>
+                                                  <span class="text-center text-sm text-semibold text-thin" id="pvsyst_cuf_unit"></span>
+                                              </div>
+                                          </div>
+
+                                      </div>
+                                  </div>
+                              </div>
+                              
+                              <div class="col-lg-12 pad-no mar-no">
+				                <div class="panel mar-no">
+                                      <!--Carousel-->
+                                      <!--===================================================-->
+                                      <div id="demo-carousel" class="carousel slide" data-ride="carousel">
+                                          <!--Indicators-->
+                                          <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                          <!-- <ol class="carousel-indicators out">
+                                              <li class="active" data-slide-to="0" data-target="#demo-carousel"></li>
+                                              <li data-slide-to="1" data-target="#demo-carousel"></li>
+                                              <li data-slide-to="2" data-target="#demo-carousel"></li>
+                                              <li data-slide-to="3" data-target="#demo-carousel"></li>
+                                          </ol> -->
+                                          <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                                          <div class="carousel-inner">
+                                              <div class="item panel active mar-no" style="height: 31.2vh; background-color: rgba(82,97,109,1) !important;">
+                                                  <div class="overlayer top-right" style="z-index: 1;">
+                                                      <div class="p-r-15 p-t-15 text-white">
+                                                          <i class="fa fa-icon fa-archive fa-5x"></i>
+                                                      </div>
+                                                  </div>
+                                                  <div id="current_power_div">
+                                                      <div class="overlayer top-left pad-all text-white">
+                                                          <div class="p-l-5 p-b-15">
+                                                              <i class="fa fa-bolt fa-2x" aria-hidden="true"></i>
+                                                              <span class="text-thin text-white text-semibold text-sm" id="current_power"></span><br>
+                                                              <span class="text-thin text-white text-semibold text-xs p-b-10">Current Power</span>
+                                                          </div>
+
+                                                      </div>
+                                                  </div>
+                                                  <div class="overlayer bottom-left pad-all">
+                                                      <div class="p-l-5">
+                                                          <span class="text-thin text-white text-semibold text-3x" id="inverters_number"></span><br>
+                                                          {% if dataglenclient.slug == 'edp' %}
+                                                          <span class="text-thin text-white text-semibold text-2x">Panels </span>
+                                                          {% else %}
+                                                          <span class="text-thin text-white text-semibold text-2x">Inverters </span>
+                                                          {% endif %}
+                                                          <br>
+                                                          <span class="text-white text-sm" id="inverters_make"></span> <br>
+                                                          <span class="text-white text-sm" id="inverters_capacity"></span>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+
+                                          <!--carousel-control-->
+                                          <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                          <a class="carousel-control left" data-slide="prev" href="#demo-carousel"><i class="demo-pli-arrow-left icon-2x"></i></a>
+                                          <a class="carousel-control right" data-slide="next" href="#demo-carousel"><i class="demo-pli-arrow-right icon-2x"></i></a>
+                                          <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                                      </div>
+                                      <!--===================================================-->
+                                      <!--End Carousel-->
+				                </div>
+				            </div>
+                          </div>
+                      </div>
+                      
+                  </div>
+              </div>
+              <div id="dc_devices" class="tab-pane fade">
+                  <div class="row">
+                      <div id="inverters_ajbs-panel-network grey_panel" class="panel mar-no">
+                          <div class="panel-body">
+                              <div class="row pad-btm">
+                                  <div class="col-lg-4 col-md-4 col-sm-4">
+                                    {% if dataglenclient.slug == 'edp' %}
+                                      <p class="text-lg text-semibold text-uppercase text-thin text-info" id="inverters_title">Panels</p>
+                                      <p class="text-sm text-thin text-semibold" id="inverters_subtitle">Grid View of Panels.</p>
+                                    {% else %}
+                                      <p class="text-lg text-semibold text-uppercase text-thin text-info" id="inverters_title">Inverters</p>
+                                      <p class="text-sm text-thin text-semibold" id="inverters_subtitle">Grid View of Inverters.</p>
+                                    {% endif %}
+                                  </div>
+                                  <!--Nav Tabs-->
+                                  <ul class="nav nav-tabs pull-right" id="device_list" hidden>
+                                      <li class="active">
+                                        {% if dataglenclient.slug == 'edp' %}
+                                          <a onClick="redraw_window()" data-toggle="tab" href="#inverters">Panels</a>
+                                        {% else %}
+                                          <a onClick="redraw_window()" data-toggle="tab" href="#inverters">Inverters</a>
+                                        {% endif %}
+                                      </li>
+                                      <li>
+                                          <a onClick="redraw_window()" data-toggle="tab" hidden href="#ajbs">Ajbs</a>
+                                      </li>
+                                  </ul>
+                              </div>
+
+                              <div class="tab-base">
+                                <div class="tab-content pad-no mar-no">
+                                  <div id="inverters" class="tab-pane fade active in">
+                                    <div class="row pad-lft" style="background-color: #ecf0f1;">
+                                      <div id="inverters_filters_and_sorts">
+                                        <div class="row">
+                                          <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <h3 class="text-info">Filter</h3>
+                                            <div id="filters" class="btn-group">
+                                              <button class="btn btn-default is-checked" data-filter="*">Show All</button> 
+                                              <button class="btn btn-default" data-filter=".connected_no_alarms_no_ajbs_down">Generating</button>
+                                              <button class="btn btn-default" data-filter=".connected_alarms_ajbs_down">Alarms</button>
+                                              <button class="btn btn-default" data-filter=".disconnected">Disconnected</button>
+                                              <button class="btn btn-default" data-filter=".unknown">Invalid</button>
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-3 col-sm-3"><h3 class="text-info">Sort</h3>
+                                            <div id="sorts" class="btn-group">
+                                              {% if dataglenclient.slug == 'edp' %}
+                                              <button class="btn btn-default is-checked" data-sort-by="original-order">Panel Name</button>
+                                              {% else %}
+                                              <button class="btn btn-default is-checked" data-sort-by="original-order">Inverter Name</button>
+                                              {% endif %}
+                                              <button class="btn btn-default" data-sort-by="energy">Energy</button>
+                                              <button class="btn btn-default" data-sort-by="power">Power</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="panel-body" style="background-color: #ecf0f1;">
+                                            <div class="grid">
+                                              <div class="row">
+                                                <div id="inverters_grid">
+
+                                                </div>
+                                              </div>
+                                              <div class="row">
+                                                  <div class="col-lg-5 col-md-5 col-sm-5"></div>
+                                                  <div class="col-lg-5 col-md-5 col-sm-5">
+                                                      <div class="loader text-center" hidden></div>
+                                                  </div>
+                                              </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </div>
+                                  <div id="ajbs" class="tab-pane fade">
+                                    <div class="row pad-lft" style="background-color: #ecf0f1;">
+                                      <div id="ajbs_filters_and_sorts">
+                                        <div class="row">
+                                          <div class="col-lg-6 col-md-6 col-sm-6">  <h3 class="text-info">Filter</h3>
+                                            <div id="ajbs_filters" class="btn-group">
+                                              <button class="btn btn-default is-checked" data-filter="*">Show All</button>
+                                              <button class="btn btn-default" data-filter=".connected">Generating</button>
+                                              <button class="btn btn-default" data-filter=".unknown">Alarms</button>
+                                              <button class="btn btn-default" data-filter=".disconnected">Invalid</button>
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <h3 class="text-info">Sort</h3>
+                                            <div id="ajbs_sorts" class="btn-group">
+                                              <button class="btn btn-default is-checked" data-sort-by="original-order">Original Order</button>
+                                              <button class="btn btn-default" data-sort-by="current">Current</button>
+                                              <button class="btn btn-default" data-sort-by="ajb_power">Ajb Power</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="panel-body" style="background-color: #ecf0f1;">
+                                        <div class="">
+                                          <div class="row">
+                                            <div id="ajbs_grid">
+
+                                            </div>
+                                          </div>
+                                          <div class="row">
+                                            <div class="col-lg-5 col-md-5 col-sm-5"></div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                              <div class="loader text-center" hidden></div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        <div id="info_modal" style="display:none;">
+                          <div id="modal_info"></div>
+                          <div class="loading" id="modal_spinner" hidden></div>
+                        </div>
+
+                  </div>
+              </div>
+
+              <div id="ac_devices" class="tab-pane fade">
+                  <div class="row">
+                      <div id="inverters_ajbs-panel-network grey_panel" class="panel mar-no">
+                          <div class="panel-body">
+                              <div class="row pad-btm">
+                                  <div class="col-lg-4 col-md-4 col-sm-4">
+                                      <p class="text-lg text-semibold text-uppercase text-thin text-info" id="inverters_title">Energy Meters and Transformers</p>
+                                      <p class="text-sm text-thin text-semibold" id="inverters_subtitle">Grid View of Energy Meters and Transformers.</p>
+                                  </div>
+                                  <!--Nav Tabs-->
+                                  <ul class="nav nav-tabs pull-right" id="device_list">
+                                      <li class="active">
+                                          <a onClick="redraw_window()" data-toggle="tab" href="#energy_meters">Energy Meters</a>
+                                      </li>
+                                      <li>
+                                          <a onClick="redraw_window()" data-toggle="tab" href="#transformers">Transformers</a>
+                                      </li>
+                                  </ul>
+                              </div>
+
+                              <div class="tab-base">
+                                <div class="tab-content pad-no mar-no">
+                                  <div id="energy_meters" class="tab-pane fade active in">
+                                    <div class="row">
+                                        <div class="panel-body" style="background-color: #ecf0f1;">
+                                            <div class="grid">
+                                              <div class="row">
+                                                <div id="energy_meters_grid">
+
+                                                </div>
+                                              </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </div>
+                                  <div id="transformers" class="tab-pane fade">
+                                    <div class="row">
+                                      <div class="panel-body" style="background-color: #ecf0f1;">
+                                        <div class="">
+                                          <div class="row">
+                                            <div id="transformers_grid">
+
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    
+    <script src="/static/dataglen/js/date.format.js"></script>
+    <script src="/static/solarrms/plugins/jquery.easing.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.3/chartjs-plugin-annotation.min.js"></script>
+    <script src="/static/solarrms/plugins/skycons/skycons.js"></script>
+
+    <!-- JQUERY MODAL JS -->
+    <script src="/static/solarrms/plugins/jquery-modal/jquery.modal.min.js"></script>
+
+    <!-- DATE FORMAT JS -->
+    <script src="/static/dataglen/js/date.format.js"></script>
+
+    <!-- BOOTSTRAP PICKER JS -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
+
+    <!-- ISOTOPE GRID JS -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.2/isotope.pkgd.min.js"></script>
+
+    <script>
+        var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+        var members = '{{ user_access }}';
+        var client_slug = '{{ dataglenclient.slug }}'
+        console.log("members", members);
+        console.log("plant_slug", plant_slug);
+
+    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.6/jquery.easypiechart.min.js"></script>
+
+    <script src="/static/solarrms/js/demo/summary_page_v4.js"></script>
+    <script src="/static/solarrms/js/demo/dashboard1.js"></script>
+
+    <script>
+        var config_data = null;
+        var config_data = "{{ contents.contents|safe }}";
+        var user_email = '{{ user.email }}'
+        console.log(user_email);
+
+        var client_name = '{{ dataglenclient.name }}'
+        console.log(client_name);
+        if (client_name == "Asun Solar") {
+            $("#solar_metrics_block").attr('src', '/static/solarrms/img/solar_green.png');
+            config_data = {
+              "metadata_text_color":"#2C3E50",
+              "metadata_border_color":"#f3c616",
+              "dd_keyname":"Inverters Down",
+              "show_green_block":"false",
+              "show_cuf":"False",
+              "table_order":[
+                "name",
+                "capacity",
+                "sy",
+                "etoday",
+                "alarms",
+                "inverters"
+              ]
+            };
+        } else {
+            $("#solar_metrics_block").attr('src', '/static/solarrms/img/newmetrics.png');
+        }
+
+        function epoch_to_hh_mm_ss(epoch) {
+            var date = new Date(epoch);
+            date = dateFormat(date, "HH:MM");
+            return date;
+        }
+
+        var randomColorFactor = function() {
+          return Math.round(Math.random() * 255);
+        };
+
+        var randomColor = function(opacity) {
+          return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+        };
+
+        function power_irradiation_data(power, irradiation, timestamps, annotations_array) {
+            var newpowerdata = [];
+            var newirrdata = [];
+            for (var i = 0; i < timestamps.length; i++) {
+                newpowerdata.push({x: timestamps[i], y: power[i]});
+                newirrdata.push({x: timestamps[i], y: irradiation[i]});
+            }
+
+            if (!_.some(irradiation)) {
+                var scatterChartData = {
+                    labels: timestamps,
+                    datasets: [{
+                        label: "Power",
+                        data: newpowerdata,
+                        yAxisID: 'y-axis-1',
+                        borderColor : 'rgba(0, 144, 217, 0)',
+                        backgroundColor : 'rgba(0, 144, 217, 0.409804)',
+                        pointBorderColor : 'rgba(0,0,0,0)',
+                        pointBackgroundColor : 'rgba(0,0,0,0)'
+                    }]
+                };
+
+                var y_axes_values = [{
+                  gridLines: {
+                    display: true
+                  },
+                  position: 'left',
+                  id: 'y-axis-1',
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Power (kW)'
+                  },
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }];
+            } else {
+                var scatterChartData = {
+                    labels: timestamps,
+                    datasets: [{
+                        label: "Power",
+                        data: newpowerdata,
+                        yAxisID: 'y-axis-1',
+                        borderColor : 'rgba(0, 144, 217, 0)',
+                        backgroundColor : 'rgba(0, 144, 217, 0.409804)',
+                        pointBorderColor : 'rgba(0,0,0,0)',
+                        pointBackgroundColor : 'rgba(0,0,0,0)'
+                    }, {
+                        label: "Irradiation",
+                        data: newirrdata,
+                        yAxisID: 'y-axis-2',
+                        borderDash: [6,0],
+                        borderColor : '#bcbfc0',
+                        backgroundColor : '#eceff1',
+                        pointBorderColor : 'rgba(0,0,0,0)',
+                        pointBackgroundColor : 'rgba(0,0,0,0)'
+                    }]
+                };
+
+                var y_axes_values = [{
+                    gridLines: {
+                      display: true
+                    },
+                    position: 'left',
+                    id: 'y-axis-1',
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Power (kW)'
+                    },
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  },
+                  {
+                    gridLines: {
+                      display: false
+                    },
+                    position: 'right',
+                    id: 'y-axis-2',
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Irradiance (kW/m2)'
+                    },
+                    ticks: {
+                      beginAtZero: true
+                    }
+                }];
+            }
+
+            $('#power_irradiation_chartjs').remove(); // this is my <canvas> element
+            $('#power_and_irradiation_container').append('<canvas id="power_irradiation_chartjs"><canvas>');
+            var ctx = document.getElementById("power_irradiation_chartjs");
+            var myChart = new Chart(ctx, {
+                type: "line",
+                responsive: true,
+                data: scatterChartData,
+                annotateDisplay: true,
+                maintainAspectRatio: false,
+                options: {
+                    elements:{
+                        point: {
+                            radius: 0
+                        }
+                    },
+                    tooltips: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    title: {
+                        display: false,
+                        text: 'Chart.js Scatter Chart'
+                    },
+                    scales: {
+                        xAxes: [{
+                            gridLines: {display: false},
+                            position: 'bottom',
+                            ticks: {
+                                maxTicksLimit: 8,
+                                maxRotation: 0,
+                                userCallback: function(v) {
+                                    return epoch_to_hh_mm_ss(v)
+                                },
+                                reverse: true
+                            }
+                        }],
+                        yAxes: y_axes_values,
+                    },
+                    annotation: {
+                        drawTime: "afterDraw",
+                        events: ['mouseover'],
+                        annotations: annotations_array
+                    }
+                }
+            });
+        }
+
+    </script>
+
+{% endblock %}

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html lang="en">
+<head>
+	{% load static from staticfiles %}
+	<script type="text/javascript" src="{% static '/js/d3.js' %}"></script>
+	<script type="text/javascript" src="http://106.186.30.60:8000/js/jquery.js"></script>
+	<script type="text/javascript" src="http://106.186.30.60:8000/js/jquery.datetimepicker.js"></script>
+
+    <title>Kut Bill</title>
+
+    <meta charset="UTF-8">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+
+    <link href="http://106.186.30.60:8000/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="http://106.186.30.60:8000/css/jquery.datetimepicker.css"/>
+    <style>
+        #monthly-volume-chart g.y {
+            display: none;
+        }
+    </style>
+	<style type="text/css">
+		.custom-date-style {
+			background-color: red !important;
+		}
+	</style>
+
+    <script>
+        function validate_form() {
+            var premise = document.getElementById('id_premise').value.trim();
+            var load = document.getElementById('id_load').value.trim();
+            var start_date = document.getElementById('id_start_date').value.trim();
+            var end_date = document.getElementById('id_end_date').value.trim();
+
+            if (premise == '') {
+                alert('Premise name must be specified')
+                return false
+            }
+
+            if (load == '') {
+                alert('Load name must be specified')
+                return false
+            }
+
+            if (start_date == '' || end_date == '' ||end_date < start_date) {
+                alert('Valid start and end dates must be specified.')
+                return false
+            }
+            return true
+        }
+    </script>
+</head>
+
+<body>
+{% if errors %}
+    <ul>
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<form action="{% url 'show_live_data' %}"  method="post" onsubmit="return validate_form()">
+    {% csrf_token %}
+
+	<h1 align="center" style="color:grey; margin-top:20px;"> Kut Bill Dashboard </h1>
+	<hr>
+	<div class="container">
+		<div class="row">
+			<div class="span3"> <strong> Premise </strong> <input type="text" name="premise_name" value="" id="premise_name"/> </div>
+			<div class="span3"> <strong> Load </strong> <input type="text" name="load_name" value="" id="load_name"/> </div>
+			<div class="span3"> <strong> Start time </strong> <input type="text" name="start_time" class="date_time_input_data" value="" id="start_time"/> </div>
+			<div class="span3"> <strong> End time </strong> <input type="text" name="end_time" class="date_time_input_data" value="" id="end_time"/> </div>
+		</div>
+
+		<script type="text/javascript">
+			$('.date_time_input_data').datetimepicker();
+		</script>
+
+		<div class="btn-group btn-group-justified" role="group" aria-label="...">
+ 			<div class="btn-group" role="group">
+				<input type="submit" value="Visualize Data" class="btn btn-default"></input>
+				<button type="button" class="btn btn-default" id="reset-fields">Reset Fields</button>
+ 			</div>
+ 		</div>
+
+		<script type="text/javascript">
+			$('#reset-fields').click(function(){
+				$('#id_premise_name').val("");
+				$('#id_load_name').val("");
+				$('#id_start_time').val("");
+				$('#id_end_time').val("");
+
+				//$('#premise-pie-chart').empty();
+				//$('#quarter-chart').empty();
+				//$('#day-of-week-chart').empty();
+				//$('#tsapc-chart').empty();
+			});
+
+		</script>
+		<hr>
+</div>
+
+	</div>
+
+</form>
+
+</body>
+</html>

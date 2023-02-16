@@ -1,0 +1,64 @@
+{% extends 'dataglen/dataglenbase.html' %}
+{% load bootstrap3 %}
+
+
+{% block body_block %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2> Client Udpate Page </h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{% url 'dataglen:dashboard' %}">Dashboard</a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Update a client configuration</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <form method="post" class="form-" role="form" action=".">
+                            {% csrf_token %}
+                                {% bootstrap_form form %}
+                                <button type="submit" class="btn btn-primary">Update Client Details</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Client's members</h5>
+                        <span class="pull-right"><a href="{% url 'dataglen:group-add' %}">All Clients Page</a></span>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            {% if members %}
+                                {% for member in members %}
+                                    <tbody>
+                                    <td> {{ member.user.first_name}} {{ member.user.last_name}} </td>
+                                    <td> {{ member.user.username }} </td>
+                                    <td> {{ member.user.email }} </td>
+                                    </tbody>
+                                {% endfor %}
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

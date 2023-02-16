@@ -1,0 +1,246 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+
+    <link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+
+    <style>
+        #chart-container {
+            width: 1000px; 
+            margin: 0 auto 50px auto;
+            background: rgba(255,255,255,0.5);
+            box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            padding: 10px 30px;
+        }
+
+        svg {
+            font-family: 'Lato', Arial, serif;
+            font-size: 10px;
+            font-weight: 700;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+        }
+
+        text.country-title {
+            font-size: 20px;
+        }
+
+        text.instructions {
+            font-size: 16px;
+        }
+
+        g.context g.brush rect.background {
+            fill: rgba(0,0,0,.1);
+        }
+
+        g.context g.axis path {
+            stroke-opacity: 0;
+        }
+
+        g.context g.axis line {
+            stroke-opacity: .1;
+        }
+
+        g.france path.chart {
+            fill: rgba(127,201,127,0.5);
+        }
+
+        g.germany path.chart {
+            fill: rgba(127,201,174,0.5);
+        }
+
+        g.japan path.chart {
+            fill: rgba(127,183,201,0.5);
+        }
+
+        g.uk path.chart {
+            fill: rgba(127,130,201,0.5);
+        }
+
+        g.usa path.chart {
+            fill: rgba(171,127,201,0.5);
+        }
+
+        .axis path, .axis line {
+            fill: none;
+            stroke: #aaa;
+            shape-rendering: crispEdges;
+        }
+
+        .brush .extent {
+            stroke: #f09f8c;
+            fill-opacity: .125;
+            shape-rendering: crispEdges;
+        }
+
+        g.context rect.background{
+            fill: rgb(200,200,255);
+            visibility: visible !important;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body_block %}
+
+    <div id="page-content">
+
+        <div class="row">
+      
+            <div class="col-lg-12">
+
+                <div id="download-panel-network" class="panel">
+                
+                    <div class="panel-heading">
+                      <!-- <div class="panel-control">
+                          <button id="week-panel-network-refresh" data-toggle="panel-overlay" data-target="#week-panel-network" class="btn"><i class="fa fa-rotate-right"></i></button>
+                      </div> -->
+                      <div class="col-md-6">
+                        <h3 class="panel-title">Daily Power Generation Profile</h3>
+                      </div>
+                    </div>
+
+                    <div class="panel-control pull-left">
+                        <ul class="nav nav-tabs pull-left">
+                            <li class="active"><a href="#inverter_power-lft" data-toggle="tab" id="inverter_powertab">Inverters</a></li>
+                            <li><a href="#group_power_chart-lft" data-toggle="tab" id="group_powertab">Groups</a></li>
+                        </ul>
+                    </div>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active" id="inverter_power-lft">
+
+                                <div class="ibox-content">
+                                    <div class="col-md-12">
+                                        <div class="mar-hor">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="inverters">Inverters</label>
+                                                    <select class="form-control" id="inverters_dropdown_compare" multiple="multiple">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="submit" onClick="select_all_inverters()" class="btn btn-info" id="select_all_inverters" style="margin-top: 22px;">Select All Inverters</button>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="start">Date</label>
+                                                    <input type="text" class="form-control datetimepicker_inverters_power_start_time" id="inverters_power_start_time" placeholder="Pick a Date" required="required" style="background-color: white;">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="submit" id="download-inverters-data" data-toggle="panel-overlay" data-target="#download-panel-network" class="btn btn-success" style="margin-top: 22px;">Plot</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="ibox-content">
+                                        <div class="col-md-12">
+                                            <ul class="nav nav-tabs">
+                                                <li class="active"><a data-toggle="tab" href="#multiple_chart" onclick="redraw_window()" style="margin-right: 0px;">Single Inverter</a></li>
+                                                <li><a data-toggle="tab" href="#stack_chart" onclick="redraw_window()" style="margin-right: 0px;">All Inverters</a></li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="tab-content">
+                                                        <div id="multiple_chart" class="tab-pane fade in active mar-top">
+                                                            <div class="row">
+                                                                <div class="form-group" style="float: left; margin-left: 80px;">
+                                                                    <select type="text" class="form-control" id="inverters_dropdown">
+                                                                        <option value="" disabled selected>--Pick an Inverter--</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div id="multiple_line_chart" style="height: 220px;">
+                                                                <svg style="float: left;">
+
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="stack_chart" class="tab-pane fade">
+                                                            <div id="stacked_chart" style="height: 220px; margin-top: 50px;">
+                                                                <svg style="float: left;">
+
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="tab-pane fade" id="group_power_chart-lft">
+
+                                <div class="ibox-content">
+                                    <div class="col-md-12">
+                                        <div class="mar-hor">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="groups">Groups</label>
+                                                    <select class="form-control" id="groups_dropdown_compare" multiple="multiple">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="submit" onClick="select_all_inverters()" class="btn btn-info" id="select_all_groups" style="margin-top: 22px;">Select All Groups</button>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="start">Date</label>
+                                                    <input type="text" class="form-control datetimepicker_groups_power_start_time" id="groups_power_start_time" placeholder="Pick a Date" required="required" style="background-color: white;">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="submit" id="download-groups-data" data-toggle="panel-overlay" data-target="#groups-panel-network" class="btn btn-success" style="margin-top: 22px;">Plot</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-body"> 
+                                    <div id="group_multiple_line_chart" style="height: 220px;">
+                                        <svg style="float: left;">
+
+                                        </svg>
+                                    </div>
+                                    <div id="group_power_no_data">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="/static/dataglen/js/saveSvgAsPng.js"></script>
+
+    <script src="/static/dataglen/js/d3.v3.min.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/solarrms/js/papaparse.min.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+
+    <script>
+        var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+
+    </script>
+
+    <script src="/static/solarrms/js/demo/inverter_parse.js"></script>
+    <script src="/static/solarrms/js/demo/visualisations-export_data-inverters-power.js"></script>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+
+{% load bootstrap3 %}
+
+{% block body_block %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Create a new Customer</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <form method="post" class="form-" role="form" action="{% url 'solar:group-add' %}">
+                            {% csrf_token %}
+                                {% bootstrap_form form %}
+                                <button type="submit" class="btn btn-primary">Create a new Customer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Your client groups</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Client Name</th>
+                                    <th>Owner Employee</th>
+                                    <th>Active</th>
+                                    <th>Member and Sensor details</th>
+                                </tr>
+                            </thead>
+                            {% for group in groups %}
+                                <tbody>
+                                <td> <a href="{% url 'solar:plant' group.slug %}"> {{ group.name}}</a>  </td>
+                                <td> {{ group.owner.organization_user.user.first_name}}, {{group.owner.organization_user.user.last_name }} </td>
+                                <td> {{ group.is_active }}</td>
+                                <td> TBA </td>
+                                </tbody>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

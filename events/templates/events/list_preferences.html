@@ -1,0 +1,53 @@
+{% extends 'dataglen/dataglenbase.html' %}
+
+{% block body_block %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2> Alert Preferences </h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{% url 'dataglen:dashboard' %}">Home</a>
+            </li>
+            <li>
+                <a>Event Alerts</a>
+            </li>
+            <li class="active">
+                <strong>Alert Preferences</strong>
+            </li>
+        </ol>
+    </div>
+    </div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>List of Preferences Added</h5>
+                    <span class="pull-right"><a href="{% url 'events:alert-preference-add' source.sourceKey%}">Add New Preference</a></span>
+                </div>
+                <div class="ibox-content">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Alert Interval</th>
+                            </tr>
+                        </thead>
+                        {% for preference in preferences %}
+                            <tbody>
+                                <td> {{ preference.event.event_name }} </td>
+                                <td> <a href="{% url 'events:preference-update' source.sourceKey preference.id %}">{{ preference.email_id }}</a></td>
+                                <td> <a href="{% url 'events:preference-update' source.sourceKey preference.id %}">{{ preference.phone_no }} </a></td>
+                                <td> <a href="{% url 'events:preference-update' source.sourceKey preference.id %}">{{ preference.alert_interval }} </a></td>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

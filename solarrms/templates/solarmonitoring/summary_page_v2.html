@@ -1,0 +1,300 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<!--SolarRMS CSS-->
+    <link href="/static/solarrms/css/dataglensolar.css" rel="stylesheet">
+
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="/static/solarrms/js/d3-funnel.js"></script>
+
+	<style>
+		
+
+
+	</style>
+
+{% endblock %}
+
+{% block body_block %}
+
+	<!--Page content-->
+	<!--===================================================-->
+	<div id="page-content" class="pad-no">
+		<div class="panel">
+			<div class="panel-body pad-no">
+				<div class="col-lg-8 col-md-8 pad-no mar-no">
+					<div class="row">
+						<div class="col-lg-4 col-md-4 tiles color-e" style="height: 27vh;">
+							<div class="row">
+								<div class="col-lg-6 col-md-6">
+
+								</div>
+								<div class="col-lg-6 col-md-6 pad-no">
+                                	<h3 class="text-white">987.31 kW</h3>
+                                	<div class="row mar-no">
+		                                <span class="text-white"> Current Power </span>
+		                            </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                            	<div class="col-lg-6 col-md-6">
+
+								</div>
+								<div class="col-lg-6 col-md-6">
+                                	<h3 class="text-white">242.7 Mwh <span class="text-thin" style="font-size: small;">Today</span> </h3>
+                                	<div class="row">
+	                                	<span class="text-white">Month : 4.32 Gwh</span>
+	                            	</div>
+                            	</div>
+                            </div>
+						</div>
+						<div class="col-lg-4 col-md-4 tiles color-d" style="height: 27vh;">
+							<div class="row pad-btm">
+								<div class="col-md-5 col-lg-5">
+	                                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+	                                    <div class="row">
+	                                        <h4 class="text-white pad-lft">80%</h4>
+	                                    </div>
+	                                    <div class="row">
+	                                        <span class="text-white pad-lft pad-btm"> Average PR </span>
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+	                                    <div class="row">
+	                                        <h4 class="text-white pad-lft">30%</h4>
+	                                    </div>
+	                                    <div class="row">
+	                                        <span class="text-white pad-lft pad-btm"> Average CUF </span>
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+	                                    <div class="row">
+	                                        <h4 class="text-white pad-lft">28</h4>
+	                                    </div>
+	                                    <div class="row">
+	                                        <span class="text-white pad-lft pad-btm"> PVsyst Tilt </span>
+	                                    </div>
+	                                </div>
+	                                <!-- <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+	                                    <div class="row">
+	                                        <h3 class="text-white">16</h3>
+	                                    </div>
+	                                    <div class="row">
+	                                        <span class="text-white pad-btm"> Open Tickets </span>
+	                                    </div>
+	                                </div> -->
+	                        	</div>
+	                        	<div class="col-lg-7 col-md-7">
+	                        		<div class="row">
+	                        			<h3 class="text-center text-white">54.7 Ton</h3>
+	                        			<h5 class="text-center text-white">CO2</h5>
+		                        	</div>
+									<div class="row text-center">
+		                        		<h5 class="text-white">Irradiance : 153.48 W/m^2</h5>
+		                        	</div>
+									<div class="row text-center">
+										<h5 class="text-white">Module Temp. : 0</h5>
+		                        	</div>
+		                        	<div class="row text-center">
+										<h5 class="text-white">Ambient Temp. : 26</h5>
+		                        	</div>
+	                        	</div>
+                            </div>
+						</div>
+						<div class="col-lg-4 col-md-4 tiles color-e" style="height: 27vh;">
+							<div class="row">
+								<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center">
+									<h6>Total Inverters</h6>
+									<span class="text-2x text-thin text-white">120</span>
+									<div class="row pad-top">
+										<div class="col-lg-6 col-md-6 pad-no">
+											<h5 class="mar-no"><i class="fa fa-check" aria-hidden="true" style="color: #7ace23;"></i><span class="text-thin text-white" style="color: #2b425b;font-size: small;"> : 30</span></h5>
+										</div>
+										<div class="col-lg-6 col-md-6 pad-no">
+											<h5 class="mar-no"><i class="fa fa-times" aria-hidden="true" style="color: #f76549;"></i><span class="text-thin text-white" style="color: #2b425b;font-size: small;"> : 90</span></h5>
+										</div>
+									</div>
+									<!-- <i class="fa fa-check" aria-hidden="true" style="color: green;"></i> : <h5 id="inverters_connected">30</h5> -->
+								</div>
+								<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center">
+									<h6>Total SMBs</h6>
+									<span class="text-2x text-thin text-white">400</span>
+									<div class="row pad-top">
+										<div class="col-lg-6 col-md-6 pad-no">
+											<h5 class="mar-no"><i class="fa fa-check" aria-hidden="true" style="color: #7ace23;"></i><span class="text-thin text-white" style="color: #2b425b;font-size: small;"> : 50</span></h5>
+										</div>
+										<div class="col-lg-6 col-md-6 pad-no">
+											<h5 class="mar-no"><i class="fa fa-times" aria-hidden="true" style="color: #f76549;"></i><span class="text-thin text-white" style="color: #2b425b;font-size: small;"> : 350</span></h5>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center pad-top">
+									<div id="network_up">
+										<button class="btn btn-mint btn-icon icon-lg fa fa-thumbs-up fa-3x"></button>
+										<h5>Network Up</h5>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<ul class="list-unstyled text-center clearfix">
+									<li class="col-xs-3 pad-no">
+										<canvas class="text-white" id="demo-weather-md-icon-2" width="32" height="32"></canvas>
+										<p class="text-sm mar-no text-white">Temp.</p>
+										<p class="text-white">25 &#176;C</p>
+									</li>
+									<li class="col-xs-3 pad-no">
+										<canvas class="text-white" id="demo-weather-md-icon-3" width="32" height="32"></canvas>
+										<p class="text-sm mar-no text-white">Wind</p>
+										<p class="text-white">9 mph</p>
+									</li>
+									<li class="col-xs-3 pad-no">
+										<canvas class="text-white" id="demo-weather-md-icon-4" width="32" height="32"></canvas>
+										<p class="text-sm mar-no text-white">Rain</p>
+										<p class="text-white">0.0</p>
+									</li>
+									<li class="col-xs-3 pad-no">
+										<canvas class="text-white"	 id="demo-weather-md-icon-5" width="32" height="32"></canvas>
+										<p class="text-sm mar-no text-white">Max./Min.</p>
+										<p class="text-white">30&#176;C/19&#176;C</p>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-8 col-md-8 tiles border-bottom border-right" style="height: 34vh;">
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+								<!-- <h4 class="text-center">Today's Power and Irradiation</h4> -->
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+								<ul class="nav nav-tabs pull-right" style="margin-top: 5px;">
+									<li class="active"><a href="#power_irradiation" data-toggle="tab" onClick="redraw_window()" style="padding-left: 10px;padding-right: 10px;padding-top: 5px;padding-bottom: 5px;">Power & Irradiation</a></li>
+									<li><a href="#energy_prediction" data-toggle="tab" onClick="redraw_window()" style="padding-left: 10px;padding-right: 10px;padding-top: 5px;padding-bottom: 5px;">Energy Prediction</a></li>
+								</ul>
+							</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="tab-content">
+	                        		<div class="tab-pane fade in active" id="power_irradiation" style="height: 26vh;">
+	                        		</div>
+	                        		<div class="tab-pane fade" id="energy_prediction" style="height: 26vh;width: 580%;">
+	                        		</div>
+	                        	</div>
+	                        </div>
+	                	</div>
+	                	<div class="col-lg-4 col-md-4 tiles border-bottom border-right" style="height: 34vh;padding-top: 5px;">
+	                		<!-- <div class="row">
+								<div class="col-lg-4 col-md-4 text-center">
+									<span id="ac_loss">AC : -0.33 kWh
+									</span>
+								</div>
+								<div class="col-lg-4 col-md-4 text-center">
+									<span id="conversion_loss">Conv. : 658.78 kWh
+									</span>
+								</div>
+								<div class="col-lg-4 col-md-4 text-center">
+									<span id="dc_loss">DC : 0.00 kWh
+									</span>
+								</div>
+							</div> -->
+							<!-- <h4 class="text-center">PR and CUF</h4> -->
+	                        <div class="" id="cuf_pr" style="height: 28vh;">
+	                        </div>
+	                        <div class="row">
+								<div class="col-lg-6 col-md-6 text-center">
+									<h6 id="pr_today">PR Today : 0.5
+									</h6>
+								</div>
+								<div class="col-lg-6 col-md-6 text-center">
+									<h6 id="cuf_today">CUF Today : 0.11
+									</h6>
+								</div>
+							</div>
+	                	</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-8 col-md-8 tiles border-bottom border-right" style="height: 34vh;padding-top: 5px;">
+							<!-- <h4 class="text-center">Residual Chart</h4> -->
+							<div id="residuals" style="height: 31vh;">
+	                        </div>
+						</div>
+						<div class="col-lg-4 col-md-4 tiles border-bottom border-right" style="height: 34vh;padding-top: 5px;">
+							<!-- <h4 class="text-center">Weekly Energy</h4> -->
+	                        <div class="tiles" id="weekly_energy_generation" style="height: 28vh;">
+	                        </div>
+	                        <div class="row text-center">
+								<h6 id="energy_today">Today's Energy Generation : 32803.51 kWh
+								</h6>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4" style="padding-right: 0px;">
+					<div class="row pad-no mar-no border-bottom border-right">
+						<div class="tiles" style="height: 26.9vh;padding-top: 5px;">
+							<!-- <h4 class="text-center">Transformers</h4> -->
+	                        <div class="tiles" id="transformers" style="height: 26vh;">
+	                        </div>
+						</div>
+					</div>
+					<div class="row pad-no mar-no border-bottom border-right">
+						<div class="tiles" style="height: 65.9vh;">
+							<h4 class="text-center">Tickets, Unavailability and Losses</h4>
+							<div class="row">
+								<div class="col-lg-6 col-md-6">
+									<div id="tickets" style="height: 20vh;">
+									
+									</div>
+									<div id="grid_unavailability" style="height: 20vh;">
+
+									</div>
+									<div id="equipment_unavailability" style="height: 20vh;">
+
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6">
+									<div class="col-lg-12 col-md-12">
+										<div id="losses_funnel" style="height: 60vh;">
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="row pad-no mar-no">
+								<div id="unavailability" style="height: 34vh;">
+
+								</div>
+							</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+    </div><!-- /.modal -->
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/solarrms/js/papaparse.min.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+    <script src="/static/solarrms/js/raphael.min.js"></script>
+    <script src="/static/solarrms/js/morris.min.js"></script>
+
+    <script>
+    	var live_chart = null;
+
+        var plant_capacity = {{ plant.capacity }};
+        var current_power = {{ current_power }};
+        var plant_location = '{{ plant.openweather }}';
+        var plant_slug = '{{ plant.slug }}';
+        var sourcekey = '{{ plant.metadata.plantmetasource.sourceKey }}';
+
+    </script>
+
+    <script src="/static/solarrms/js/js_functions/morris_donut.js"></script>
+    <script src="/static/solarrms/js/js_functions/basic_bar_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/js_functions/dual_axis_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/js_functions/relative_bar_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/js_functions/multiple_axis_chart_plotly.js"></script>
+    <script src="/static/solarrms/js/demo/summary_page_v2.js"></script>
+{% endblock %}

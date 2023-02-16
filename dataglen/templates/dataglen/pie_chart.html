@@ -1,0 +1,13 @@
+{% load nvd3_tags %}
+<head>
+    <link media="all" href="/static/dataglen/css/nv.d3.css" type="text/css" rel="stylesheet" />
+    <script src="/static/dataglen/js/d3.min.js" type="text/javascript"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js" type="text/javascript"></script>
+    {% load_chart charttype chartdata chartcontainer extra %}
+</head>
+<body>
+    <h1>Fruits vs Calories</h1>
+    {% include_container chartcontainer 400 600 %}
+    {% load_chart charttype chartdata "piechart_container" extra %}
+
+</body>

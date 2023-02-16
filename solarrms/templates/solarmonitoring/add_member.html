@@ -1,0 +1,67 @@
+{% extends 'solarmonitoring/solarbase.html' %}
+{% load bootstrap3 %}
+
+
+{% block body_block %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Invite a Customer</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <form method="post" class="form-" role="form" id="add-member" action="{% url 'solar:customer-add' %}">
+                            {% csrf_token %}
+                                {% bootstrap_form form %}
+                                <button type="submit" class="btn btn-primary">Send an Invite</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Your Customers</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Plant Name</th>
+                                    <th>Customer Name</th>
+                                    <th>Login Username</th>
+                                    <th>Email Address</th>
+                                </tr>
+                            </thead>
+                            {% if members %}
+                                {% for member in members %}
+                                    <tbody>
+                                    <td> {{ member.user.first_name}} {{ member.user.last_name}} </td>
+                                    <td> {{ member.user.username }} </td>
+                                    <td> {{ member.user.email }} </td>
+                                    <td> {{ member.is_admin }} </td>
+                                    </tbody>
+                                {% endfor %}
+                            {% elif groups_details %}
+                                {% for group in groups_details %}
+                                    {% for member in group.members %}
+                                    {% if member.user.email != user.email %}
+                                        <tbody>
+                                            <td> {{ group.instance.name }} </td>
+                                            <td> {{ member.user.first_name}} {{ member.user.last_name}} </td>
+                                            <td> {{ member.user.username }} </td>
+                                            <td> {{ member.user.email }} </td>
+                                        </tbody>
+                                    {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

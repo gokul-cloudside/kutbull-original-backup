@@ -1,0 +1,9 @@
+<form action="/datasink/" method="post">
+
+    {% csrf_token %} 
+
+    {{ form | linebreaks}}
+
+    <input type="submit" value="Submit" />
+
+</form>

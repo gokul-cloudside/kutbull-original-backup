@@ -1,0 +1,134 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<link href="//cdnjs.cloudflare.com/ajax/libs/datepicker/0.5.0/datepicker.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css" rel="stylesheet">
+    <script src="/static/solarrms/plugins/xepOnline.jqplugin.js" type="text/javascript"></script>
+	
+	<style>
+		.nvd3 g.nv-groups path.nv-line {
+		  stroke-width: 5px;
+		}
+
+		.width-70 {
+			width: 70px;
+		}
+	</style>
+
+{% endblock %}
+
+{% block body_block %}
+
+				<!--Page content-->
+				<!--===================================================-->
+				<div id="page-content">
+
+                    <div class="row" id="loading_row">
+                        <div class="loading" id="client_spinner" hidden>
+                        </div>
+                    </div>
+					<div class="row">
+					    <div class="col-lg-12">
+
+					        <!--Network Line Chart-->
+					        <!--===================================================-->
+					        <div id="energy-panel-network" class="panel" style="height: 77vh">
+					            <div class="panel-body" id="energy_chart_div">
+						            <div class="pad-btm">
+                                        <p class="text-lg text-semibold text-uppercase text-thin text-info">Energy Visualisation</p>
+                                        <p class="text-sm text-thin text-semibold"> Visualise historical energy generation data </p>
+                                    </div>
+                                    <div class="row" id="options">
+					            		<div class="col-lg-6 col-md-6 col-sm-6">
+                                            <div class="col-lg-4 col-md-4 col-sm-4 pull-left">
+                                                <div class="btn-group">
+                                                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" type="button" style="    width: 14vw;">
+                                                        <span class="dropdown_energy_aggregator" id="dropdown_energy_aggregator">Select a Time Period</span>
+                                                        <i class="dropdown-caret"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-left dropdown_energy_aggregator-selected">
+                                                        <li value="DATE_RANGE"><a>DATE RANGE</a></li>
+                                                        <li value="Week"><a>WEEK</a></li>
+                                                        <li value="Month"><a>MONTH</a></li>
+                                                        <li value="Year"><a>YEAR</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4 pad-no mar-no" id="date_div" hidden>
+                                                <div class="form-group" id="datepicker_selected_datetime">
+                                                    <input type="text" class="form-control datepicker_start_days" id="datepicker_selected_picker" placeholder="Pick a Date" style="height: 31px;">
+                                                    <!-- <input type="text" class="form-control datetimepicker_download_inverter_table_day" id="download_table_day" placeholder="Pick Start Date" required="required"> -->
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-2" id="update_button_div" hidden>
+                                                <ul class="pager mar-no">
+                                                    <li class="next"><a class="btn btn-default" id="energy_value-update" style="float: left;">Update <i class="fa fa-refresh" aria-hidden="true"></i></a></li>
+                                                    <!-- <li class="next"><a class="btn btn-default" onClick="return xepOnline.Formatter.Format('download_html_to_pdf', {render:'download', pageWidth: '14in'})" style="float: left;">Download <i class="fa fa-download" aria-hidden="true"></i></a></li> -->
+                                                    <!-- <li id="energy_value-li-next" class="next disabled"><a class="btn btn-default" id="energy_value-next" style="float: right;">Next <i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>
+                                                    <li id="energy_value-li" class="previous disabled"><a class="btn btn-default" id="energy_value-before" style="float: right;"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Previous</a></li> -->
+                                                </ul>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12" id="alert_div">
+                                                <div class="pad-top text-thin text-sm text-semibold">
+
+                                                    <i id="user_alert">Select a time period to get more options. </i>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="col-lg-2 col-md-2 col-sm-2 pull-left">
+                                                <div class="btn-group">
+                                                    <button class="btn btn-primary dropdown-toggle" id="devices_dropdown" data-toggle="dropdown" type="button">
+                                                        Select a Device 
+                                                        <i class="dropdown-caret"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-left">
+                                                        <li><a>Smbs</a></li>
+                                                        <li><a>Inverters</a></li>
+                                                        <li><a>Energy Meters</a></li>
+                                                        <li><a>Transformers</a></li>
+                                                        <li><a>Weather Data</a></li>
+                                                        <li><a>Plant Metrics</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div> -->
+                                        </div>
+						            </div>
+                                    <div id="download_html_to_pdf" style="height: 50vh">
+                                        <div class="row text-center" id="energy_headings"></div>
+                                        <canvas id="energy_chart"></canvas>
+                                    </div>
+                                    <!-- <div class="row">
+						            	<p id="week_energy_expected"></p>
+						            </div> -->
+						        </div>
+
+					        </div>
+					        <!--===================================================-->
+					        <!--End network line chart-->
+
+					    </div>
+					</div>
+
+				</div>
+				<!--===================================================-->
+				<!--End page content-->
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+
+    <script>
+    	var live_chart = null;
+    	var chart = null;
+        var plant_slug = '{{ plant.slug }}';
+
+    </script>
+
+    <script src="/static/solarrms/js/demo/visualisations-energy-plant.js"></script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<link href="//cdnjs.cloudflare.com/ajax/libs/datepicker/0.5.0/datepicker.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css" rel="stylesheet">
+	
+	<style>
+
+	</style>
+
+{% endblock %}
+
+{% block body_block %}
+				<!--End page title-->
+
+				<!--Page content-->
+				<!--===================================================-->
+				<div id="page-content">
+
+					<div class="row">
+				        <!--Network Line Chart-->
+				        <!--===================================================-->
+				        <div id="power-panel-network" class="panel" style="height: 65vh">
+				            <div class="panel-body" id = "graph-container" style="height: 50vh">
+				            	<div class="pad-btm">
+			                        <p class="text-lg text-semibold text-uppercase text-thin text-info">Power and Irradiation Historical Visualisation</p>
+			                        <p class="text-sm text-thin text-semibold">Visualise historical power and irradiance data. </p>
+			                    </div>
+				            	<div class="row" id="options">
+	                				<div class="col-lg-2 col-md-2 col-sm-2">
+		                				<!-- <input type="text" class="form-control datetimepicker_start_day" id="start_day" placeholder="Pick a Date" required="required"> -->
+		                				<input type="text" class="form-control datepicker_start_days" id="datepicker_selected_picker" placeholder="Pick a Date" style="height: 31px;">
+		                			</div>		
+					                <div class="col-lg-10 col-md-10 col-sm-10">
+				                		<!-- <button type="submit" id="daypower-panel-network-update" data-toggle="panel-overlay" data-target="#daypower-panel-network-update" class="btn btn-success width-70">Update</button> -->
+				                		<ul class="pager mar-no">
+                                            <li class="next"><a class="btn btn-default" onClick="" id="power_irradiation-update" style="float: left;">Update <i class="fa fa-refresh" aria-hidden="true"></i></a></li>
+                                            <li id="power_irradiation-li-next" class="next disabled"><a class="btn btn-default" id="power_irradiation-next" style="float: right;">Next <i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>
+                                            <li id="power_irradiation-li" class="previous disabled"><a class="btn btn-default" id="power_irradiation-before" style="float: right;"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Previous</a></li>
+                                        </ul>
+	                				</div>
+				                </div>
+				                <canvas id="performance_irradiation_chart"></canvas>
+						    </div>
+				            <!--Power values for today-->
+				        </div>
+				        <!--===================================================-->
+				        <!--End network line chart-->
+					</div>
+				</div>
+				<!--===================================================-->
+				<!--End page content-->
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/solarrms/plugins/chartjs/dist/Chart.bundle.js"></script>
+    <script src="/static/solarrms/plugins/chartjs-plugin-annotation/chartjs-plugin-annotation.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
+
+    <script>
+    	var live_chart = null;
+        var plant_slug = '{{ plant.slug }}';
+
+    </script>
+
+    <script src="/static/solarrms/js/demo/plant_power_data.js"></script>
+    <script src="/static/solarrms/js/demo/visualisations-power-page.js"></script>
+{% endblock %}

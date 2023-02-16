@@ -1,0 +1,157 @@
+{% extends 'dataglen/dataglenbase.html' %}
+
+{% block body_block %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2> Sources </h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{% url 'dataglen:dashboard' %}">Home</a>
+            </li>
+            <li>
+                <a>Data Sources</a>
+            </li>
+            <li class="active">
+                <strong>Monitoring Status</strong>
+            </li>
+        </ol>
+    </div>
+    </div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="ibox no-borders no-padding no-margins">
+                <div class="ibox-title">
+                    <h5 style="color: mediumseagreen">Stable Data Sources</h5>
+                </div>
+                <div class="ibox-content no-padding">
+                    <div class="panel-body">
+                        <div class="panel-group" id="accordion">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h5 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Activated Sources Sending Valid Data</a>
+                                    </h5>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in">
+                                    <div class="panel-body" id="active_alive_valid">
+                                        {% if active_alive_valid|length > 0 %}
+                                            {% for source in active_alive_valid %}
+                                                <a href="{% url 'dataglen:source-detail' source.sourceKey %}"> {{ source.name }}, </a>
+                                            {% endfor %}
+                                        {% else %}
+                                            No Sources
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Deactivated Sources not Sending Data</a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo" class="panel-collapse collapse">
+                                    <div class="panel-body" id="deactivated_dead">
+                                        {% if deactivated_dead|length > 0 %}
+                                            {% for source in deactivated_dead %}
+                                                <a href="{% url 'dataglen:source-detail' source.sourceKey %}"> {{ source.name }}, </a>
+                                            {% endfor %}
+                                        {% else %}
+                                            No Sources
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+        <div class="ibox no-borders no-padding no-margins">
+            <div class="ibox-title">
+                <h5 style="color: orange">Warnings</h5>
+            </div>
+            <div class="ibox-content no-padding">
+                <div class="panel-body">
+                    <div class="panel-group" id="accordion2">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h5 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne2">Activated Sources Sending Invalid Data</a>
+                                </h5>
+                            </div>
+                            <div id="collapseOne2" class="panel-collapse collapse in">
+                                <div class="panel-body" id="active_alive_invalid">
+                                    {% if active_alive_invalid|length > 0 %}
+                                        {% for source in active_alive_invalid %}
+                                            <a href="{% url 'dataglen:source-detail' source.sourceKey %}"> {{ source.name }}, </a>
+                                        {% endfor %}
+                                    {% else %}
+                                        No Sources
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="ibox no-borders no-padding no-margins">
+            <div class="ibox-title">
+                <h5 style="color: red">Potential Errors</h5>
+            </div>
+            <div class="ibox-content no-padding">
+                <div class="panel-body">
+                    <div class="panel-group" id="accordion3">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h5 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion3" href="#collapseOne3">Activated Sources not Sending Data</a>
+                                </h5>
+                            </div>
+                            <div id="collapseOne3" class="panel-collapse collapse in">
+                                <div class="panel-body" id="active_dead">
+                                    {% if active_dead|length > 0 %}
+                                        {% for source in active_dead %}
+                                            <a href="{% url 'dataglen:source-detail' source.sourceKey %}"> {{ source.name }}, </a>
+                                        {% endfor %}
+                                    {% else %}
+                                        No Sources
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion3" href="#collapseTwo3">Deactivated Sources Sending Data</a>
+                                </h4>
+                            </div>
+                            <div id="collapseTwo3" class="panel-collapse collapse">
+                                <div class="panel-body" id="deactivated_alive">
+                                    {% if deactivated_alive|length > 0 %}
+                                        {% for source in deactivated_alive %}
+                                            <a href="{% url 'dataglen:source-detail' source.sourceKey %}"> {{ source.name }}, </a>
+                                        {% endfor %}
+                                    {% else %}
+                                        No Sources
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+</div>
+{% endblock %}

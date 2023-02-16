@@ -1,0 +1,315 @@
+{% extends 'solarmonitoring/niftybase.html' %}
+
+{% block extrahead %}
+	
+	<link href="/static/dataglen/css/nv.d3.min.css" rel="stylesheet">
+    <link href="/static/solarrms/css/bootstrap-treeview.min.css" rel="stylesheet">
+	
+	<style>
+		.width-70 {
+			width: 70px;
+		}
+
+		body.DTTT_Print {
+            background: #fff;
+        }
+
+        .DTTT_Print #page-wrapper {
+            margin: 0;
+            background:#fff;
+        }
+
+        button.DTTT_button, div.DTTT_button, a.DTTT_button {
+            border: 1px solid #e7eaec;
+            background: #fff;
+            color: #676a6c;
+            box-shadow: none;
+            padding: 6px 8px;
+        }
+        button.DTTT_button:hover, div.DTTT_button:hover, a.DTTT_button:hover {
+            border: 1px solid #d2d2d2;
+            background: #fff;
+            color: #676a6c;
+            box-shadow: none;
+            padding: 6px 8px;
+        }
+
+        .dataTables_filter label {
+            margin-right: 5px;
+        }
+	</style>
+
+{% endblock %}
+
+{% block body_block %}
+
+				<!--Page Title-->
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<div id="page-title">
+					<h1 class="page-header text-overflow"></h1>
+				</div>
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<!--End page title-->
+
+				<!--Page content-->
+				<!--===================================================-->
+				<div id="page-content">
+
+					<div class="row">
+					    <div class="col-lg-12">					    	
+
+					    	<div id="parameters_selected">
+				            </div>
+					    	<div id="compare_inverters_table-panel-network" class="panel">
+					            <div class="panel-heading">
+					            	<!-- <div class="panel-control">
+					                    <button id="demo-panel-network-refresh" data-toggle="panel-overlay" data-target="#demo-panel-network" class="btn"><i class="fa fa-rotate-right"></i></button>
+					                </div> -->
+
+					                <div class="col-lg-6">
+                                        <h3 class="panel-title">Strings Data Comparisons</h3>
+					                </div>
+
+					                <div class="col-lg-6" style="margin-top: 9px;">
+					                	<div class="col-md-6"></div>
+					                	<div class="col-md-6">
+						                	<input type="text" class="form-control datetimepicker_start_compare_plant_table_day" id="start_compare_parameters_day" onchange="update_table()" placeholder="Pick a Date" required="required">
+						                </div>
+						                <div class="col-md-2">
+					                		<!-- <button type="submit" id="dayenergy-panel-network-update" data-toggle="panel-overlay" data-target="#dayenergy-panel-network-update" class="btn btn-success width-70">Update</button> -->
+					                		<!-- <button type="submit" onclick="inverter_parameters()" class="btn btn-success width-70">Update</button> -->
+					                	</div>
+					                </div>
+
+						        </div>
+						    </div>
+
+						</div>
+
+						<div class="col-lg-12">
+
+						    <div class="col-lg-3" style="padding-left: 0px;">
+
+						    	<div id="compare_parameters_list-panel-network" class="panel">
+						            <div class="panel-heading">
+						            	<!-- <div class="panel-control">
+						                    <button id="demo-panel-network-refresh" data-toggle="panel-overlay" data-target="#demo-panel-network" class="btn"><i class="fa fa-rotate-right"></i></button>
+						                </div> -->
+						                <div class="col-md-9">
+                                            <h3 class="panel-title">Select Parameters</h3>
+                                        </div>
+                                        <div class="col-md-3" style="margin-top: 16px; margin-left: -39px;">
+                                            <span class="label label-info">
+                                                <span>Only select SMBs.</span>
+                                            </span>
+                                        </div>
+						            </div>
+
+						            {% comment %}<div class="panel-body">
+						            	<div id="tree">
+                                            <ul>
+                                                <li><label><input type="checkbox" /> Inverters </label></li>
+                                                <ul>
+                                                    {% for key, values in inverters_streams.items %}
+                                                        <ul>
+                                                            {% for value in values.1 %}
+                                                                <li><label><input type="checkbox" /> {{ value }}</label></li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endfor %}
+                                                </ul>
+                                            </ul>
+
+
+							         	</div>
+								    </div>{% endcomment %}
+                                <div id="tree"></div>
+							    </div>
+
+							</div>
+
+							<div class="col-lg-9" style="padding-left: 0px;padding-right: 0px;">
+
+								<div id="compare_plant_table-panel-network" class="panel">
+						            <div class="panel-heading">
+						            	<!-- <div class="panel-control">
+						                    <button id="demo-panel-network-refresh" data-toggle="panel-overlay" data-target="#demo-panel-network" class="btn"><i class="fa fa-rotate-right"></i></button>
+						                </div> -->
+
+						                <h3 class="panel-title">Plots
+                                            <!-- <div class="col-md-2 pull-right">
+					                			<button type="submit" class="btn btn-success width-70" style="width: 100px;">Download</button>
+					                		</div> -->
+						                </h3>
+
+						            </div>
+
+						            <div class="panel-body">
+
+						            	<div class="row">
+                                            <div id="no_plot">
+                                            </div>
+								            <div class="col-lg-12">
+								                <div id="multiple_line_chart" style="height: 450px;">
+                                                    <svg style="float: left;">
+
+                                                    </svg>
+                                                </div>
+								            </div>
+								        </div>
+
+								    </div>
+
+							    </div>
+
+							</div>
+
+                            <div class="modal fade" id="inverter_alert" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">Inverter Selected</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Inverter can not be selected. Please select SMBs only.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+
+						</div>
+
+					</div>
+
+				</div>
+				<!--===================================================-->
+				<!--End page content-->
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/dataglen/js/d3.v3.min.js"></script>
+    <script src="/static/dataglen/js/nv.d3.min.js"></script>
+    <script src="/static/solarrms/js/papaparse.min.js"></script>
+    <script src="/static/dataglen/js/date.format.js"></script>
+    <script src="/static/solarrms/js/bootstrap-treeview.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+
+    <!-- Data Tables -->
+    <link href="/static/dataglen/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="/static/dataglen/css/plugins/dataTables/dataTables.responsive.css" rel="stylesheet">
+    <link href="/static/dataglen/css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet">
+
+    <!-- Data Tables -->
+    <script src="/static/dataglen/js/jquery.dataTables.js"></script>
+    <script src="/static/dataglen/js/dataTables.bootstrap.js"></script>
+    <script src="/static/dataglen/js/dataTables.responsive.js"></script>
+    <script src="/static/dataglen/js/dataTables.tableTools.min.js"></script>
+    <script src="/static/solarrms/js/demo/visualisations-device_comparisons.js"></script>
+
+    <script>
+        function update_table(){
+            var selected_nodes = $('#tree').treeview('getChecked');
+            for(var i = 0; i < selected_nodes.length; i++) {
+                if(selected_nodes[i].selectable == false){
+                   var index = i;
+                   selected_nodes.splice(index, 1); 
+                }
+            }
+            var query_streams = {};
+            for(var i = 0, len=selected_nodes.length; i < len; i++) {
+                var node_element = selected_nodes[i];
+                if (query_streams.hasOwnProperty(node_element.source_key)) {
+                    query_streams[node_element.source_key].push(node_element.text);
+                } else {
+                    query_streams[node_element.source_key] = [node_element.text];
+                }
+            }
+            var query_strings = [];
+            for (var key in query_streams) {
+                if (Object.prototype.hasOwnProperty.call(query_streams, key)) {
+                    var val = query_streams[key];
+                    query_strings.push([key, "=", val.join()].join(""));
+                }
+            }
+            var query_string = query_strings.join("&");
+
+            inverter_parameters(query_string);
+        }
+        var actual_data = {{ options|safe }};
+
+        $('#tree').treeview({
+            data: actual_data,
+            multiSelect:true,
+            showCheckbox:true,
+            onNodeChecked: function(event, data) {
+                if (data.hasOwnProperty('nodes')) {
+                    for (i=0; i < data["nodes"].length; i++) {
+                        var node = data["nodes"][i];
+                        if (node.hasOwnProperty('nodes')) {
+                            $("#inverter_alert").modal();
+                            var selected_nodes = $('#tree').treeview('getChecked');
+                            if(selected_nodes[0].state.checked == true) {
+                                selected_nodes[0].state.checked = false;
+                            }
+                            return;
+                        }
+                    }
+                }
+                if(data.nodes) {
+                    for(var i in data.nodes) {
+                        var child = data.nodes[i];
+                        $(this).treeview(true).checkNode(child.nodeId, { silent: true });
+                    }
+                    update_table();
+                } else {
+                    update_table();
+                }
+            },
+            onNodeUnchecked: function(event, data) {
+                if(data.nodes) {
+                    for(var i in data.nodes) {
+                        var child = data.nodes[i];
+                        $(this).treeview(true).uncheckNode(child.nodeId, { silent: true });
+                    }
+                    update_table();
+                } else {
+                    update_table();    
+                }
+            }
+        });
+
+        /*var ul_classes = $("ul").children("li.list-group-item.node-tree").children("span:last").attr("class");
+
+        console.log(ul_classes);
+
+        $("span").removeClass(ul_classes);*/
+
+        /*$('#tree').on('nodeChecked ', function(ev, node) {
+            console.log(node);
+            for(var i in node.nodes) {
+                var child = node.nodes[i];
+                $(this).treeview(true).checkNode(child.nodeId);
+            }
+        }).on('nodeUnchecked ', function(ev, node) {
+            for(var i in node.nodes) {
+                var child = node.nodes[i];
+                $(this).treeview(true).uncheckNode(child.nodeId);
+            }
+        });*/
+
+        var plant_slug = '{{ plant.slug }}';
+        var source_key = '{{ plant_meta.sourceKey }}';
+
+        var plant_metadata_calculate_hourly_pr = null;
+        
+    </script>
+
+{% endblock %}

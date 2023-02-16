@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block body_block %}
+    <h1> Thank you! </h1>
+    <br>
+    <p>{% trans "You are now registered. Activation email has been sent to your email address." %}</p>
+    <br>
+    <p>{% trans "Please follow the instructions in the email to activate the account." %}</p>
+{% endblock %}

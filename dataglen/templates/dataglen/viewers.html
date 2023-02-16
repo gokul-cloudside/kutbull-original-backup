@@ -1,0 +1,108 @@
+{% extends 'dataglen/dataglenbase.html' %}
+{% load bootstrap3 %}
+
+{% block body_block %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2> Manage Access Levels </h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{% url 'dataglen:dashboard' %}">Home</a>
+                </li>
+                <li>
+                    <a>Viewers</a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+            <div class="col-lg-offset-1 col-lg-10">
+                <div class="tabs-container">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#viewers"> Manage Viewers </a></li>
+                        <li class=""><a data-toggle="tab" href="#groups">Manage Groups </a></li>
+                        <li class=""><a data-toggle="tab" href="#permissions">Manage Permissions </a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="viewers" class="tab-pane active">
+                            <div class="wrapper wrapper-content animated fadeInRight">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="ibox float-e-margins">
+                                            <div class="ibox-content">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Email Address</th>
+                                                            <th>Invitation Accepted</th>
+                                                            <th>Last Log-in (UTC)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    {% for viewer in viewers %}
+                                                        <tbody>
+                                                            <td> {{ viewer.email }} </td>
+                                                            <td> {{ viewer.hasRegistered }} </td>
+                                                            {% if viewer.hasRegistered %}
+                                                                <td> {{ viewer.profile.last_login }} </td>
+                                                            {% else %}
+                                                                <td> Not Applicable </td>
+                                                            {% endif %}
+                                                        </tbody>
+                                                    {% endfor %}
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="groups" class="tab-pane">
+                            <div class="wrapper wrapper-content animated fadeInRight">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="ibox float-e-margins">
+                                            <div class="ibox-content">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Group Name</th>
+                                                            <th>Group Viewers</th>
+                                                        </tr>
+                                                    </thead>
+                                                    {% for group in groups %}
+                                                        <tbody>
+                                                            <td> {{ group.name }} </td>
+                                                            <td>
+                                                            {% for viewer in group.viewers %}
+                                                                    {{ viewer }}
+                                                            {% endfor %}
+                                                            </td>
+                                                        </tbody>
+                                                    {% endfor %}
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="assignments" class="tab-pane">
+                            <div class="panel-body">
+                                <strong>Donec quam felis</strong>
+
+                                <p>I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine. I am so happy, my dear friend, so absorbed in the exquisite
+                                    sense of mere tranquil existence, that I neglect my talents. I should be incapable of drawing a single stroke at the present moment; and yet.</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
