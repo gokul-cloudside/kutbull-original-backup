@@ -92,6 +92,7 @@ def update_tz(dt, tz_name):
         tz = pytz.timezone(tz_name)
         if dt.tzinfo:
             return dt.astimezone(tz)
+      #      return tz.localize(dt)
         else:
             return tz.localize(dt)
     except:

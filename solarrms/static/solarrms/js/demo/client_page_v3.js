@@ -519,9 +519,10 @@ function dashboard_clients(first_call) {
                 console.log("Table and alerts : ", new Date() - t5);
             }
 
-            if(client_info.plants[0].status) {
+		//    if(client_info.plants[0].status) {
+			//if(1=1) {
                 all_plants(client_info, leaflet_status);
-            }
+            //}
         },
         error: function(xhr, status, error){
             var err = eval("(" + xhr.responseText + ")");

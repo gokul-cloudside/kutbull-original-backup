@@ -4,14 +4,6 @@ from rest_framework import status
 from django.utils import timezone
 import socket
 
-import django
-django.setup()
-from django.utils.encoding import smart_str, force_str
-django.utils.encoding.smart_text = smart_str
-
-django.utils.encoding.force_unicode = force_str
-
-
 # TODO Take sensitive information out of settings.py - such as database names/passwords.
 # TODO https://code.djangoproject.com/wiki/SplitSettings
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -36,7 +28,7 @@ ALLOWED_HOSTS = ['45.33.127.43', '176.58.122.184', '104.237.130.172', '35.198.19
                  'dev.dataglen.com', 'dataglen.com', 'dataglen.net', 'www.dataglen.net',
                  'kafka.dataglen.org', 'preprod.dataglen.com', 'clone.dataglen.com', 'g.clone.dataglen.com',
                  'solarestimator.dataglen.com', '35.186.234.168', 'clone03.dataglen.com', 'dataglen-clone-1',
-                 '35.247.142.158 ']
+                 '35.247.142.158', '34.71.47.17']
 
 '''
     LIST OF INSTALLED APPLICATIONS
@@ -62,11 +54,11 @@ INSTALLED_APPS = (
     'dashboards',
     'dataglen',
     'organizations',
-    'website',
     'rest',
     'logger',
     'cronjobs',
     'monitoring',
+    'website',
     'captcha',
     'rest_framework.authtoken',
     'rest_framework_swagger',
@@ -103,7 +95,7 @@ INSTALLED_APPS = (
 
 HOST_IP = ['104.237.130.172']
 if CASSANDRA_UPDATE:
-    HOST_IP = ['10.148.0.14', '10.148.0.15']
+    HOST_IP = ['10.128.0.43']
 
 INSTALLED_APPS = ('django_cassandra_engine',) + INSTALLED_APPS
 SITE_ID = 1
@@ -121,7 +113,7 @@ ANONYMOUS_USER_ID = None
 ACCOUNT_ADAPTER = ('dataglen.account_adapter.NoNewUsersAccountAdapter')
 #ACCOUNT_ADAPTER = 'invitations.models.InvitationsAdapter'
 ACCOUNT_AUTHENTICATION_METHOD = ("email")
-ACCOUNT_CONFIRM_EMAIL_ON_GET = (True)
+ACCOUNT_CONFIRM_EMAIL_ON_GET = (False)
 
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = ("/accounts/signup/")
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = ("/dataglen/")
@@ -136,7 +128,7 @@ ACCOUNT_UNIQUE_EMAIL = (True)
 ACCOUNT_USERNAME_REQUIRED = ("True")
 ACCOUNT_USERNAME_MIN_LENGTH = (5)
 ACCOUNT_PASSWORD_MIN_LENGTH = (6)
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = (True)
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = (False)
 ACCOUNT_SESSION_COOKIE_AGE = (1209600)
 
 
@@ -175,13 +167,14 @@ WSGI_APPLICATION = 'kutbill.wsgi.application'
     DATABASE DETAILS.
     MYSQL AND CASSANDRA
 '''
+
 DATABASES = {
     'default' : {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME' : 'dataglen_meta1',
-        'USER' : 'root',
-        'PASSWORD': 'password',
-        'HOST': '127.0.0.1',
+        'NAME' : 'dataglen_meta_sunil',
+        'USER' : 'test',
+        'PASSWORD': 'P@tt@nch3ry',
+        'HOST': '34.93.136.23',
         'PORT' : '3306',
     },
 
@@ -189,10 +182,10 @@ DATABASES = {
         'ENGINE': 'django_cassandra_engine',
         'NAME': 'dataglen_data',
         'TEST_NAME': 'test_dataglen',
-        'HOST': '35.208.221.234',
+        'HOST': '34.93.136.23',
         'USER': 'cassandra',
         'PASSWORD': 'cassandra',
-        'PORT': '9046',
+        'PORT': '9042',
         'OPTIONS': {
             'replication': {
                 'strategy_class': 'SimpleStrategy',
@@ -210,18 +203,18 @@ if CASSANDRA_UPDATE:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'dataglen_meta',
-            'USER': 'myuser_',
-            'PASSWORD': 'mypass',
-            'HOST': '35.208.221.234',
-            'PORT': '9042',
+            'NAME': 'dataglen_meta_sunil',
+            'USER': 'test',
+            'PASSWORD': 'P@tt@nch3ry',
+            'HOST': '34.93.136.23',
+            'PORT': '3306',
         },
 
         'cassandra': {
             'ENGINE': 'django_cassandra_engine',
             'NAME': 'dataglen_data',
             'TEST_NAME': 'test_dataglen',
-            'HOST': '10.148.0.14,10.148.0.15',
+            'HOST': '34.93.136.23',
             'USER': 'cassandra',
             'PASSWORD': 'cassandra',
             'OPTIONS': {
@@ -237,24 +230,6 @@ if CASSANDRA_UPDATE:
             }
         }
     }
-
-# Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
 
 # Define a router for logging application since we're using a separate database
 #DATABASE_ROUTERS = ['logger.routers.LogRouter',]
@@ -444,6 +419,7 @@ LOGGING = {
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
+USE_L10N = True
 USE_TZ = True
 
 '''
@@ -669,8 +645,8 @@ DEMO_ALPINE_DATA_COPY_MINUTES = 5
 STRING_EVENTS_UPDATE_INTERVAL_MINUTES = 60
 STRING_EVENTS_INTERVAL = 1
 ACTIVE_DEVIATION_NUMBER = 3
-HISTORICAL_ENERGY_VALUE_INTERVAL_HOURS = 0o2
-HISTORICAL_ENERGY_VALUE_WITH_PREDICTION_INTERVAL_HOURS = 0o2
+HISTORICAL_ENERGY_VALUE_INTERVAL_HOURS = 02
+HISTORICAL_ENERGY_VALUE_WITH_PREDICTION_INTERVAL_HOURS = 02
 ENERGY_LOSS_INTERVAL_HOURS = 1
 NEW_ENERGY_LOSS_INTERVAL_HOURS = 1
 SOLAR_METRIC_COMPUTE_INTERVAL = 1
@@ -948,6 +924,3 @@ DG_CELERY_TASK_PATH = ('solarrms.cron_new_tickets.new_solar_events_check_for_a_p
 # tagging config
 FORCE_LOWERCASE_TAGS = True
 MAX_TAG_LENGTH = 20
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
